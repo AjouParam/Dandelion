@@ -18,3 +18,6 @@
 | Front-end  |   React Native   |
 |  Back-end  |     node.js      |
 | Formatting | eslint, prettier |
+
+## 추가사항
+앞으로 쓰일 기능들을 고려하여 탭바 추가(지도, 핫스팟)
