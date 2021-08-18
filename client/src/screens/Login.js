@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { ProgressContext, UserContext } from '../contexts';
+import userState from '../contexts/userState';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '../components';
-import { images } from '../utils/images';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace } from '../utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Alert } from 'react-native';
-import { login } from '../utils/firebase';
 
 const Container = styled.View`
   flex: 1;
@@ -28,35 +28,39 @@ const ErrorText = styled.Text`
 `;
 
 const Login = ({ navigation }) => {
-  const { dispatch } = useContext(UserContext);
+  // const { dispatch } = useContext(UserContext);
   const { spinner } = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
 
-  const [email, setEmail] = useState('');
+  const [emailInput, setEmailInput] = useState('');
   const [password, setPassword] = useState('');
   const passwordRef = useRef();
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(true);
+  const [email, setEmail] = useRecoilState(userState.emailState);
+  const [uid, setUid] = useRecoilState(userState.uidState);
 
   useEffect(() => {
-    setDisabled(!(email && password && !errorMessage));
-  }, [email, password, errorMessage]);
+    setDisabled(!(emailInput && password && !errorMessage));
+  }, [emailInput, password, errorMessage]);
 
-  const _handleEmailChange = email => {
+  const _handleEmailChange = (email) => {
     const changedEmail = removeWhitespace(email);
-    setEmail(changedEmail);
-    setErrorMessage(
-      validateEmail(changedEmail) ? '' : '이메일을 확인해주세요'
-    );
+    setEmailInput(changedEmail);
+    setErrorMessage(validateEmail(changedEmail) ? '' : '이메일을 확인해주세요');
   };
-  const _handlePasswordChange = password => {
+
+  const _handlePasswordChange = (password) => {
     setPassword(removeWhitespace(password));
   };
+
   const _handleLoginButtonPress = async () => {
     try {
       spinner.start();
-      const user = await login({ email, password });
-      dispatch(user);
+      // const user = { emailInput, password };
+      setEmail(emailInput);
+      setUid(1);
+      // dispatch(user);
     } catch (e) {
       Alert.alert('로그인 에러', e.message);
     } finally {
@@ -65,15 +69,11 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={{ flex: 1 }}
-      extraScrollHeight={20}
-    >
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} extraScrollHeight={20}>
       <Container insets={insets}>
-        <Image url={images.logo} imageStyle={{ borderRadius: 8 }} />
         <Input
           label="이메일"
-          value={email}
+          value={emailInput}
           onChangeText={_handleEmailChange}
           onSubmitEditing={() => passwordRef.current.focus()}
           placeholder="이메일"
@@ -90,16 +90,8 @@ const Login = ({ navigation }) => {
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button
-          title="로그인"
-          onPress={_handleLoginButtonPress}
-          disabled={disabled}
-        />
-        <Button
-          title="이메일로 회원가입"
-          onPress={() => navigation.navigate('Signup')}
-          isFilled={false}
-        />
+        <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
+        <Button title="이메일로 회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} />
       </Container>
     </KeyboardAwareScrollView>
   );
