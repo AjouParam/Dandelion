@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Profile, ChannelList ,maps,HotSpot} from '../screens';
+import { Profile, ChannelList, Maps, HotSpot } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -9,13 +9,7 @@ const Tab = createBottomTabNavigator();
 
 const TabBarIcon = ({ focused, name }) => {
   const theme = useContext(ThemeContext);
-  return (
-    <Ionicons
-      name={name}
-      size={26}
-      color={focused ? theme.tabActiveColor : theme.tabInactiveColor}
-    />
-  );
+  return <Ionicons name={name} size={26} color={focused ? theme.tabActiveColor : theme.tabInactiveColor} />;
 };
 
 const MainTab = ({ navigation, route }) => {
@@ -46,14 +40,14 @@ const MainTab = ({ navigation, route }) => {
     >
       <Tab.Screen
         name="지도"
-        component={maps}
+        component={Maps}
         options={{
           tabBarIcon: ({ focused }) =>
             TabBarIcon({
               focused,
               name: focused ? 'ios-map' : 'ios-map-outline',
             }),
-            title:"지도",
+          title: '지도',
         }}
       />
       <Tab.Screen
@@ -65,19 +59,19 @@ const MainTab = ({ navigation, route }) => {
               focused,
               name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
             }),
-            title:"핫스팟",
+          title: '핫스팟',
         }}
       />
       <Tab.Screen
-        name="대화방"
+        name="채널"
         component={ChannelList}
         options={{
           tabBarIcon: ({ focused }) =>
             TabBarIcon({
               focused,
-              name: focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline',
+              name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
             }),
-            title:"대화방",
+          title: '채널',
         }}
       />
       <Tab.Screen
@@ -89,7 +83,7 @@ const MainTab = ({ navigation, route }) => {
               focused,
               name: focused ? 'person-circle' : 'person-circle-outline',
             }),
-            title:"프로필",
+          title: '프로필',
         }}
       />
     </Tab.Navigator>

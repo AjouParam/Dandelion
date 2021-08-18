@@ -3,10 +3,8 @@ import { ProgressContext, UserContext } from '../contexts';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { validateEmail, removeWhitespace,validatePassword } from '../utils/common';
-import { images } from '../utils/images';
+import { validateEmail, removeWhitespace, validatePassword } from '../utils/common';
 import { Alert } from 'react-native';
-import { signup } from '../utils/firebase';
 
 const Container = styled.View`
   flex: 1;
@@ -28,7 +26,6 @@ const Signup = () => {
   const { dispatch } = useContext(UserContext);
   const { spinner } = useContext(ProgressContext);
 
-  const [photoUrl, setPhotoUrl] = useState(images.photo);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,9 +60,7 @@ const Signup = () => {
   }, [name, email, password, passwordConfirm]);
 
   useEffect(() => {
-    setDisabled(
-      !(name && email && password && passwordConfirm && !errorMessage)
-    );
+    setDisabled(!(name && email && password && passwordConfirm && !errorMessage));
   }, [name, email, password, passwordConfirm, errorMessage]);
 
   const _handleSignupButtonPress = async () => {
@@ -83,16 +78,10 @@ const Signup = () => {
   return (
     <KeyboardAwareScrollView extraScrollHeight={20}>
       <Container>
-        <Image
-          rounded
-          url={photoUrl}
-          showButton
-          onChangeImage={url => setPhotoUrl(url)}
-        />
         <Input
           label="이름"
           value={name}
-          onChangeText={text => setName(text)}
+          onChangeText={(text) => setName(text)}
           onSubmitEditing={() => {
             setName(name.trim());
             emailRef.current.focus();
@@ -105,7 +94,7 @@ const Signup = () => {
           ref={emailRef}
           label="이메일"
           value={email}
-          onChangeText={text => setEmail(removeWhitespace(text))}
+          onChangeText={(text) => setEmail(removeWhitespace(text))}
           onSubmitEditing={() => passwordRef.current.focus()}
           placeholder="이메일"
           returnKeyType="next"
@@ -114,7 +103,7 @@ const Signup = () => {
           ref={passwordRef}
           label="비밀번호"
           value={password}
-          onChangeText={text => setPassword(removeWhitespace(text))}
+          onChangeText={(text) => setPassword(removeWhitespace(text))}
           onSubmitEditing={() => passwordConfirmRef.current.focus()}
           placeholder="비밀번호"
           returnKeyType="done"
@@ -124,18 +113,14 @@ const Signup = () => {
           ref={passwordConfirmRef}
           label="비밀번호 확인"
           value={passwordConfirm}
-          onChangeText={text => setPasswordConfirm(removeWhitespace(text))}
+          onChangeText={(text) => setPasswordConfirm(removeWhitespace(text))}
           onSubmitEditing={_handleSignupButtonPress}
           placeholder="비밀번호 재입력"
           returnKeyType="done"
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button
-          title="회원가입"
-          onPress={_handleSignupButtonPress}
-          disabled={disabled}
-        />
+        <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
       </Container>
     </KeyboardAwareScrollView>
   );

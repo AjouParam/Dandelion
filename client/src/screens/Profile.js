@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled, { ThemeContext } from 'styled-components/native';
 import { Button, Image, Input } from '../components';
-import { logout, getCurrentUser, updateUserPhoto } from '../utils/firebase';
-import { UserContext, ProgressContext } from '../contexts';
+// import { UserContext, ProgressContext } from '../contexts';
+import userState from '../contexts/userState';
 import { Alert } from 'react-native';
 
 const Container = styled.View`
@@ -14,50 +15,61 @@ const Container = styled.View`
 `;
 
 const Profile = () => {
-  const { dispatch } = useContext(UserContext);
-  const { spinner } = useContext(ProgressContext);
+  // const { dispatch } = useContext(UserContext);
+  // const { spinner } = useContext(ProgressContext);
   const theme = useContext(ThemeContext);
 
-  const user = getCurrentUser();
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
+  const [email, setEmail] = useRecoilState(userState.emailState);
+  const [uid, setUid] = useRecoilState(userState.uidState);
 
-  const _handleLogoutButtonPress = async () => {
-    try {
-      spinner.start();
-      await logout();
-    } catch (e) {
-      console.log('[Profile] logout: ', e.message);
-    } finally {
-      dispatch({});
-      spinner.stop();
-    }
-  };
+  const name = '테스터';
 
-  const _handlePhotoChange = async url => {
-    try {
-      spinner.start();
-      const updatedUser = await updateUserPhoto(url);
-      setPhotoUrl(updatedUser.photoUrl);
-    } catch (e) {
-      Alert.alert('Photo Error', e.message);
-    } finally {
-      spinner.stop();
-    }
-  };
+  // const _handleLogoutButtonPress = async () => {
+  //   try {
+  //     spinner.start();
+  //     await logout();
+  //   } catch (e) {
+  //     console.log('[Profile] logout: ', e.message);
+  //   } finally {
+  //     dispatch({});
+  //     spinner.stop();
+  //   }
+  // };
+
+  // const _handlePhotoChange = async (url) => {
+  //   try {
+  //     spinner.start();
+  //     const updatedUser = await updateUserPhoto(url);
+  //     setPhotoUrl(updatedUser.photoUrl);
+  //   } catch (e) {
+  //     Alert.alert('Photo Error', e.message);
+  //   } finally {
+  //     spinner.stop();
+  //   }
+  // };
 
   return (
     <Container>
-      <Image
-        url={photoUrl}
-        onChangeImage={_handlePhotoChange}
-        showButton
-        rounded
-      />
-      <Input label="이름" value={user.name} disabled />
-      <Input label="이메일" value={user.email} disabled />
+      <Image showButton rounded />
+      <Input label="이름" value={name} disabled />
+      <Input label="이메일" value={email} disabled />
       <Button
         title="로그아웃"
-        onPress={_handleLogoutButtonPress}
+        onPress={() => {
+          Alert.alert('로그아웃', '로그아웃을 하시려면 확인 버튼을 누르세요.', [
+            {
+              text: '취소',
+              style: 'cancel',
+            },
+            {
+              text: '확인',
+              onPress: () => {
+                setUid('');
+                setEmail('');
+              },
+            },
+          ]);
+        }}
         containerStyle={{ marginTop: 30, backgroundColor: theme.buttonLogout }}
       />
     </Container>
