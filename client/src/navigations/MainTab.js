@@ -16,16 +16,15 @@ const MainTab = ({ navigation, route }) => {
   const theme = useContext(ThemeContext);
 
   useEffect(() => {
-    const title = getFocusedRouteNameFromRoute(route) ?? 'Channels';
+    const title = getFocusedRouteNameFromRoute(route) ?? '지도';
     navigation.setOptions({
       headerTitle: title,
       headerRight: () =>
-        title === 'Channels' && (
+        title === '지도' && (
           <Ionicons
             name="ios-add"
             size={26}
             style={{ margin: 10 }}
-            onPress={() => navigation.navigate('Channel Creation')}
           />
         ),
     });
