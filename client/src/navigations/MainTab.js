@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Profile, Award, maps, HotSpot, Settings } from '../screens';
+import { Profile, Award, maps, HotSpot, Settings } from '@screens';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -19,14 +19,7 @@ const MainTab = ({ navigation, route }) => {
     const title = getFocusedRouteNameFromRoute(route) ?? '지도';
     navigation.setOptions({
       headerTitle: title,
-      headerRight: () =>
-        title === '지도' && (
-          <Ionicons
-            name="ios-add"
-            size={26}
-            style={{ margin: 10 }}
-          />
-        ),
+      headerRight: () => title === '지도' && <Ionicons name="ios-add" size={26} style={{ margin: 10 }} />,
     });
   }, [route]);
 

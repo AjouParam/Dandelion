@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { useRecoilValue } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
-import AuthStack from './AuthStack';
-import { Spinner } from '../components';
-import { ProgressContext, UserContext } from '../contexts';
-import userState from '../contexts/userState';
-import MainStack from './MainStack';
+import AuthStack from '@navigations/AuthStack';
+import { Spinner } from '@components';
+import { ProgressContext, UserContext } from '@contexts';
+import userState from '@contexts/userState';
+import MainStack from '@navigations/MainStack';
 
 const Navigation = () => {
   const { inProgress } = useContext(ProgressContext);
