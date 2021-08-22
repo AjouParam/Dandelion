@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { ProgressContext, UserContext } from '../contexts';
+import { ProgressContext, UserContext } from '@contexts';
 import styled from 'styled-components/native';
-import { Image, Input, Button } from '../components';
+import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { validateEmail, removeWhitespace, validatePassword } from '../utils/common';
+import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
 
 const Container = styled.View`

@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled, { ThemeContext } from 'styled-components/native';
-import { Button, Image, Input } from '../components';
+import { Button, Image, Input } from '@components';
 // import { UserContext, ProgressContext } from '../contexts';
-import userState from '../contexts/userState';
+import userState from '@contexts/userState';
 import { Alert } from 'react-native';
 
 const Container = styled.View`

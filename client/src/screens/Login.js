@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { ProgressContext, UserContext } from '../contexts';
-import userState from '../contexts/userState';
+import { ProgressContext, UserContext } from '@contexts';
+import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
-import { Image, Input, Button } from '../components';
+import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { validateEmail, removeWhitespace } from '../utils/common';
+import { validateEmail, removeWhitespace } from '@utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Alert } from 'react-native';
 

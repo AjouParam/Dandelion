@@ -7,7 +7,7 @@ import * as Font from 'expo-font';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components/native';
 import { theme } from './theme';
-import Navigation from './navigations';
+import Navigation from '@navigations';
 
 import { ProgressProvider, UserProvider } from './contexts';
 
