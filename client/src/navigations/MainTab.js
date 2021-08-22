@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Profile, ChannelList, Maps, HotSpot } from '../screens';
+import { Profile, Award, maps, HotSpot, Settings } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeContext } from 'styled-components/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -16,16 +16,15 @@ const MainTab = ({ navigation, route }) => {
   const theme = useContext(ThemeContext);
 
   useEffect(() => {
-    const title = getFocusedRouteNameFromRoute(route) ?? 'Channels';
+    const title = getFocusedRouteNameFromRoute(route) ?? '지도';
     navigation.setOptions({
       headerTitle: title,
       headerRight: () =>
-        title === 'Channels' && (
+        title === '지도' && (
           <Ionicons
             name="ios-add"
             size={26}
             style={{ margin: 10 }}
-            onPress={() => navigation.navigate('Channel Creation')}
           />
         ),
     });
@@ -40,7 +39,7 @@ const MainTab = ({ navigation, route }) => {
     >
       <Tab.Screen
         name="지도"
-        component={Maps}
+        component={maps}
         options={{
           tabBarIcon: ({ focused }) =>
             TabBarIcon({
@@ -63,15 +62,15 @@ const MainTab = ({ navigation, route }) => {
         }}
       />
       <Tab.Screen
-        name="채널"
-        component={ChannelList}
+        name="보상"
+        component={Award}
         options={{
           tabBarIcon: ({ focused }) =>
             TabBarIcon({
               focused,
-              name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
+              name: focused ? 'gift' : 'gift-outline',
             }),
-          title: '채널',
+          title: '보상',
         }}
       />
       <Tab.Screen
@@ -84,6 +83,18 @@ const MainTab = ({ navigation, route }) => {
               name: focused ? 'person-circle' : 'person-circle-outline',
             }),
           title: '프로필',
+        }}
+      />
+      <Tab.Screen
+        name="설정"
+        component={Settings}
+        options={{
+          tabBarIcon: ({ focused }) =>
+            TabBarIcon({
+              focused,
+              name: focused ? 'settings' : 'settings-outline',
+            }),
+          title: '설정',
         }}
       />
     </Tab.Navigator>

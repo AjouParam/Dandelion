@@ -1,7 +1,8 @@
 import Login from './Login';
 import Signup from './Signup';
 import Profile from './Profile';
-import ChannelList from './ChannelList';
-import Maps from './Maps';
+import Award from './Award';
+import maps from './maps';
 import HotSpot from './HotSpot';
-export { Login, Signup, Profile, ChannelList, Maps, HotSpot };
+import Settings from './Settings';
+export { Login, Signup, Profile, Award, maps, HotSpot,Settings};
