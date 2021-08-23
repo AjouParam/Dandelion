@@ -133,30 +133,32 @@ const Login = ({ navigation }) => {
     }
   };
   return (
-    <Container insets={insets}>
-      <Input
-        label="이메일"
-        value={emailInput}
-        onChangeText={_handleEmailChange}
-        onSubmitEditing={() => passwordRef.current.focus()}
-        placeholder="이메일"
-        returnKeyType="next"
-      />
-      <Input
-        ref={passwordRef}
-        label="비밀번호"
-        value={password}
-        onChangeText={_handlePasswordChange}
-        onSubmitEditing={_handleLoginButtonPress}
-        placeholder="비밀번호"
-        returnKeyType="done"
-        isPassword
-      />
-      <ErrorText>{errorMessage}</ErrorText>
-      <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
-      <Button title="이메일로 회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} />
-      {/* <Button title="이메일로 회원가입" onPress={() => Alert.alert('sign up')} isFilled={false} /> */}
-    </Container>
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} extraScrollHeight={20}>
+      <Container insets={insets}>
+        <Input
+          label="이메일"
+          value={emailInput}
+          onChangeText={_handleEmailChange}
+          onSubmitEditing={() => passwordRef.current.focus()}
+          placeholder="이메일"
+          returnKeyType="next"
+        />
+        <Input
+          ref={passwordRef}
+          label="비밀번호"
+          value={password}
+          onChangeText={_handlePasswordChange}
+          onSubmitEditing={_handleLoginButtonPress}
+          placeholder="비밀번호"
+          returnKeyType="done"
+          isPassword
+        />
+        <ErrorText>{errorMessage}</ErrorText>
+        <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
+        <Button title="이메일로 회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} />
+        {/* <Button title="이메일로 회원가입" onPress={() => Alert.alert('sign up')} isFilled={false} /> */}
+      </Container>
+    </KeyboardAwareScrollView>
   );
 };
 export default Login;
