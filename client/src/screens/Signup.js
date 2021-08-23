@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { ProgressContext, UserContext } from '@contexts';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -23,8 +22,8 @@ const ErrorText = styled.Text`
 `;
 
 const Signup = () => {
-  const { dispatch } = useContext(UserContext);
-  const { spinner } = useContext(ProgressContext);
+  // const { dispatch } = useContext(UserContext);
+  // const { spinner } = useContext(ProgressContext);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -63,17 +62,17 @@ const Signup = () => {
     setDisabled(!(name && email && password && passwordConfirm && !errorMessage));
   }, [name, email, password, passwordConfirm, errorMessage]);
 
-  const _handleSignupButtonPress = async () => {
-    try {
-      spinner.start();
-      const user = await signup({ email, password, name, photoUrl });
-      dispatch(user);
-    } catch (e) {
-      Alert.alert('회원가입 오류', e.message);
-    } finally {
-      spinner.stop();
-    }
-  };
+  // const _handleSignupButtonPress = async () => {
+  //   try {
+  //     spinner.start();
+  //     const user = await signup({ email, password, name, photoUrl });
+  //     dispatch(user);
+  //   } catch (e) {
+  //     Alert.alert('회원가입 오류', e.message);
+  //   } finally {
+  //     spinner.stop();
+  //   }
+  // };
 
   return (
     <KeyboardAwareScrollView extraScrollHeight={20}>
@@ -114,13 +113,19 @@ const Signup = () => {
           label="비밀번호 확인"
           value={passwordConfirm}
           onChangeText={(text) => setPasswordConfirm(removeWhitespace(text))}
-          onSubmitEditing={_handleSignupButtonPress}
+          // onSubmitEditing={_handleSignupButtonPress}
           placeholder="비밀번호 재입력"
           returnKeyType="done"
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
+        <Button
+          title="회원가입"
+          onPress={() => {
+            Alert.alert('회원가입');
+          }}
+          disabled={disabled}
+        />
       </Container>
     </KeyboardAwareScrollView>
   );

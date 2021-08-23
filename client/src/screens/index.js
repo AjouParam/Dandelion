@@ -5,4 +5,4 @@ import Award from './Award';
 import maps from './maps';
 import HotSpot from './HotSpot';
 import Settings from './Settings';
-export { Login, Signup, Profile, Award, maps, HotSpot,Settings};
+export { Login, Signup, Profile, Award, maps, HotSpot, Settings };

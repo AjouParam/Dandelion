@@ -16,13 +16,11 @@ const Label = styled.Text`
 const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
   placeholderTextColor: theme.inputPlaceholder,
 }))`
-  background-color: ${({ theme, editable }) =>
-    editable ? theme.background : theme.inputDisabledBackground};
+  background-color: ${({ theme, editable }) => (editable ? theme.background : theme.inputDisabledBackground)};
   color: ${({ theme }) => theme.text};
   padding: 20px 10px;
   font-size: 16px;
-  border: 1px solid
-    ${({ theme, isFocused }) => (isFocused ? theme.text : theme.inputBorder)};
+  border: 1px solid ${({ theme, isFocused }) => (isFocused ? theme.text : theme.inputBorder)};
   border-radius: 4px;
 `;
 
@@ -40,7 +38,7 @@ const Input = forwardRef(
       maxLength,
       disabled,
     },
-    ref
+    ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false);
 
@@ -70,7 +68,7 @@ const Input = forwardRef(
         />
       </Container>
     );
-  }
+  },
 );
 
 Input.defaultProps = {

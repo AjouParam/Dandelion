@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Login, Signup } from '@screens';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from '@screens/Login';
+import Signup from '@screens/Signup';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const AuthStack = () => {
   const theme = useContext(ThemeContext);
