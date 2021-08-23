@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
-import { Image, Input, Button } from '@components';
+import { Image, Input, Button } from '@components/index';
 import { Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace } from '@utils/common';

@@ -1,17 +1,21 @@
 import React, { useContext, useEffect } from 'react';
+import styled from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Profile, Award, maps, HotSpot, Settings } from '@screens';
-import { Ionicons } from '@expo/vector-icons';
+import { Profile, Award, Map, HotSpot, Settings } from '@screens/index';
+
 import { ThemeContext } from 'styled-components/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
-const TabBarIcon = ({ focused, name }) => {
-  const theme = useContext(ThemeContext);
-  return <Ionicons name={name} size={26} color={focused ? theme.tabActiveColor : theme.tabInactiveColor} />;
-};
+// const TabBarIcon = ({ focused, name }) => {
+//   const theme = useContext(ThemeContext);
+//   return <Ionicons name={name} size={26} color={focused ? theme.tabActiveColor : theme.tabInactiveColor} />;
+// };
 
+const TabText = styled.Text`
+  font-size: 10px;
+`;
 const MainTab = ({ navigation, route }) => {
   const theme = useContext(ThemeContext);
 
@@ -19,26 +23,26 @@ const MainTab = ({ navigation, route }) => {
     const title = getFocusedRouteNameFromRoute(route) ?? '지도';
     navigation.setOptions({
       headerTitle: title,
-      headerRight: () => title === '지도' && <Ionicons name="ios-add" size={26} style={{ margin: 10 }} />,
+      headerRight: () => title === '지도' && <TabText>지도</TabText>,
     });
   }, [route]);
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
+      screenOptions={{
         activeTintColor: theme.tabActiveColor,
         inactiveTintColor: theme.tabInactiveColor,
       }}
     >
       <Tab.Screen
         name="지도"
-        component={maps}
+        component={Map}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              name: focused ? 'ios-map' : 'ios-map-outline',
-            }),
+          // tabBarIcon: ({ focused }) =>
+          //   TabBarIcon({
+          //     focused,
+          //     name: focused ? 'ios-map' : 'ios-map-outline',
+          //   }),
           title: '지도',
         }}
       />
@@ -46,11 +50,11 @@ const MainTab = ({ navigation, route }) => {
         name="핫스팟"
         component={HotSpot}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
-            }),
+          // tabBarIcon: ({ focused }) =>
+          //   TabBarIcon({
+          //     focused,
+          //     name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
+          //   }),
           title: '핫스팟',
         }}
       />
@@ -58,11 +62,11 @@ const MainTab = ({ navigation, route }) => {
         name="보상"
         component={Award}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              name: focused ? 'gift' : 'gift-outline',
-            }),
+          // tabBarIcon: ({ focused }) =>
+          //   TabBarIcon({
+          //     focused,
+          //     name: focused ? 'gift' : 'gift-outline',
+          //   }),
           title: '보상',
         }}
       />
@@ -70,11 +74,11 @@ const MainTab = ({ navigation, route }) => {
         name="프로필"
         component={Profile}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              name: focused ? 'person-circle' : 'person-circle-outline',
-            }),
+          // tabBarIcon: ({ focused }) =>
+          //   TabBarIcon({
+          //     focused,
+          //     name: focused ? 'person-circle' : 'person-circle-outline',
+          //   }),
           title: '프로필',
         }}
       />
@@ -82,11 +86,11 @@ const MainTab = ({ navigation, route }) => {
         name="설정"
         component={Settings}
         options={{
-          tabBarIcon: ({ focused }) =>
-            TabBarIcon({
-              focused,
-              name: focused ? 'settings' : 'settings-outline',
-            }),
+          // tabBarIcon: ({ focused }) =>
+          //   TabBarIcon({
+          //     focused,
+          //     name: focused ? 'settings' : 'settings-outline',
+          //   }),
           title: '설정',
         }}
       />
