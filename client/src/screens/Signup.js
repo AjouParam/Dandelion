@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
+
+import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
@@ -21,9 +24,11 @@ const ErrorText = styled.Text`
   color: ${({ theme }) => theme.errorText};
 `;
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
   // const { dispatch } = useContext(UserContext);
   // const { spinner } = useContext(ProgressContext);
+  const [userName, setUserName] = useRecoilState(userState.nameState);
+  const [userEmail, setUserEmail] = useRecoilState(userState.emailState);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,12 +36,20 @@ const Signup = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [disabled, setDisabled] = useState(true);
-
+  const [emailButton, setEmailButton] = useState(true);
+  const [emailValid, setEmailValid] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
 
   const didMountRef = useRef();
+
+  useEffect(() => {
+    if (!validateEmail(email)) {
+      setEmailValid(false);
+      setEmailButton(false);
+    }
+  }, [email]);
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -59,9 +72,10 @@ const Signup = () => {
   }, [name, email, password, passwordConfirm]);
 
   useEffect(() => {
-    setDisabled(!(name && email && password && passwordConfirm && !errorMessage));
-  }, [name, email, password, passwordConfirm, errorMessage]);
+    setDisabled(!(name && email && password && passwordConfirm && !errorMessage && emailValid));
+  }, [name, email, password, passwordConfirm, errorMessage, emailValid]);
 
+  useEffect(() => {}, [email]);
   // const _handleSignupButtonPress = async () => {
   //   try {
   //     spinner.start();
@@ -78,7 +92,7 @@ const Signup = () => {
     <KeyboardAwareScrollView extraScrollHeight={20}>
       <Container>
         <Input
-          label="이름"
+          label="닉네임"
           value={name}
           onChangeText={(text) => setName(text)}
           onSubmitEditing={() => {
@@ -86,7 +100,7 @@ const Signup = () => {
             emailRef.current.focus();
           }}
           onBlur={() => setName(name.trim())}
-          placeholder="이름"
+          placeholder="닉네임"
           returnKeyType="next"
         />
         <Input
@@ -98,6 +112,19 @@ const Signup = () => {
           placeholder="이메일"
           returnKeyType="next"
         />
+
+        <Button
+          title={emailValid ? '사용 가능한 이메일 입니다' : '이메일 중복확인'}
+          onPress={() => {
+            //TODO : 서버에서 이메일 중복 확인
+            setEmailButton(true);
+            Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
+            setEmailValid(true);
+            passwordRef.current.focus();
+          }}
+          disabled={emailButton}
+        />
+
         <Input
           ref={passwordRef}
           label="비밀번호"
@@ -122,7 +149,14 @@ const Signup = () => {
         <Button
           title="회원가입"
           onPress={() => {
-            Alert.alert('회원가입');
+            Alert.alert('회원가입', '회원가입 성공!', [
+              {
+                text: '로그인',
+                onPress: () => {
+                  navigation.navigate('Login');
+                },
+              },
+            ]);
           }}
           disabled={disabled}
         />
