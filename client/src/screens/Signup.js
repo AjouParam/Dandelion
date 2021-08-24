@@ -15,6 +15,12 @@ const Container = styled.View`
   background-color: ${({ theme }) => theme.background};
   padding: 40px 20px;
 `;
+
+const InputContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+`;
 const ErrorText = styled.Text`
   align-items: flex-start;
   width: 100%;
@@ -35,7 +41,10 @@ const Signup = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
   const [disabled, setDisabled] = useState(true);
+  const [nameButton, setNameButton] = useState(true);
+  const [nameValid, setNameValid] = useState(false);
   const [emailButton, setEmailButton] = useState(true);
   const [emailValid, setEmailValid] = useState(false);
   const emailRef = useRef();
@@ -45,9 +54,20 @@ const Signup = ({ navigation }) => {
   const didMountRef = useRef();
 
   useEffect(() => {
-    if (!validateEmail(email)) {
-      setEmailValid(false);
-      setEmailButton(false);
+    if (name) {
+      setNameButton(false);
+    } else {
+      setNameButton(true);
+    }
+  }, [name]);
+  useEffect(() => {
+    if (email) {
+      if (!validateEmail(email)) {
+        setEmailValid(false);
+        setEmailButton(false);
+      }
+    } else {
+      setEmailButton(true);
     }
   }, [email]);
 
@@ -72,8 +92,8 @@ const Signup = ({ navigation }) => {
   }, [name, email, password, passwordConfirm]);
 
   useEffect(() => {
-    setDisabled(!(name && email && password && passwordConfirm && !errorMessage && emailValid));
-  }, [name, email, password, passwordConfirm, errorMessage, emailValid]);
+    setDisabled(!(name && email && password && passwordConfirm && !errorMessage && emailValid && nameValid));
+  }, [name, email, password, passwordConfirm, errorMessage, emailValid, nameValid]);
 
   useEffect(() => {}, [email]);
   // const _handleSignupButtonPress = async () => {
@@ -91,39 +111,64 @@ const Signup = ({ navigation }) => {
   return (
     <KeyboardAwareScrollView extraScrollHeight={20}>
       <Container>
-        <Input
-          label="닉네임"
-          value={name}
-          onChangeText={(text) => setName(text)}
-          onSubmitEditing={() => {
-            setName(name.trim());
-            emailRef.current.focus();
-          }}
-          onBlur={() => setName(name.trim())}
-          placeholder="닉네임"
-          returnKeyType="next"
-        />
-        <Input
-          ref={emailRef}
-          label="이메일"
-          value={email}
-          onChangeText={(text) => setEmail(removeWhitespace(text))}
-          onSubmitEditing={() => passwordRef.current.focus()}
-          placeholder="이메일"
-          returnKeyType="next"
-        />
+        <InputContainer>
+          <Input
+            label="닉네임"
+            value={name}
+            onChangeText={(text) => setName(text)}
+            onSubmitEditing={() => {
+              setName(name.trim());
+              emailRef.current.focus();
+            }}
+            onBlur={() => setName(name.trim())}
+            placeholder="닉네임"
+            returnKeyType="next"
+            width="250px"
+            height="50px"
+          />
+          <Button
+            title={nameValid ? '사용 가능' : '중복확인'}
+            onPress={() => {
+              //TODO : 닉네임 중복 체크
+              setNameValid(true);
+            }}
+            disabled={nameButton}
+            width="100px"
+            height="40px"
+          />
+        </InputContainer>
 
-        <Button
-          title={emailValid ? '사용 가능한 이메일 입니다' : '이메일 중복확인'}
-          onPress={() => {
-            //TODO : 서버에서 이메일 중복 확인
-            setEmailButton(true);
-            Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
-            setEmailValid(true);
-            passwordRef.current.focus();
-          }}
-          disabled={emailButton}
-        />
+        <InputContainer>
+          <Input
+            ref={emailRef}
+            label="이메일"
+            value={email}
+            onChangeText={(text) => setEmail(removeWhitespace(text))}
+            onSubmitEditing={() => passwordRef.current.focus()}
+            placeholder="이메일"
+            returnKeyType="next"
+            width="250px"
+            height="50px"
+          />
+
+          <Button
+            title={emailValid ? '사용 가능' : '중복확인'}
+            onPress={() => {
+              if (!validateEmail(email)) {
+                Alert.alert('유요하지 않는 이메일', '이메일을 다시 입력해주세요');
+              } else {
+                //TODO : 서버에서 이메일 중복 확인
+                setEmailButton(true);
+                Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
+                setEmailValid(true);
+                passwordRef.current.focus();
+              }
+            }}
+            disabled={emailButton}
+            width="100px"
+            height="40px"
+          />
+        </InputContainer>
 
         <Input
           ref={passwordRef}
