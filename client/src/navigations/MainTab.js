@@ -44,6 +44,7 @@ const MainTab = ({ navigation, route }) => {
           //     name: focused ? 'ios-map' : 'ios-map-outline',
           //   }),
           title: '지도',
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -56,6 +57,7 @@ const MainTab = ({ navigation, route }) => {
           //     name: focused ? 'ios-bonfire' : 'ios-bonfire-outline',
           //   }),
           title: '핫스팟',
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -68,6 +70,7 @@ const MainTab = ({ navigation, route }) => {
           //     name: focused ? 'gift' : 'gift-outline',
           //   }),
           title: '보상',
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -80,6 +83,7 @@ const MainTab = ({ navigation, route }) => {
           //     name: focused ? 'person-circle' : 'person-circle-outline',
           //   }),
           title: '프로필',
+          headerShown: false,
         }}
       />
       <Tab.Screen
@@ -92,6 +96,7 @@ const MainTab = ({ navigation, route }) => {
           //     name: focused ? 'settings' : 'settings-outline',
           //   }),
           title: '설정',
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

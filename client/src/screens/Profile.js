@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled, { ThemeContext } from 'styled-components/native';
 import { Button, Image, Input } from '@components';
-import { ProgressContext } from '@contexts/progress';
+import { ProgressContext } from '@contexts/Progress';
 import userState from '@contexts/userState';
 import { Alert, View, Text } from 'react-native';
 

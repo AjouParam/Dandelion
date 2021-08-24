@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components/native';
 import { RecoilRoot } from 'recoil';
 import { theme } from './theme';
 import Navigation from '@navigations/index';
-import { ProgressProvider } from '@contexts/progress';
+import { ProgressProvider } from '@contexts/Progress';
 
 const App = () => {
   const [isReady, setIsReady] = useState(true);

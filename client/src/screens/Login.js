@@ -126,6 +126,7 @@ const Login = ({ navigation }) => {
       // const user = { emailInput, password };
       setEmail(emailInput);
       setUid(1);
+      Alert.alert(emailInput, password);
       // dispatch(user);
     } catch (e) {
       Alert.alert('로그인 에러', e.message);
