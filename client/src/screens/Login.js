@@ -3,13 +3,12 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
-import { Image, Input, Button } from '@components/index';
+import { Image, Input, Button, Spinner } from '@components/index';
 import { Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace } from '@utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// import { Alert } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Container = styled.View`
   flex: 1;
   justify-content: center;
@@ -107,6 +106,7 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useRecoilState(userState.emailState);
   const [uid, setUid] = useRecoilState(userState.uidState);
   const insets = useSafeAreaInsets();
+
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));
   }, [emailInput, password, errorMessage]);
@@ -122,8 +122,10 @@ const Login = ({ navigation }) => {
   };
 
   const _handleLoginButtonPress = async () => {
+    /*JWT 로그인 구현 부분*/
     try {
       // const user = { emailInput, password };
+      //spinner.start();
       setEmail(emailInput);
       setUid(1);
       Alert.alert(emailInput, password);
@@ -131,6 +133,7 @@ const Login = ({ navigation }) => {
     } catch (e) {
       Alert.alert('로그인 에러', e.message);
     } finally {
+      //spinner.stop();
     }
   };
   return (

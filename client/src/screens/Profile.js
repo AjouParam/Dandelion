@@ -81,7 +81,7 @@ const Container = styled.View`
 //   </Container>;
 // };
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
   const { spinner } = useContext(ProgressContext);
   const theme = useContext(ThemeContext);
 
@@ -96,6 +96,7 @@ const Profile = () => {
       // await logout();
       setUid('');
       setEmail('');
+      navigation.navigate('Maps');
     } catch (e) {
       console.log('[Profile] logout: ', e.message);
     } finally {

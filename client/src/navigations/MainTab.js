@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Profile, Award, Map, HotSpot, Settings } from '@screens/index';
+import { Profile, Award, Maps, HotSpot, Settings } from '@screens/index';
 
 import { ThemeContext } from 'styled-components/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -36,7 +36,7 @@ const MainTab = ({ navigation, route }) => {
     >
       <Tab.Screen
         name="지도"
-        component={Map}
+        component={Maps}
         options={{
           // tabBarIcon: ({ focused }) =>
           //   TabBarIcon({
