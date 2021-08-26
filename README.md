@@ -19,5 +19,20 @@
 |  Back-end  |     node.js      |
 | Formatting | eslint, prettier |
 
+
+### Running back-end
+
+``` bash
+# go to directory
+$ cd server 
+
+# install node and npm (in ubuntu)
+$ sudo apt-get update 
+$ npm install
+
+# start server
+$ npm start
+```
+
 ## 추가사항
 로그인 재구현
