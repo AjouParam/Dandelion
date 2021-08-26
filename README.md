@@ -26,7 +26,6 @@
 # go to directory
 $ cd server 
 
-# install node and npm (in ubuntu)
 $ sudo apt-get update 
 $ npm install
 
