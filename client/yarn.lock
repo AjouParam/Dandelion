@@ -5659,6 +5659,11 @@ react-native-codegen@^0.0.7:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
+react-native-geolocation-service@^5.3.0-beta.1:
+  version "5.3.0-beta.1"
+  resolved "https://registry.yarnpkg.com/react-native-geolocation-service/-/react-native-geolocation-service-5.3.0-beta.1.tgz#91b78e8f87caa0fd4fd1a2384bb48a6309ec715a"
+  integrity sha512-VfocBBSrUfXAdMikWYy8IY9ndzzn0uOM15ncs7DUMQvCpnayC92PJtRSZrSGKEuUubUkcXRqvZIMowZDMwHGVA==
+
 react-native-image-picker@^4.0.6:
   version "4.0.6"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-4.0.6.tgz"

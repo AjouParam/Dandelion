@@ -7,11 +7,13 @@ import PropTypes from 'prop-types';
 const Container = styled.View`
   align-self: center;
   margin-bottom: 30px;
+  margin-left: 15px;
+  margin-right: 15px;
 `;
 const StyledImage = styled.Image`
   background-color: ${({ theme }) => theme.imageBackground};
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   border-radius: ${({ rounded }) => (rounded ? 50 : 0)}px;
 `;
 
@@ -33,12 +35,7 @@ const ButtonContainer = styled.TouchableOpacity`
 //   color: ${({ theme }) => theme.imageButtonIcon};
 // `;
 const PhotoButton = ({ onPress }) => {
-  return (
-    <ButtonContainer onPress={onPress}>
-      포토
-      {/* <ButtonIcon /> */}
-    </ButtonContainer>
-  );
+  return <ButtonContainer onPress={onPress}>{/* <ButtonIcon /> */}</ButtonContainer>;
 };
 
 const Image = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
