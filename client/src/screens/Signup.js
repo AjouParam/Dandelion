@@ -10,6 +10,7 @@ import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
+  height: 100%;
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.background};
@@ -96,17 +97,42 @@ const Signup = ({ navigation }) => {
   }, [name, email, password, passwordConfirm, errorMessage, emailValid, nameValid]);
 
   useEffect(() => {}, [email]);
-  // const _handleSignupButtonPress = async () => {
-  //   try {
-  //     spinner.start();
-  //     const user = await signup({ email, password, name, photoUrl });
-  //     dispatch(user);
-  //   } catch (e) {
-  //     Alert.alert('회원가입 오류', e.message);
-  //   } finally {
-  //     spinner.stop();
-  //   }
-  // };
+
+  const signup = ({ email, password, name, photoUrl }) => {
+    // API request
+    /*
+    axios.post('api/signup', {email,password,name,photoUrl}).then(res=>{
+      if(res){
+        return true;
+      }
+      return false;
+    }).catch(error=>{
+      return false;
+    })
+    */
+  };
+
+  const _handleSignupButtonPress = async () => {
+    try {
+      // spinner.start();
+
+      // 회원가입하는데 user를 리턴받나요??
+      // const user = await signup({ email, password, name, photoUrl });
+
+      Alert.alert('회원가입', '회원가입 성공!', [
+        {
+          text: '로그인하기',
+          onPress: () => {
+            navigation.navigate('Login');
+          },
+        },
+      ]);
+    } catch (e) {
+      Alert.alert('회원가입 실패', e.message);
+    } finally {
+      // spinner.stop();
+    }
+  };
 
   return (
     <KeyboardAwareScrollView extraScrollHeight={20}>
@@ -185,26 +211,13 @@ const Signup = ({ navigation }) => {
           label="비밀번호 확인"
           value={passwordConfirm}
           onChangeText={(text) => setPasswordConfirm(removeWhitespace(text))}
-          // onSubmitEditing={_handleSignupButtonPress}
+          onSubmitEditing={_handleSignupButtonPress}
           placeholder="비밀번호 재입력"
           returnKeyType="done"
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button
-          title="회원가입"
-          onPress={() => {
-            Alert.alert('회원가입', '회원가입 성공!', [
-              {
-                text: '로그인',
-                onPress: () => {
-                  navigation.navigate('Login');
-                },
-              },
-            ]);
-          }}
-          disabled={disabled}
-        />
+        <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
       </Container>
     </KeyboardAwareScrollView>
   );
