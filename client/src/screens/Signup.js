@@ -98,35 +98,49 @@ const Signup = ({ navigation }) => {
 
   useEffect(() => {}, [email]);
 
-  const signup = ({ email, password, name, photoUrl }) => {
+  const checkEmailDuplicate = () => {
+    //TODO : API request
+    setEmailButton(true);
+    Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
+    setEmailValid(true);
+  };
+
+  const checkNameDuplicate = () => {
+    //TODO : API request
+    setNameValid(true);
+  };
+
+  const signUp = (email, password, name, photoUrl) => {
     // API request
-    /*
-    axios.post('api/signup', {email,password,name,photoUrl}).then(res=>{
-      if(res){
-        return true;
-      }
-      return false;
-    }).catch(error=>{
-      return false;
-    })
-    */
+    await axios
+      .post('http://localhost:3000/account/signup/', {
+        name: name,
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        switch (res.status) {
+          case 'FAILED':
+            Alert.alert('회원가입 실패', res.message);
+            break;
+          case 'SUCCESS':
+            Alert.alert('회원가입', '회원가입 성공!', [
+              {
+                text: '로그인하기',
+                onPress: () => {
+                  navigation.navigate('Login');
+                },
+              },
+            ]);
+            break;
+        }
+      });
   };
 
   const _handleSignupButtonPress = async () => {
     try {
       // spinner.start();
-
-      // 회원가입하는데 user를 리턴받나요??
-      // const user = await signup({ email, password, name, photoUrl });
-
-      Alert.alert('회원가입', '회원가입 성공!', [
-        {
-          text: '로그인하기',
-          onPress: () => {
-            navigation.navigate('Login');
-          },
-        },
-      ]);
+      signUp(email, password, name, photoUrl);
     } catch (e) {
       Alert.alert('회원가입 실패', e.message);
     } finally {
@@ -156,7 +170,7 @@ const Signup = ({ navigation }) => {
             title={nameValid ? '사용 가능' : '중복확인'}
             onPress={() => {
               //TODO : 닉네임 중복 체크
-              setNameValid(true);
+              checkNameDuplicate();
             }}
             disabled={nameButton}
             width="100px"
@@ -184,9 +198,7 @@ const Signup = ({ navigation }) => {
                 Alert.alert('유요하지 않는 이메일', '이메일을 다시 입력해주세요');
               } else {
                 //TODO : 서버에서 이메일 중복 확인
-                setEmailButton(true);
-                Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
-                setEmailValid(true);
+                checkEmailDuplicate();
                 passwordRef.current.focus();
               }
             }}
