@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
 import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
 import axios from 'axios';
@@ -11,17 +12,23 @@ import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
-  height: 100%;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+
   background-color: ${({ theme }) => theme.background};
-  padding: 40px 20px;
+  padding: 0 20px;
+  padding-top: ${({ insets: { top } }) => top}px;
+  padding-bottom: ${({ insets: { bottom } }) => bottom + 30}px;
 `;
+const FormContainer = styled.View``;
 
 const InputContainer = styled.View`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
+  justify-content: space-between;
 `;
 const ErrorText = styled.Text`
   align-items: flex-start;
@@ -35,6 +42,7 @@ const ErrorText = styled.Text`
 const Signup = ({ navigation }) => {
   // const { dispatch } = useContext(UserContext);
   // const { spinner } = useContext(ProgressContext);
+  const insets = useSafeAreaInsets();
   const [userName, setUserName] = useRecoilState(userState.nameState);
   const [userEmail, setUserEmail] = useRecoilState(userState.emailState);
 
@@ -120,7 +128,7 @@ const Signup = ({ navigation }) => {
         password: password,
       })
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         switch (res.data.status) {
           case 'FAILED':
             Alert.alert('회원가입 실패', res.data.message);
@@ -154,8 +162,9 @@ const Signup = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAwareScrollView extraScrollHeight={20}>
-      <Container>
+    // <KeyboardAwareScrollView extraScrollHeight={20} style={{ backgroundColor: '#ffffff' }}>
+    <Container insets={insets}>
+      <FormContainer>
         <InputContainer>
           <Input
             label="닉네임"
@@ -178,7 +187,7 @@ const Signup = ({ navigation }) => {
               checkNameDuplicate();
             }}
             disabled={nameButton}
-            width="100px"
+            width="90px"
             height="40px"
           />
         </InputContainer>
@@ -208,7 +217,7 @@ const Signup = ({ navigation }) => {
               }
             }}
             disabled={emailButton}
-            width="100px"
+            width="90px"
             height="40px"
           />
         </InputContainer>
@@ -222,6 +231,8 @@ const Signup = ({ navigation }) => {
           placeholder="비밀번호"
           returnKeyType="done"
           isPassword
+          width="250px"
+          height="50px"
         />
         <Input
           ref={passwordConfirmRef}
@@ -232,11 +243,14 @@ const Signup = ({ navigation }) => {
           placeholder="비밀번호 재입력"
           returnKeyType="done"
           isPassword
+          width="250px"
+          height="50px"
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
-      </Container>
-    </KeyboardAwareScrollView>
+      </FormContainer>
+      <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
+    </Container>
+    // </KeyboardAwareScrollView>
   );
 };
 
