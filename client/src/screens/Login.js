@@ -28,6 +28,14 @@ const ErrorText = styled.Text`
   line-height: 20px;
   color: ${({ theme }) => theme.errorText};
 `;
+const ToolContainer = styled.View`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+`;
 
 const Login = ({ navigation }) => {
   const [emailInput, setEmailInput] = useState('');
@@ -40,24 +48,24 @@ const Login = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   //앱 실행시 JWT 체크 후 자동 로그인?
-  useLayoutEffect(() => {
-    //자동 로그인?
-    _loadInitialState();
-  }, []);
+  // useLayoutEffect(() => {
+  //   //자동 로그인?
+  //   _loadInitialState();
+  // }, []);
 
-  const _loadInitialState = async () => {
-    const value = await AsyncStorage.getItem('auth_token');
-    if (value !== null) {
-      // check authentication from server
-      if (true) {
-        let temp_check = false;
-      }
-      if (temp_check) {
-        setUid(value.accessToken);
-        // navigation.navigate('Maps');
-      }
-    }
-  };
+  // const _loadInitialState = async () => {
+  //   const value = await AsyncStorage.getItem('auth_token');
+  //   if (value !== null) {
+  //     // check authentication from server
+  //     if (true) {
+  //       let temp_check = false;
+  //     }
+  //     if (temp_check) {
+  //       setUid(value.accessToken);
+  //       // navigation.navigate('Maps');
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));
@@ -130,8 +138,18 @@ const Login = ({ navigation }) => {
         />
         <ErrorText>{errorMessage}</ErrorText>
         <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
-        <Button title="이메일로 회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} />
-        {/* <Button title="이메일로 회원가입" onPress={() => Alert.alert('sign up')} isFilled={false} /> */}
+
+        <ToolContainer>
+          <Button
+            title="비밀번호 재설정"
+            onPress={() => navigation.navigate('PasswordReset')}
+            isFilled={false}
+            width="50%"
+          />
+          <Button title="회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} width="50%" />
+        </ToolContainer>
+
+        <Button title="Google 계정으로 로그인" onPress={() => Alert.alert('Google 연동')} isFilled={false} />
       </Container>
     </KeyboardAwareScrollView>
   );
