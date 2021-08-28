@@ -5,7 +5,7 @@ import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
-
+import axios from 'axios';
 import userState from '@contexts/userState';
 
 const Container = styled.View`
@@ -110,18 +110,19 @@ const Signup = ({ navigation }) => {
     setNameValid(true);
   };
 
-  const signUp = (email, password, name, photoUrl) => {
+  const signUp = async (email, password, name) => {
     // API request
     await axios
-      .post('http://localhost:3000/account/signup/', {
+      .post('http://10.0.2.2:3000/account/signup/', {
         name: name,
         email: email,
         password: password,
       })
       .then((res) => {
-        switch (res.status) {
+        console.log(res.data)
+        switch (res.data.status) {
           case 'FAILED':
-            Alert.alert('회원가입 실패', res.message);
+            Alert.alert('회원가입 실패', res.data.message);
             break;
           case 'SUCCESS':
             Alert.alert('회원가입', '회원가입 성공!', [
@@ -140,7 +141,7 @@ const Signup = ({ navigation }) => {
   const _handleSignupButtonPress = async () => {
     try {
       // spinner.start();
-      signUp(email, password, name, photoUrl);
+      await signUp(email, password, name);
     } catch (e) {
       Alert.alert('회원가입 실패', e.message);
     } finally {
