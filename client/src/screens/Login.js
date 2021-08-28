@@ -54,7 +54,7 @@ const Login = ({ navigation }) => {
       }
       if (temp_check) {
         setUid(value.accessToken);
-        navigation.navigate('Maps');
+        // navigation.navigate('Maps');
       }
     }
   };
@@ -77,33 +77,28 @@ const Login = ({ navigation }) => {
     /*JWT 로그인 구현 부분*/
     try {
       //API request
-      //let json = JSON.stringify({ email: emailInput, password: password });
       await axios
         .post('http://10.0.2.2:3000/account/signin', { email: emailInput, password: password })
         .then((res) => {
-          //jwt_token == res.data 인가??
-          /*
-          if (res.length 0) {
-            try {
-              AsyncStorage.setItem('auth_token', res.accessToken);
-              console.log(res + '응답');
-              setEmail(emailInput);
-              setUid(res.accessToken);
-              navigation.navigate('Maps');
-            } catch (error) {
-              throw new Error('로그인 실패');
-            }
-          } else {
-            //fail to login or no user
-            throw new Error('로그인 실패');
-            console.log(res);
-          }*/
-
           console.log(res.data);
+          if (res.data.status === 'SUCCESS') {
+            try {
+              AsyncStorage.setItem('auth_token', res.data.accessToken);
+              setEmail(emailInput);
+              setUid(res.data.accessToken);
+
+              // navigation.navigate('Main');
+            } catch (error) {
+              throw new Error(res.data.message);
+            }
+          } else if (res.data.status === 'FAILED') {
+            throw new Error(res.data.message);
+          }
         })
         .catch((error) => {
-          //Alert.alert('로그인 실패', '아이디 또는 비밀번호를 확인해주세요');
-          //Alert.alert(json);
+          // console.log(error);
+          // Alert.alert('로그인 실패', error);
+          throw new Error(error);
         });
       //spinner.start();
     } catch (e) {
