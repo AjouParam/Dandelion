@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
 import axios from 'axios';
+
 import userState from '@contexts/userState';
 
 const Container = styled.View`
@@ -135,6 +136,9 @@ const Signup = ({ navigation }) => {
             ]);
             break;
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
