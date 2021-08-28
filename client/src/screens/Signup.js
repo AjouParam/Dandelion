@@ -5,6 +5,7 @@ import { Image, Input, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
 import { Alert } from 'react-native';
+import axios from 'axios';
 
 import userState from '@contexts/userState';
 
@@ -110,10 +111,10 @@ const Signup = ({ navigation }) => {
     setNameValid(true);
   };
 
-  const signUp = (email, password, name, photoUrl) => {
+  const signUp = async (email, password, name) => {
     // API request
     await axios
-      .post('http://localhost:3000/account/signup/', {
+      .post('http://10.0.0.2:3000/account/signup/', {
         name: name,
         email: email,
         password: password,
@@ -134,13 +135,16 @@ const Signup = ({ navigation }) => {
             ]);
             break;
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
   const _handleSignupButtonPress = async () => {
     try {
       // spinner.start();
-      signUp(email, password, name, photoUrl);
+      signUp(email, password, name);
     } catch (e) {
       Alert.alert('회원가입 실패', e.message);
     } finally {
