@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { validateEmail, removeWhitespace } from '@utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Container = styled.View`
   flex: 1;
@@ -39,22 +40,24 @@ const Login = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   //앱 실행시 JWT 체크 후 자동 로그인?
-  // useLayoutEffect(() => {
-  //   //자동 로그인?
-  //   _loadInitialState();
-  // }, []);
+  useLayoutEffect(() => {
+    //자동 로그인?
+    _loadInitialState();
+  }, []);
 
-  // const _loadInitialState = async () => {
-  //   const value = await AsyncStorage.getItem('userToken');
-  //   if (value !== null) {
-  //     // check authentication from server
-  //     // if true
-  //     var temp_check = false;
-  //     if (temp_check) {
-  //       navigation.navigate('Maps');
-  //     }
-  //   }
-  // };
+  const _loadInitialState = async () => {
+    const value = await AsyncStorage.getItem('auth_token');
+    if (value !== null) {
+      // check authentication from server
+      if (true) {
+        let temp_check = false;
+      }
+      if (temp_check) {
+        setUid(value.accessToken);
+        navigation.navigate('Maps');
+      }
+    }
+  };
 
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));
@@ -74,33 +77,35 @@ const Login = ({ navigation }) => {
     /*JWT 로그인 구현 부분*/
     try {
       //API request
-      /*
-        await axios.post('api/login', { emailInput, password })
-          .then((res)=>{
-            //jwt_token == res.data 인가??
-
-            if(res.data){
-              try{
-                await AsyncStorage.setItem('auth_token', res.data.token);
-                navigation.navigate('Maps');
-              }
-              catch(error){
-                throw new Error('로그인 실패');
-              }
-            }
-            else{
-              //fail to login or no user
+      //let json = JSON.stringify({ email: emailInput, password: password });
+      await axios
+        .post('http://10.0.2.2:3000/account/signin', { email: emailInput, password: password })
+        .then((res) => {
+          //jwt_token == res.data 인가??
+          /*
+          if (res.length 0) {
+            try {
+              AsyncStorage.setItem('auth_token', res.accessToken);
+              console.log(res + '응답');
+              setEmail(emailInput);
+              setUid(res.accessToken);
+              navigation.navigate('Maps');
+            } catch (error) {
               throw new Error('로그인 실패');
             }
-          })
-          .catch(error=>{
-            Alert.alert('로그인 실패','아이디 또는 비밀번호를 확인해주세요');
-          })
-      */
+          } else {
+            //fail to login or no user
+            throw new Error('로그인 실패');
+            console.log(res);
+          }*/
+
+          console.log(res.data);
+        })
+        .catch((error) => {
+          //Alert.alert('로그인 실패', '아이디 또는 비밀번호를 확인해주세요');
+          //Alert.alert(json);
+        });
       //spinner.start();
-      setEmail(emailInput);
-      setUid(1);
-      Alert.alert(emailInput, password);
     } catch (e) {
       Alert.alert('로그인 에러', e.message);
     } finally {

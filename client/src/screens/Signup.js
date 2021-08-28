@@ -100,16 +100,18 @@ const Signup = ({ navigation }) => {
 
   const signup = ({ email, password, name, photoUrl }) => {
     // API request
-    /*
-    axios.post('api/signup', {email,password,name,photoUrl}).then(res=>{
-      if(res){
-        return true;
-      }
-      return false;
-    }).catch(error=>{
-      return false;
-    })
-    */
+
+    axios
+      .post('api/signup', { email, password, name, photoUrl })
+      .then((res) => {
+        if (res) {
+          return true;
+        }
+        return false;
+      })
+      .catch((error) => {
+        return false;
+      });
   };
 
   const _handleSignupButtonPress = async () => {
