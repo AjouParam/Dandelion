@@ -10,7 +10,7 @@ import { validateEmail, removeWhitespace } from '@utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import GoogleLoginButton from '@components/GoogleSignIn';
+import GoogleLoginButton from '@components/GoogleLoginButton';
 
 const Container = styled.View`
   flex: 1;

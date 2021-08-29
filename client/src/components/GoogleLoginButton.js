@@ -34,7 +34,7 @@ const GoogleLoginButton = () => {
         onPress={signIn}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
-        style={{ width: 100, height: 100 }}
+        style={{ width: '100%', height: 60 }}
       />
       {loaded ? (
         <Container>
@@ -42,9 +42,7 @@ const GoogleLoginButton = () => {
           <Text>{userGoogleInfo.user.email}</Text>
           <UserImage source={{ uri: userGoogleInfo.user.photo }} />
         </Container>
-      ) : (
-        <Text>Not SignedIn</Text>
-      )}
+      ) : null}
     </>
   );
 };
