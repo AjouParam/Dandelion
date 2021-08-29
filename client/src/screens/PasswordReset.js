@@ -90,17 +90,17 @@ const PasswordReset = ({ navigation }) => {
   const setNewPassword = () => {
     //TODO : /account/resetPwd
     try {
-      await axios
-        .post('http://10.0.2.2:3000/account/resetPwd', { email: email, password: passwordConfirm })
-        .then((res) => {
-          if (res.status === 'SUCCESS') {
-            setEmailSent(false);
-            setVerified(true);
-            Alert.alert('확인코드 전송', '입력하신 이메일로 확인코드를 전송하였습니다. 확인해주세요');
-          } else if (res.status === 'FAILED') {
-            throw new Error(res.data.message);
-          }
-        });
+      // await axios
+      //   .post('http://10.0.2.2:3000/account/resetPwd', { email: email, password: passwordConfirm })
+      //   .then((res) => {
+      //     if (res.status === 'SUCCESS') {
+      //       setEmailSent(false);
+      //       setVerified(true);
+      //       Alert.alert('확인코드 전송', '입력하신 이메일로 확인코드를 전송하였습니다. 확인해주세요');
+      //     } else if (res.status === 'FAILED') {
+      //       throw new Error(res.data.message);
+      //     }
+      //   });
     } catch (error) {
       Alert.alert('오류', error.message);
     }

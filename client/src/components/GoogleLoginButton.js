@@ -10,7 +10,7 @@ const UserImage = styled.Image`
 `;
 
 GoogleSignin.configure({
-  webClientId: '168048087924-47oefmegqonqth99jebqkkkc158kafit.apps.googleusercontent.com',
+  webClientId: '168048087924-9pvl2pd6hr6a394eplm2jpjf8jk7qs7s.apps.googleusercontent.com',
   offlineAccess: true,
 });
 
@@ -24,6 +24,7 @@ const GoogleLoginButton = () => {
       const userInfo = await GoogleSignin.signIn;
       await setUserGoogleInfo(userInfo);
       setLoaded(true);
+      console.log('success');
     } catch (error) {
       console.log(error.message);
     }
@@ -38,9 +39,9 @@ const GoogleLoginButton = () => {
       />
       {loaded ? (
         <Container>
-          <Text>{userGoogleInfo.user.name}</Text>
+          {/* <Text>{userGoogleInfo.user.name}</Text>
           <Text>{userGoogleInfo.user.email}</Text>
-          <UserImage source={{ uri: userGoogleInfo.user.photo }} />
+          <UserImage source={{ uri: userGoogleInfo.user.photo }} /> */}
         </Container>
       ) : null}
     </>
