@@ -52,6 +52,59 @@ const PasswordReset = ({ navigation }) => {
   const passwordConfirmRef = useRef();
 
   const insets = useSafeAreaInsets();
+
+  const sendEmail = async () => {
+    try {
+      await axios.post('http://10.0.2.2:3000/account/auth', { email: email }).then((res) => {
+        if (res.status === 'SUCCESS') {
+          setEmailSent(true);
+          Alert.alert('확인코드 전송', '입력하신 이메일로 확인코드를 전송하였습니다. 확인해주세요');
+        } else if (res.status === 'FAILED') {
+          throw new Error(res.data.message);
+        }
+      });
+    } catch (error) {
+      Alert.alert('오류', error.message);
+    }
+  };
+
+  const sendEmailVerifyCode = async () => {
+    //TODO : /account/verifyCode
+    try {
+      await axios
+        .post('http://10.0.2.2:3000/account/verifyCode', { email: email, verifyCode: verifyCode })
+        .then((res) => {
+          if (res.status === 'SUCCESS') {
+            setEmailSent(false);
+            setVerified(true);
+            Alert.alert('확인코드 전송', '입력하신 이메일로 확인코드를 전송하였습니다. 확인해주세요');
+          } else if (res.status === 'FAILED') {
+            throw new Error(res.data.message);
+          }
+        });
+    } catch (error) {
+      Alert.alert('오류', error.message);
+    }
+  };
+
+  const setNewPassword = () => {
+    //TODO : /account/resetPwd
+    try {
+      await axios
+        .post('http://10.0.2.2:3000/account/resetPwd', { email: email, password: passwordConfirm })
+        .then((res) => {
+          if (res.status === 'SUCCESS') {
+            setEmailSent(false);
+            setVerified(true);
+            Alert.alert('확인코드 전송', '입력하신 이메일로 확인코드를 전송하였습니다. 확인해주세요');
+          } else if (res.status === 'FAILED') {
+            throw new Error(res.data.message);
+          }
+        });
+    } catch (error) {
+      Alert.alert('오류', error.message);
+    }
+  };
   return (
     <Container insets={insets}>
       <FormContainer>
@@ -70,8 +123,7 @@ const PasswordReset = ({ navigation }) => {
             <Button
               title="전송"
               onPress={() => {
-                Alert.alert('TODO', '이메일 유효 검사 해야함~');
-                setEmailSent(true);
+                sendEmail();
               }}
               width="60px"
               height="40px"
@@ -91,9 +143,7 @@ const PasswordReset = ({ navigation }) => {
             <Button
               title="전송"
               onPress={() => {
-                Alert.alert('TODO', '이메일 유효 검사 해야함~');
-                setEmailSent(false);
-                setVerified(true);
+                sendEmailVerifyCode();
               }}
               width="60px"
               height="40px"
@@ -135,7 +185,7 @@ const PasswordReset = ({ navigation }) => {
         <Button
           title="변경"
           onPress={() => {
-            Alert.alert('변경');
+            setNewPassword();
           }}
         />
       </SubmitContainer>
