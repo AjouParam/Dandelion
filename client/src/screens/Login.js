@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import GoogleLoginButton from '@components/GoogleLoginButton';
-
+import decode from 'jwt-decode';
 const Container = styled.View`
   flex: 1;
   justify-content: center;
@@ -49,24 +49,18 @@ const Login = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   //앱 실행시 JWT 체크 후 자동 로그인?
-  // useLayoutEffect(() => {
-  //   //자동 로그인?
-  //   _loadInitialState();
-  // }, []);
+  useLayoutEffect(() => {
+    //자동 로그인?
+    _loadInitialState();
+  }, []);
 
-  // const _loadInitialState = async () => {
-  //   const value = await AsyncStorage.getItem('auth_token');
-  //   if (value !== null) {
-  //     // check authentication from server
-  //     if (true) {
-  //       let temp_check = false;
-  //     }
-  //     if (temp_check) {
-  //       setUid(value.accessToken);
-  //       // navigation.navigate('Maps');
-  //     }
-  //   }
-  // };
+  const _loadInitialState = async () => {
+    const value = await AsyncStorage.getItem('auth_token');
+    if (value !== null) {
+      const decoded = decode(value);
+      console.log(decoded);
+    }
+  };
 
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));

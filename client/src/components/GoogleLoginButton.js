@@ -10,7 +10,7 @@ const UserImage = styled.Image`
 `;
 
 GoogleSignin.configure({
-  webClientId: '47998835212-fn7597uf5chshrelctcps326isflu2si.apps.googleusercontent.com',
+  webClientId: '168048087924-47oefmegqonqth99jebqkkkc158kafit.apps.googleusercontent.com',
   offlineAccess: true,
 });
 

@@ -1,4 +1,4 @@
-package com.client;
+package com.client.dandelion;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
