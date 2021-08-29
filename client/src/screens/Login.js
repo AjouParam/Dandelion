@@ -29,14 +29,6 @@ const ErrorText = styled.Text`
   line-height: 20px;
   color: ${({ theme }) => theme.errorText};
 `;
-const ToolContainer = styled.View`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-`;
 
 const Login = ({ navigation }) => {
   const [emailInput, setEmailInput] = useState('');
@@ -138,18 +130,15 @@ const Login = ({ navigation }) => {
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
+        <Button
+          title="비밀번호 재설정"
+          onPress={() => navigation.navigate('PasswordReset')}
+          isFilled={false}
+          width="50%"
+        />
         <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
-
-        <ToolContainer>
-          <Button
-            title="비밀번호 재설정"
-            onPress={() => navigation.navigate('PasswordReset')}
-            isFilled={false}
-            width="50%"
-          />
-          <Button title="회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} width="50%" />
-        </ToolContainer>
         <GoogleLoginButton />
+        <Button title="회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} width="50%" />
       </Container>
     </KeyboardAwareScrollView>
   );
