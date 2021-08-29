@@ -10,6 +10,7 @@ import { validateEmail, removeWhitespace } from '@utils/common';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import GoogleLoginButton from '@components/GoogleSignIn';
 
 const Container = styled.View`
   flex: 1;
@@ -148,8 +149,7 @@ const Login = ({ navigation }) => {
           />
           <Button title="회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} width="50%" />
         </ToolContainer>
-
-        <Button title="Google 계정으로 로그인" onPress={() => Alert.alert('Google 연동')} isFilled={false} />
+        <GoogleLoginButton />
       </Container>
     </KeyboardAwareScrollView>
   );
