@@ -90,10 +90,10 @@ const Signup = ({ navigation }) => {
     if (email) {
       if (!validateEmail(email)) {
         setEmailValid(false);
-        setEmailButton(false);
+        setEmailButton(true);
       }
     } else {
-      setEmailButton(true);
+      setEmailButton(false);
     }
 
     if (didMountRef.current) {

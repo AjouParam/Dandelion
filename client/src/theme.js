@@ -26,6 +26,7 @@ export const theme = {
 
   // Button Component
   buttonBackground: colors.main,
+  buttonDisabledBackground: colors.grey_0,
   buttonTitle: colors.white,
   buttonUnfilledTitle: colors.main,
   buttonLogout: colors.red,
