@@ -23,7 +23,7 @@ const Container = styled.View`
   padding-bottom: ${({ insets: { bottom } }) => bottom + 30}px;
 `;
 const FormContainer = styled.View``;
-
+const SubFormContainer = styled.View``;
 const InputContainer = styled.View`
   display: flex;
   flex-direction: row;
@@ -43,8 +43,6 @@ const Signup = ({ navigation }) => {
   // const { dispatch } = useContext(UserContext);
   // const { spinner } = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
-  const [userName, setUserName] = useRecoilState(userState.nameState);
-  const [userEmail, setUserEmail] = useRecoilState(userState.emailState);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -61,6 +59,7 @@ const Signup = ({ navigation }) => {
   const [nameValid, setNameValid] = useState(false);
   const [emailButton, setEmailButton] = useState(true);
   const [emailValid, setEmailValid] = useState(false);
+  const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
@@ -73,20 +72,7 @@ const Signup = ({ navigation }) => {
     } else {
       setNameButton(true);
     }
-  }, [name]);
 
-  useEffect(() => {
-    if (email) {
-      if (!validateEmail(email)) {
-        setEmailValid(false);
-        setEmailButton(false);
-      }
-    } else {
-      setEmailButton(true);
-    }
-  }, [email]);
-
-  useEffect(() => {
     if (didMountRef.current) {
       let errorMessage_name = '';
       if (!name) {
@@ -101,6 +87,15 @@ const Signup = ({ navigation }) => {
   }, [name]);
 
   useEffect(() => {
+    if (email) {
+      if (!validateEmail(email)) {
+        setEmailValid(false);
+        setEmailButton(false);
+      }
+    } else {
+      setEmailButton(true);
+    }
+
     if (didMountRef.current) {
       let errorMessage_email = '';
       if (!validateEmail(email)) {
@@ -118,7 +113,7 @@ const Signup = ({ navigation }) => {
     if (didMountRef.current) {
       let errorMessage_pass = '';
       if (!validatePassword(password)) {
-        errorMessage_pass = '숫자,문자,특수문자 1개 이상 6자에서 16자';
+        errorMessage_pass = '영어, 숫자, 특수문자 포함 8자 이상을 입력하세요.';
       } else {
         errorMessage_pass = '';
       }
@@ -132,7 +127,7 @@ const Signup = ({ navigation }) => {
     if (didMountRef.current) {
       let errorMessage_passcof = '';
       if (!validatePassword(passwordConfirm)) {
-        errorMessage_passcof = '비밀번호가 맞지 않습니다.';
+        errorMessage_passcof = '비밀번호가 일치하지 않습니다.';
       } else {
         errorMessage_passcof = '';
       }
@@ -185,8 +180,6 @@ const Signup = ({ navigation }) => {
     password_errorMessage,
     passwordConfirm_errorMessage,
   ]);
-
-  useEffect(() => {}, [email]);
 
   const checkEmailDuplicate = () => {
     //TODO : API request
@@ -246,92 +239,94 @@ const Signup = ({ navigation }) => {
     // <KeyboardAwareScrollView extraScrollHeight={20} style={{ backgroundColor: '#ffffff' }}>
     <Container insets={insets}>
       <FormContainer>
-        <InputContainer>
-          <Input
-            label="닉네임"
-            value={name}
-            onChangeText={(text) => setName(text)}
-            onSubmitEditing={() => {
-              setName(name.trim());
-              emailRef.current.focus();
-            }}
-            onBlur={() => setName(name.trim())}
-            placeholder="닉네임"
-            returnKeyType="next"
-            width="250px"
-            height="50px"
-          />
+        <SubFormContainer>
+          <InputContainer>
+            <Input
+              ref={emailRef}
+              label="이메일"
+              value={email}
+              onChangeText={(text) => setEmail(removeWhitespace(text))}
+              onSubmitEditing={() => nameRef.current.focus()}
+              placeholder="이메일 주소"
+              returnKeyType="next"
+              width="250px"
+              height="50px"
+            />
 
-          <Button
-            title={nameValid ? '사용 가능' : '중복확인'}
-            onPress={() => {
-              //TODO : 닉네임 중복 체크
-              checkNameDuplicate();
-            }}
-            disabled={nameButton}
-            width="90px"
-            height="40px"
-          />
-        </InputContainer>
-        <ErrorText>{name_errorMessage}</ErrorText>
-
-        <InputContainer>
-          <Input
-            ref={emailRef}
-            label="이메일"
-            value={email}
-            onChangeText={(text) => setEmail(removeWhitespace(text))}
-            onSubmitEditing={() => passwordRef.current.focus()}
-            placeholder="이메일"
-            returnKeyType="next"
-            width="250px"
-            height="50px"
-          />
-
-          <Button
-            title={emailValid ? '사용 가능' : '중복확인'}
-            onPress={() => {
-              if (!validateEmail(email)) {
-                Alert.alert('유요하지 않는 이메일', '이메일을 다시 입력해주세요');
-              } else {
-                //TODO : 서버에서 이메일 중복 확인
-                checkEmailDuplicate();
+            <Button
+              title={emailValid ? '사용 가능' : '중복확인'}
+              onPress={() => {
+                if (!validateEmail(email)) {
+                  Alert.alert('유요하지 않는 이메일', '이메일을 다시 입력해주세요');
+                } else {
+                  //TODO : 서버에서 이메일 중복 확인
+                  checkEmailDuplicate();
+                  nameRef.current.focus();
+                }
+              }}
+              disabled={emailButton}
+              width="90px"
+              height="40px"
+            />
+          </InputContainer>
+          <ErrorText>{email_errorMessage}</ErrorText>
+          <InputContainer>
+            <Input
+              ref={nameRef}
+              label="닉네임"
+              value={name}
+              onChangeText={(text) => setName(text)}
+              onSubmitEditing={() => {
+                setName(name.trim());
                 passwordRef.current.focus();
-              }
-            }}
-            disabled={emailButton}
-            width="90px"
-            height="40px"
-          />
-        </InputContainer>
-        <ErrorText>{email_errorMessage}</ErrorText>
+              }}
+              onBlur={() => setName(name.trim())}
+              placeholder="닉네임을 입력하세요"
+              returnKeyType="next"
+              width="250px"
+              height="50px"
+            />
 
-        <Input
-          ref={passwordRef}
-          label="비밀번호"
-          value={password}
-          onChangeText={(text) => setPassword(removeWhitespace(text))}
-          onSubmitEditing={() => passwordConfirmRef.current.focus()}
-          placeholder="비밀번호"
-          returnKeyType="done"
-          isPassword
-          width="250px"
-          height="50px"
-        />
-        <ErrorText>{password_errorMessage}</ErrorText>
-        <Input
-          ref={passwordConfirmRef}
-          label="비밀번호 확인"
-          value={passwordConfirm}
-          onChangeText={(text) => setPasswordConfirm(removeWhitespace(text))}
-          onSubmitEditing={_handleSignupButtonPress}
-          placeholder="비밀번호 재입력"
-          returnKeyType="done"
-          isPassword
-          width="250px"
-          height="50px"
-        />
-        <ErrorText>{passwordConfirm_errorMessage}</ErrorText>
+            <Button
+              title={nameValid ? '사용 가능' : '중복확인'}
+              onPress={() => {
+                //TODO : 닉네임 중복 체크
+                checkNameDuplicate();
+                passwordRef.current.focus();
+              }}
+              disabled={nameButton}
+              width="90px"
+              height="40px"
+            />
+          </InputContainer>
+          <ErrorText>{name_errorMessage}</ErrorText>
+        </SubFormContainer>
+        <SubFormContainer>
+          <Input
+            ref={passwordRef}
+            label="비밀번호"
+            value={password}
+            onChangeText={(text) => setPassword(removeWhitespace(text))}
+            onSubmitEditing={() => passwordConfirmRef.current.focus()}
+            placeholder="영어, 숫자, 특수문자 포함 8자 이상"
+            returnKeyType="done"
+            isPassword
+            height="50px"
+          />
+          <ErrorText>{password_errorMessage}</ErrorText>
+          <Input
+            ref={passwordConfirmRef}
+            label="비밀번호 확인"
+            value={passwordConfirm}
+            onChangeText={(text) => setPasswordConfirm(removeWhitespace(text))}
+            onSubmitEditing={_handleSignupButtonPress}
+            placeholder="비밀번호 확인"
+            returnKeyType="done"
+            isPassword
+            height="50px"
+          />
+          <ErrorText>{passwordConfirm_errorMessage}</ErrorText>
+        </SubFormContainer>
       </FormContainer>
       <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
     </Container>
