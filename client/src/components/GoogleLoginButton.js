@@ -30,22 +30,7 @@ const GoogleLoginButton = () => {
       await setUserGoogleInfo(userInfo);
       setLoaded(true);
       console.log('success');
-      console.log(userInfo);
-      /*userInfo={
-        idToken:'',
-        scopes:['url'],
-        serverAuthCode:'',
-        user:{
-          email:'',
-          familyName:'',
-          givenName:'',
-          id:'',
-          name:'',
-          photo:'url'
-        }
-      }
 
-      */
       /***
        * {
        *    "idToken": "",
