@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
-import { Image, SignupInput, Button } from '@components';
+import { Image, SignupInput, SmallButton, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
@@ -16,7 +16,6 @@ const Container = styled.View`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-
   background-color: ${({ theme }) => theme.background};
   padding: 0 20px;
   padding-top: ${({ insets: { top } }) => top}px;
@@ -197,7 +196,7 @@ const Signup = ({ navigation }) => {
 
   const checkEmailDuplicate = () => {
     //TODO : API request
-    setEmailButton(true);
+    setEmailButton(false); //사용가능한경우 disable=true 버튼 블락 / disabled=false 버튼 활성화
     Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
     setEmailValid(true);
   };
@@ -268,7 +267,7 @@ const Signup = ({ navigation }) => {
               isRight={email_right}
             />
 
-            <Button
+            <SmallButton
               title={emailValid ? '사용 가능' : '중복확인'}
               onPress={() => {
                 if (!validateEmail(email)) {
@@ -279,6 +278,7 @@ const Signup = ({ navigation }) => {
                   nameRef.current.focus();
                 }
               }}
+              // disable=true 버튼 블락 / disabled=false 버튼 활성화
               disabled={emailButton}
               width="90px"
               height="40px"
@@ -294,6 +294,7 @@ const Signup = ({ navigation }) => {
               onSubmitEditing={() => {
                 setName(name.trim());
                 passwordRef.current.focus();
+                checkNameDuplicate();
               }}
               onBlur={() => setName(name.trim())}
               placeholder="닉네임을 입력하세요"
@@ -303,13 +304,14 @@ const Signup = ({ navigation }) => {
               isRight={name_right}
             />
 
-            <Button
+            <SmallButton
               title={nameValid ? '사용 가능' : '중복확인'}
               onPress={() => {
                 //TODO : 닉네임 중복 체크
                 checkNameDuplicate();
                 passwordRef.current.focus();
               }}
+              // disable=true 버튼 블락 / disabled=false 버튼 활성화
               disabled={nameButton}
               width="90px"
               height="40px"
