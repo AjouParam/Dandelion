@@ -1,4 +1,4 @@
-package com.client;
+package com.client.dandelion;
 
 import android.app.Application;
 import android.content.Context;

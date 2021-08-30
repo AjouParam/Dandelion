@@ -5,12 +5,15 @@ const colors = {
   grey_1: '#a6a6a6',
   red: '#e84118',
   blue: '#3679fe',
+  green: '#9CD3C8',
+  main: '#9CD3C8',
 };
 
 export const theme = {
   background: colors.white,
   text: colors.black,
   errorText: colors.red,
+  rightText: colors.green,
 
   // Image Component
   imageBackground: colors.grey_0,
@@ -24,14 +27,15 @@ export const theme = {
   inputDisabledBackground: colors.grey_0,
 
   // Button Component
-  buttonBackground: colors.blue,
+  buttonBackground: colors.main,
+  buttonDisabledBackground: colors.grey_0,
   buttonTitle: colors.white,
-  buttonUnfilledTitle: colors.blue,
+  buttonUnfilledTitle: colors.main,
   buttonLogout: colors.red,
 
   // Navigation
   headerTintColor: colors.black,
-  tabActiveColor: colors.blue,
+  tabActiveColor: colors.main,
   tabInactiveColor: colors.grey_1,
 
   // Spinner
@@ -45,6 +49,12 @@ export const theme = {
   listIcon: colors.black,
 
   // GiftedChat
-  sendButtonActivate: colors.blue,
+  sendButtonActivate: colors.main,
   sendButtonInactivate: colors.grey_1,
+
+  // SmallButton Component
+  abledText: colors.main,
+  disabledText: colors.grey_0,
+  abledBorder: colors.main,
+  disabledBorder: colors.grey_0,
 };

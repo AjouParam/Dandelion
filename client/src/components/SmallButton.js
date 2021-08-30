@@ -5,26 +5,26 @@ import PropTypes from 'prop-types';
 const TRANSPARENT = 'transparent';
 
 const Container = styled.TouchableOpacity`
-  background-color: ${({ theme, isFilled, disabled }) =>
-    disabled ? theme.buttonDisabledBackground : isFilled ? theme.buttonBackground : TRANSPARENT};
+  background-color: ${TRANSPARENT};
   align-items: center;
   justify-content:center;
   border-radius: 4px;
   width: ${(props) => props.width}
   height:${(props) => props.height}
   padding: 10px;
-  
   borderRadius:20px;
+  border:1px solid ${({ theme, disabled, isFilled }) =>
+    disabled ? theme.disabledBorder : isFilled ? theme.abledBorder : theme.disabledBorder};
 `;
 const Title = styled.Text`
   height: 30px;
   line-height: 30px;
   font-size: 16px;
-  color: ${({ theme, isFilled, fontColor }) =>
-    fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
+  color: ${({ theme, disabled, isFilled }) =>
+    disabled ? theme.disabledText : isFilled ? theme.abledText : theme.disabledText};
 `;
 
-const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, height, fontColor = null }) => {
+const SmallButton = ({ containerStyle, title, onPress, isFilled, disabled, width, height, fontColor = null }) => {
   return (
     <Container
       style={containerStyle}
@@ -34,18 +34,18 @@ const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, hei
       width={width ? width : '100%'}
       height={height ? height : '50px'}
     >
-      <Title isFilled={isFilled} fontColor={fontColor}>
+      <Title isFilled={isFilled} disabled={disabled} fontColor={fontColor}>
         {title}
       </Title>
     </Container>
   );
 };
 
-Button.defaultProps = {
+SmallButton.defaultProps = {
   isFilled: true,
 };
 
-Button.propTypes = {
+SmallButton.propTypes = {
   containerStyle: PropTypes.object,
   title: PropTypes.string,
   onPress: PropTypes.func.isRequired,
@@ -53,4 +53,4 @@ Button.propTypes = {
   disabled: PropTypes.bool,
 };
 
-export default Button;
+export default SmallButton;
