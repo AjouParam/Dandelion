@@ -12,13 +12,7 @@ const Label = styled.Text`
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 6px;
-  color: ${({ theme, isFocused, isRight }) => {
-    if (isFocused) {
-      return theme.text;
-    } else {
-      return isRight ? theme.label : theme.errorText;
-    }
-  }};
+  color: ${({ theme, isFocused }) => (isFocused ? theme.text : theme.label)};
 `;
 // color: ${({ theme, isFocused }) => (isFocused ? theme.text : theme.label)};
 const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
@@ -66,9 +60,7 @@ const SignupInput = forwardRef(
 
     return (
       <Container width={width ? width : '100%'} height={height ? height : '50px'}>
-        <Label isFocused={isFocused} isRight={isRight}>
-          {label}
-        </Label>
+        <Label isFocused={isFocused}>{label}</Label>
         <StyledTextInput
           ref={ref}
           isFocused={isFocused}
