@@ -19,10 +19,11 @@ const Title = styled.Text`
   height: 30px;
   line-height: 30px;
   font-size: 16px;
-  color: ${({ theme, isFilled }) => (isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle)};
+  color: ${({ theme, isFilled, fontColor }) =>
+    fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
 `;
 
-const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, height }) => {
+const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, height, fontColor = null }) => {
   return (
     <Container
       style={containerStyle}
@@ -32,7 +33,9 @@ const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, hei
       width={width ? width : '100%'}
       height={height ? height : '50px'}
     >
-      <Title isFilled={isFilled}>{title}</Title>
+      <Title isFilled={isFilled} fontColor={fontColor}>
+        {title}
+      </Title>
     </Container>
   );
 };
