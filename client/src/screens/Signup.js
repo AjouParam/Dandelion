@@ -50,7 +50,11 @@ const Signup = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [_errorMessage, setErrorMessage] = useState('');
+  const [name_errorMessage, setName_errorMessage] = useState('');
+  const [email_errorMessage, setEmail_errorMessage] = useState('');
+  const [password_errorMessage, setPassword_errorMessage] = useState('');
+  const [passwordConfirm_errorMessage, setPasswordConfirm_errorMessage] = useState('');
 
   const [disabled, setDisabled] = useState(true);
   const [nameButton, setNameButton] = useState(true);
@@ -70,6 +74,7 @@ const Signup = ({ navigation }) => {
       setNameButton(true);
     }
   }, [name]);
+
   useEffect(() => {
     if (email) {
       if (!validateEmail(email)) {
@@ -83,27 +88,103 @@ const Signup = ({ navigation }) => {
 
   useEffect(() => {
     if (didMountRef.current) {
-      let _errorMessage = '';
+      let errorMessage_name = '';
       if (!name) {
-        _errorMessage = '이름을 입력하세요';
-      } else if (!validateEmail(email)) {
-        _errorMessage = '이메일을 확인해주세요';
-      } else if (!validatePassword(password)) {
-        _errorMessage = '숫자,문자,특수문자 1개 이상 6자에서 16자';
-      } else if (password !== passwordConfirm) {
-        _errorMessage = '비밀번호가 맞지 않습니다.';
+        errorMessage_name = '이름을 입력하세요';
       } else {
-        _errorMessage = '';
+        errorMessage_name = '';
       }
-      setErrorMessage(_errorMessage);
+      setName_errorMessage(errorMessage_name);
     } else {
       didMountRef.current = true;
     }
-  }, [name, email, password, passwordConfirm]);
+  }, [name]);
 
   useEffect(() => {
-    setDisabled(!(name && email && password && passwordConfirm && !errorMessage && emailValid && nameValid));
-  }, [name, email, password, passwordConfirm, errorMessage, emailValid, nameValid]);
+    if (didMountRef.current) {
+      let errorMessage_email = '';
+      if (!validateEmail(email)) {
+        errorMessage_email = '이메일을 확인해주세요';
+      } else {
+        errorMessage_email = '';
+      }
+      setEmail_errorMessage(errorMessage_email);
+    } else {
+      didMountRef.current = true;
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (didMountRef.current) {
+      let errorMessage_pass = '';
+      if (!validatePassword(password)) {
+        errorMessage_pass = '숫자,문자,특수문자 1개 이상 6자에서 16자';
+      } else {
+        errorMessage_pass = '';
+      }
+      setPassword_errorMessage(errorMessage_pass);
+    } else {
+      didMountRef.current = true;
+    }
+  }, [password]);
+
+  useEffect(() => {
+    if (didMountRef.current) {
+      let errorMessage_passcof = '';
+      if (!validatePassword(passwordConfirm)) {
+        errorMessage_passcof = '비밀번호가 맞지 않습니다.';
+      } else {
+        errorMessage_passcof = '';
+      }
+      setPasswordConfirm_errorMessage(errorMessage_passcof);
+    } else {
+      didMountRef.current = true;
+    }
+  }, [passwordConfirm]);
+
+  // useEffect(() => {
+  //   if (didMountRef.current) {
+  //     let _errorMessage = '';
+  //     if (!name) {
+  //       _errorMessage = '이름을 입력하세요';
+  //     } else if (!validateEmail(email)) {
+  //       _errorMessage = '이메일을 확인해주세요';
+  //     } else if (!validatePassword(password)) {
+  //       _errorMessage = '숫자,문자,특수문자 1개 이상 6자에서 16자';
+  //     } else if (password !== passwordConfirm) {
+  //       _errorMessage = '비밀번호가 맞지 않습니다.';
+  //     } else {
+  //       _errorMessage = '';
+  //     }
+  //     setErrorMessage(_errorMessage);
+  //   } else {
+  //     didMountRef.current = true;
+  //   }
+  // }, [name, email, password, passwordConfirm]);
+
+  useEffect(() => {
+    setDisabled(
+      !(
+        name &&
+        email &&
+        password &&
+        passwordConfirm &&
+        !name_errorMessage &&
+        !email_errorMessage &&
+        !password_errorMessage &&
+        !passwordConfirm_errorMessage
+      ),
+    );
+  }, [
+    name,
+    email,
+    password,
+    passwordConfirm,
+    name_errorMessage,
+    email_errorMessage,
+    password_errorMessage,
+    passwordConfirm_errorMessage,
+  ]);
 
   useEffect(() => {}, [email]);
 
@@ -180,6 +261,7 @@ const Signup = ({ navigation }) => {
             width="250px"
             height="50px"
           />
+
           <Button
             title={nameValid ? '사용 가능' : '중복확인'}
             onPress={() => {
@@ -191,6 +273,7 @@ const Signup = ({ navigation }) => {
             height="40px"
           />
         </InputContainer>
+        <ErrorText>{name_errorMessage}</ErrorText>
 
         <InputContainer>
           <Input
@@ -221,6 +304,7 @@ const Signup = ({ navigation }) => {
             height="40px"
           />
         </InputContainer>
+        <ErrorText>{email_errorMessage}</ErrorText>
 
         <Input
           ref={passwordRef}
@@ -234,6 +318,7 @@ const Signup = ({ navigation }) => {
           width="250px"
           height="50px"
         />
+        <ErrorText>{password_errorMessage}</ErrorText>
         <Input
           ref={passwordConfirmRef}
           label="비밀번호 확인"
@@ -246,7 +331,7 @@ const Signup = ({ navigation }) => {
           width="250px"
           height="50px"
         />
-        <ErrorText>{errorMessage}</ErrorText>
+        <ErrorText>{passwordConfirm_errorMessage}</ErrorText>
       </FormContainer>
       <Button title="회원가입" onPress={_handleSignupButtonPress} disabled={disabled} />
     </Container>
