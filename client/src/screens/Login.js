@@ -41,13 +41,19 @@ const ErrorText = styled.Text`
   line-height: 20px;
   color: ${({ theme }) => theme.errorText};
 `;
+const LoginButtonContainer = styled.View`
+  width: 100%;
+  margin-top: 10px;
+  align-items: center;
+`;
 const ResetPasswordContainer = styled.View`
   width: 100%;
   display: flex;
+
   flex-direction: row;
   justify-content: flex-end;
-  margin-bottom: 10px;
-  margin-top: 0;
+  margin-bottom: 30px;
+  margin-top: -20px;
 `;
 const JoinContainer = styled.View`
   flex: 1;
@@ -56,6 +62,7 @@ const JoinContainer = styled.View`
   align-items: flex-end;
   margin-bottom: 40px;
 `;
+
 const Login = ({ navigation }) => {
   const [emailInput, setEmailInput] = useState('');
   const [password, setPassword] = useState('');
@@ -158,12 +165,16 @@ const Login = ({ navigation }) => {
             title="비밀번호 재설정"
             onPress={() => navigation.navigate('PasswordReset')}
             isFilled={false}
+            fontColor="#9E9E9E"
             width="50%"
+            height="16px"
           />
         </ResetPasswordContainer>
         {/* <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} /> */}
-        <Button title="로그인" onPress={_handleLoginButtonPress} radius="25px" />
-        <GoogleLoginButton />
+        <LoginButtonContainer>
+          <Button title="로그인" onPress={_handleLoginButtonPress} radius="25px" ifFilled={true} width="300px" />
+          <GoogleLoginButton />
+        </LoginButtonContainer>
         <JoinContainer>
           <Text>아직 민들레 회원이 아니신가요?</Text>
           <Button

@@ -4,10 +4,10 @@ import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google
 
 const Container = styled.View`
   align-items: center;
-  padding: 10px 10px;
-  border-radius: 25px;
+  width: 300px;
+  margin-top: 10px;
 `;
-const Text = styled.Text``;
+
 const UserImage = styled.Image`
   margin: 10px;
   width: 100;
@@ -66,21 +66,21 @@ const GoogleLoginButton = () => {
     }
   };
   return (
-    <>
+    <Container>
       <GoogleSigninButton
         onPress={signIn}
         size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Light}
         style={{ width: '100%', height: 60 }}
       />
-      {loaded ? (
-        <Container>
+      {/* {loaded ? (
+        <>
           <Text>{userGoogleInfo.user.name}</Text>
           <Text>{userGoogleInfo.user.email}</Text>
           <UserImage source={{ uri: userGoogleInfo.user.photo }} />
-        </Container>
-      ) : null}
-    </>
+        </>
+      ) : null} */}
+    </Container>
   );
 };
 export default GoogleLoginButton;
