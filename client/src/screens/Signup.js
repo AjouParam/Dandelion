@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
-import { Image, Input, Button } from '@components';
+import { Image, SignupInput, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
@@ -44,41 +44,49 @@ const Signup = ({ navigation }) => {
   // const { spinner } = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
 
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   // const [_errorMessage, setErrorMessage] = useState('');
-  const [name_errorMessage, setName_errorMessage] = useState('');
+
+  const [name_errorMessage, setName_errorMessage] = useState('이름을 입력하세요');
   const [email_errorMessage, setEmail_errorMessage] = useState('');
   const [password_errorMessage, setPassword_errorMessage] = useState('');
   const [passwordConfirm_errorMessage, setPasswordConfirm_errorMessage] = useState('');
+
+  const [name_right, setNameRight] = useState(false);
+  const [email_right, setEmailRight] = useState(false);
+  const [pass_right, setPassRight] = useState(false);
+  const [passcon_right, setPassConRight] = useState(false);
 
   const [disabled, setDisabled] = useState(true);
   const [nameButton, setNameButton] = useState(true);
   const [nameValid, setNameValid] = useState(false);
   const [emailButton, setEmailButton] = useState(true);
   const [emailValid, setEmailValid] = useState(false);
-  const nameRef = useRef();
+
   const emailRef = useRef();
+  const nameRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
 
   const didMountRef = useRef();
-
+  //초기 마운트 될 때에는 useState변수에 변화가 없으므로 useEffect 동작 안함
   useEffect(() => {
     if (name) {
       setNameButton(false);
     } else {
       setNameButton(true);
     }
-
     if (didMountRef.current) {
       let errorMessage_name = '';
-      if (!name) {
+      if (name === '') {
         errorMessage_name = '이름을 입력하세요';
+        setNameRight(false);
       } else {
         errorMessage_name = '';
+        setNameRight(true);
       }
       setName_errorMessage(errorMessage_name);
     } else {
@@ -90,18 +98,20 @@ const Signup = ({ navigation }) => {
     if (email) {
       if (!validateEmail(email)) {
         setEmailValid(false);
-        setEmailButton(true);
+        setEmailButton(false);
       }
     } else {
-      setEmailButton(false);
+      setEmailButton(true);
     }
 
     if (didMountRef.current) {
       let errorMessage_email = '';
       if (!validateEmail(email)) {
         errorMessage_email = '이메일을 확인해주세요';
+        setEmailRight(false);
       } else {
         errorMessage_email = '';
+        setEmailRight(true);
       }
       setEmail_errorMessage(errorMessage_email);
     } else {
@@ -114,8 +124,10 @@ const Signup = ({ navigation }) => {
       let errorMessage_pass = '';
       if (!validatePassword(password)) {
         errorMessage_pass = '영어, 숫자, 특수문자 포함 8자 이상을 입력하세요.';
+        setPassRight(false);
       } else {
         errorMessage_pass = '';
+        setPassRight(true);
       }
       setPassword_errorMessage(errorMessage_pass);
     } else {
@@ -128,8 +140,10 @@ const Signup = ({ navigation }) => {
       let errorMessage_passcof = '';
       if (!validatePassword(passwordConfirm)) {
         errorMessage_passcof = '비밀번호가 일치하지 않습니다.';
+        setPassConRight(false);
       } else {
         errorMessage_passcof = '';
+        setPassConRight(true);
       }
       setPasswordConfirm_errorMessage(errorMessage_passcof);
     } else {
@@ -164,8 +178,8 @@ const Signup = ({ navigation }) => {
         email &&
         password &&
         passwordConfirm &&
-        !name_errorMessage &&
         !email_errorMessage &&
+        !name_errorMessage &&
         !password_errorMessage &&
         !passwordConfirm_errorMessage
       ),
@@ -241,7 +255,7 @@ const Signup = ({ navigation }) => {
       <FormContainer>
         <SubFormContainer>
           <InputContainer>
-            <Input
+            <SignupInput
               ref={emailRef}
               label="이메일"
               value={email}
@@ -251,6 +265,7 @@ const Signup = ({ navigation }) => {
               returnKeyType="next"
               width="250px"
               height="50px"
+              isRight={email_right}
             />
 
             <Button
@@ -271,7 +286,7 @@ const Signup = ({ navigation }) => {
           </InputContainer>
           <ErrorText>{email_errorMessage}</ErrorText>
           <InputContainer>
-            <Input
+            <SignupInput
               ref={nameRef}
               label="닉네임"
               value={name}
@@ -285,6 +300,7 @@ const Signup = ({ navigation }) => {
               returnKeyType="next"
               width="250px"
               height="50px"
+              isRight={name_right}
             />
 
             <Button
@@ -302,7 +318,7 @@ const Signup = ({ navigation }) => {
           <ErrorText>{name_errorMessage}</ErrorText>
         </SubFormContainer>
         <SubFormContainer>
-          <Input
+          <SignupInput
             ref={passwordRef}
             label="비밀번호"
             value={password}
@@ -312,9 +328,10 @@ const Signup = ({ navigation }) => {
             returnKeyType="done"
             isPassword
             height="50px"
+            isRight={pass_right}
           />
           <ErrorText>{password_errorMessage}</ErrorText>
-          <Input
+          <SignupInput
             ref={passwordConfirmRef}
             label="비밀번호 확인"
             value={passwordConfirm}
@@ -324,6 +341,7 @@ const Signup = ({ navigation }) => {
             returnKeyType="done"
             isPassword
             height="50px"
+            isRight={passcon_right}
           />
           <ErrorText>{passwordConfirm_errorMessage}</ErrorText>
         </SubFormContainer>
