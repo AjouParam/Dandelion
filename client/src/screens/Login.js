@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
-// import { ProgressContext, UserContext } from '@contexts';
+import { Text } from 'react-native';
 import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components/native';
@@ -12,12 +12,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import GoogleLoginButton from '@components/GoogleLoginButton';
 import decode from 'jwt-decode';
+import { logo } from '../assets/index';
+const ImageContainer = styled.View`
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+`;
+const Logo = styled.Image`
+  width: 240px;
+  height: 240px;
+`;
 const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.background};
-  padding: 0 20px;
+  padding: 0 30px;
   padding-top: ${({ insets: { top } }) => top}px;
   padding-bottom: ${({ insets: { bottom } }) => bottom}px;
 `;
@@ -29,7 +41,21 @@ const ErrorText = styled.Text`
   line-height: 20px;
   color: ${({ theme }) => theme.errorText};
 `;
-
+const ResetPasswordContainer = styled.View`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  margin-top: 0;
+`;
+const JoinContainer = styled.View`
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: 40px;
+`;
 const Login = ({ navigation }) => {
   const [emailInput, setEmailInput] = useState('');
   const [password, setPassword] = useState('');
@@ -105,6 +131,9 @@ const Login = ({ navigation }) => {
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} extraScrollHeight={20}>
       <Container insets={insets}>
+        <ImageContainer>
+          <Logo source={logo} resizeMode="contain" />
+        </ImageContainer>
         <Input
           label="이메일"
           value={emailInput}
@@ -124,15 +153,27 @@ const Login = ({ navigation }) => {
           isPassword
         />
         <ErrorText>{errorMessage}</ErrorText>
-        <Button
-          title="비밀번호 재설정"
-          onPress={() => navigation.navigate('PasswordReset')}
-          isFilled={false}
-          width="50%"
-        />
-        <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} />
+        <ResetPasswordContainer>
+          <Button
+            title="비밀번호 재설정"
+            onPress={() => navigation.navigate('PasswordReset')}
+            isFilled={false}
+            width="50%"
+          />
+        </ResetPasswordContainer>
+        {/* <Button title="로그인" onPress={_handleLoginButtonPress} disabled={disabled} /> */}
+        <Button title="로그인" onPress={_handleLoginButtonPress} radius="25px" />
         <GoogleLoginButton />
-        <Button title="회원가입" onPress={() => navigation.navigate('Signup')} isFilled={false} width="50%" />
+        <JoinContainer>
+          <Text>아직 민들레 회원이 아니신가요?</Text>
+          <Button
+            title="회원가입"
+            onPress={() => navigation.navigate('Signup')}
+            isFilled={false}
+            width="100px"
+            height="16px"
+          />
+        </JoinContainer>
       </Container>
     </KeyboardAwareScrollView>
   );

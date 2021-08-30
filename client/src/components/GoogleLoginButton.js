@@ -5,6 +5,7 @@ import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google
 const Container = styled.View`
   align-items: center;
   padding: 10px 10px;
+  border-radius: 25px;
 `;
 const Text = styled.Text``;
 const UserImage = styled.Image`
@@ -57,7 +58,7 @@ const GoogleLoginButton = () => {
        *      "id": "103518316964689714707",
        *      "name": "승균",
        *      "photo": "https://lh3.googleusercontent.com/a/AATXAJwM5cLCU5K6-4zus0tYCmZTq-6er6bv9Bd7k0JC=s96-c"
-       *    }
+       *  }
        * }
        */
     } catch (error) {

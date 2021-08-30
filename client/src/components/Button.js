@@ -13,6 +13,7 @@ const Container = styled.TouchableOpacity`
   height:${(props) => props.height}
   padding: 10px;
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  borderRadius:20px;
 `;
 const Title = styled.Text`
   height: 30px;
