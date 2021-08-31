@@ -77,25 +77,20 @@ const Login = ({ navigation }) => {
 
   //앱 실행시 JWT 체크 후 자동 로그인?
   useLayoutEffect(() => {
-    //자동 로그인?
+    const _loadInitialState = async () => {
+      try {
+        const value = await AsyncStorage.getItem('token');
+        if (value !== null) {
+          const userData = decode(value);
+          setUid(value);
+          setEmail(userData.email);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
     _loadInitialState();
   }, []);
-
-  const _loadInitialState = async () => {
-    try {
-      const value = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(value);
-      if (userData !== null) {
-        console.log(userData);
-        console.log(userData.token);
-        console.log(userData.email);
-        setUid(userData.token);
-        setEmail(userData.email);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));
@@ -122,12 +117,10 @@ const Login = ({ navigation }) => {
           console.log(res.data);
           if (res.data.status === 'SUCCESS') {
             try {
-              // AsyncStorage.setItem('auth_token', res.data.accessToken);
-              AsyncStorage.setItem('userData', JSON.stringify({ token: res.data.accessToken, email: emailInput }));
-              setEmail(emailInput);
+              AsyncStorage.setItem('token', res.data.accessToken);
+              const userData = decode(res.data.accessToken);
+              setEmail(userData.email);
               setUid(res.data.accessToken);
-
-              // navigation.navigate('Main');
             } catch (error) {
               throw new Error(res.data.message);
             }
