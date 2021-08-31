@@ -82,10 +82,18 @@ const Login = ({ navigation }) => {
   }, []);
 
   const _loadInitialState = async () => {
-    const value = await AsyncStorage.getItem('auth_token');
-    if (value !== null) {
-      const decoded = decode(value);
-      console.log(decoded);
+    try {
+      const value = await AsyncStorage.getItem('userData');
+      const userData = JSON.parse(value);
+      if (userData !== null) {
+        console.log(userData);
+        console.log(userData.token);
+        console.log(userData.email);
+        setUid(userData.token);
+        setEmail(userData.email);
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -114,7 +122,8 @@ const Login = ({ navigation }) => {
           console.log(res.data);
           if (res.data.status === 'SUCCESS') {
             try {
-              AsyncStorage.setItem('auth_token', res.data.accessToken);
+              // AsyncStorage.setItem('auth_token', res.data.accessToken);
+              AsyncStorage.setItem('userData', JSON.stringify({ token: res.data.accessToken, email: emailInput }));
               setEmail(emailInput);
               setUid(res.data.accessToken);
 
