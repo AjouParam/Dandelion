@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import axios from 'axios';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Input, Button } from '@components';
+import { validatePassword } from '@utils/common';
 
 const Container = styled.View`
   flex: 1;
@@ -65,10 +66,14 @@ const PasswordReset = ({ navigation }) => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    if (passwordConfirm && password !== passwordConfirm) {
-      setPwdErrorMessage('비밀번호가 다릅니다. 다시 확인해주세요.');
+    if (!validatePassword(password)) {
+      setPwdErrorMessage('영어, 숫자, 특수문자 포함 8자 이상을 입력하세요.');
     } else {
-      setPwdErrorMessage('');
+      if (password && passwordConfirm && password !== passwordConfirm) {
+        setPwdErrorMessage('비밀번호가 다릅니다. 다시 확인해주세요.');
+      } else {
+        setPwdErrorMessage('');
+      }
     }
   }, [password, passwordConfirm]);
 
