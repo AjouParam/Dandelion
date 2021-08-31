@@ -75,23 +75,6 @@ const Login = ({ navigation }) => {
   // const {spinner} = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
 
-  //앱 실행시 JWT 체크 후 자동 로그인?
-  useLayoutEffect(() => {
-    const _loadInitialState = async () => {
-      try {
-        const value = await AsyncStorage.getItem('token');
-        if (value !== null) {
-          const userData = decode(value);
-          setUid(value);
-          setEmail(userData.email);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    _loadInitialState();
-  }, []);
-
   useEffect(() => {
     setDisabled(!(emailInput && password && !errorMessage));
   }, [emailInput, password, errorMessage]);
