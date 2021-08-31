@@ -52,6 +52,7 @@ const PasswordReset = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [verifyCode, setVerifyCode] = useState('');
+  const [verifyCount, setVerifyCount] = useState(0);
   //TODO : 전송 -> CHECK -> verifyCode입력 -> 이메일, 인증번호 전송, 확인 -> check -> 새 비밀번호 입력 -> 이메일, 새 비밀번호 전송
   const [emailSent, setEmailSent] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -109,9 +110,25 @@ const PasswordReset = ({ navigation }) => {
               },
             ]);
           } else if (res.data.status === 'FAILED') {
-            Alert.alert('오류', '입력코드가 틀렸습니다. 다시 시도해주세요.');
-            setEmailSent(false);
-            setEmail('');
+            if (verifyCount < 5) {
+              Alert.alert('인증 코드 불일치', '입증코드가 틀렸습니다. 다시 시도해주세요.');
+              setVerifyCount((prevCount) => prevCount + 1);
+            } else {
+              Alert.alert(
+                '시도 횟수 초과',
+                '인증 코드 입력 제한 횟수 (5회)를 초과하였습니다. 처음부터 다시 시도해주세요',
+                [
+                  {
+                    text: '확인',
+                    onPress: () => {
+                      setEmailSent(false);
+                      setVerifyCode('');
+                      setEmail('');
+                    },
+                  },
+                ],
+              );
+            }
           }
         });
     } catch (error) {
@@ -211,13 +228,7 @@ const PasswordReset = ({ navigation }) => {
               onChangeText={(text) => {
                 setPasswordConfirm(text);
               }}
-              onSubmitEditing={() => {
-                if (passwordConfirm !== password) {
-                  Alert.alert('실패', '비밀번호를 확인해주세요.');
-                } else {
-                  setNewPassword();
-                }
-              }}
+              onSubmitEditing={() => {}}
               placeholder="비밀번호 확인"
               returnKeyType="done"
               isPassword
@@ -228,12 +239,18 @@ const PasswordReset = ({ navigation }) => {
         )}
       </FormContainer>
       <SubmitContainer>
-        <Button
-          title="변경"
-          onPress={() => {
-            setNewPassword();
-          }}
-        />
+        {verified && (
+          <Button
+            title="변경"
+            onPress={() => {
+              if (!password || !passwordConfirm || passwordConfirm !== password) {
+                Alert.alert('실패', '비밀번호를 확인해주세요.');
+              } else {
+                setNewPassword();
+              }
+            }}
+          />
+        )}
       </SubmitContainer>
     </Container>
   );
