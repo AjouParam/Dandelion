@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MainTab from './MainTab';
+// import MainTab from './MainTab';
+import Maps from '../screens/Maps';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +21,7 @@ const MainStack = () => {
       }}
     >
       {/* <Stack.Screen name="Main" component={Map} /> */}
-      <Stack.Screen name="Main" component={MainTab} />
+      <Stack.Screen name="Main" component={Maps} options={{headerShown: false}}/>
     </Stack.Navigator>
   );
 };

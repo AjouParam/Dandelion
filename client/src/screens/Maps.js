@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { Button, Image } from '@components';
-import { Platform, PermissionsAndroid, View, Text } from 'react-native';
+import { Platform, PermissionsAndroid, View, Text,StyleSheet } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 
 const Container = styled.View`
@@ -28,6 +28,7 @@ const requestPermission = async () => {
 
 const Maps = () => {
   const [location, setLocation] = useState();
+  const [mapWidth,setMapWidth]=useState('99%');
   useEffect(() => {
     requestPermission().then((result) => {
       console.log({ result });
@@ -56,17 +57,33 @@ const Maps = () => {
       </View>
     );
   }
+  const updateMapStyle=()=>{
+    setMapWidth('100%');
+  };
+  const styles = StyleSheet.create({
+    map: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    },
+  });
+
+
   return (
     <Container>
       <MapView
-        style={{ flex: 1 }}
+        style={[styles.map, { width: mapWidth }]}
         provider={PROVIDER_GOOGLE}
         showsUserLocation={true}
+        showsMyLocationButton={true}
         initialRegion={{
           latitude: 37.28301,
           longitude: 127.04343,
           latitudeDelta: 0.0001,
           longitudeDelta: 0.003,
+        }}
+        onMapReady={()=>{
+          updateMapStyle()
         }}
       >
         <Marker
