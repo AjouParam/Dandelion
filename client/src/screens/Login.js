@@ -13,6 +13,7 @@ import axios from 'axios';
 import GoogleLoginButton from '@components/GoogleLoginButton';
 import decode from 'jwt-decode';
 import { logo } from '../assets/index';
+
 const ImageContainer = styled.View`
   display: flex;
   flex: 2;
@@ -71,6 +72,7 @@ const Login = ({ navigation }) => {
   const [disabled, setDisabled] = useState(true);
   const [email, setEmail] = useRecoilState(userState.emailState);
   const [uid, setUid] = useRecoilState(userState.uidState);
+  // const {spinner} = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
 
   //앱 실행시 JWT 체크 후 자동 로그인?
@@ -104,6 +106,7 @@ const Login = ({ navigation }) => {
   const _handleLoginButtonPress = async () => {
     /*JWT 로그인 구현 부분*/
     try {
+      //spinner.start();
       //API request
       await axios
         .post('http://10.0.2.2:3000/account/signin', { email: emailInput, password: password })

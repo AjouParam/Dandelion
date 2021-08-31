@@ -16,15 +16,20 @@ const Container = styled.TouchableOpacity`
   
   borderRadius:20px;
 `;
+
 const Title = styled.Text`
   height: 30px;
   line-height: 30px;
-  font-size: 16px;
+  font-size:${({fontSize})=>fontSize}px;
+
   color: ${({ theme, isFilled, fontColor }) =>
     fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
 `;
 
-const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, height, fontColor = null }) => {
+
+
+const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, height, fontColor = null,fontSize='16'}) => {
+  
   return (
     <Container
       style={containerStyle}
@@ -34,7 +39,7 @@ const Button = ({ containerStyle, title, onPress, isFilled, disabled, width, hei
       width={width ? width : '100%'}
       height={height ? height : '50px'}
     >
-      <Title isFilled={isFilled} fontColor={fontColor}>
+      <Title isFilled={isFilled} fontColor={fontColor} fontSize={fontSize} >
         {title}
       </Title>
     </Container>

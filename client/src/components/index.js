@@ -4,4 +4,6 @@ import Button from './Button';
 import Spinner from './Spinner';
 import SignupInput from './SignupInput';
 import SmallButton from './SmallButton';
-export { Image, Input, Button, SignupInput, SmallButton, Spinner };
+import ImageButton from './ImageButton';
+
+export { Image, Input, Button, SignupInput, SmallButton, ImageButton, Spinner };

@@ -14,8 +14,8 @@ const Navigation = () => {
   return (
     <NavigationContainer>
       
-      {/* {uid && email ? <MainStack /> : <AuthStack />} ㄴㅔ비게이션 편집을 위해 임시 주석*/}
-      <MainStack/>
+      {uid && email ? <MainStack /> : <AuthStack />} 
+      {/* <MainStack/> */}
       {inProgress && <Spinner />}
     </NavigationContainer>
   );

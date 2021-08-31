@@ -5,17 +5,23 @@ import PropTypes from 'prop-types';
 const TRANSPARENT = 'transparent';
 
 const Container = styled.TouchableOpacity`
-  background-color: ${({ theme, isFilled, disabled }) =>
-    disabled ? theme.buttonDisabledBackground : isFilled ? theme.buttonBackground : TRANSPARENT};
+  background-color: ${TRANSPARENT};
   align-items: center;
   justify-content:center;
-  border-radius: 4px;
+  border-radius: px;
   width: ${(props) => props.width}
   height:${(props) => props.height}
   padding: 10px;
-  
-  borderRadius:20px;
+  borderRadius:50px;
 `;
+//흰색 바탕 이미지
+const StyledImage = styled.Image`
+  background-color: #ffffff; 
+  width: 60px;
+  height: 60px;
+  border-radius: ${({ rounded }) => (rounded ? 50 : 0)}px;
+`;
+
 const Title = styled.Text`
   height: 30px;
   line-height: 30px;
@@ -24,7 +30,7 @@ const Title = styled.Text`
     fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
 `;
 
-const Button = ({ containerStyle, src, onPress, isFilled, disabled, width, height }) => {
+const ImageButton = ({ containerStyle, src, onPress, isFilled, disabled, width, height,rounded}) => {
   return (
     <Container
       style={containerStyle}
@@ -34,21 +40,22 @@ const Button = ({ containerStyle, src, onPress, isFilled, disabled, width, heigh
       width={width ? width : '100%'}
       height={height ? height : '50px'}
     >
-      <Image source={require({src})}/>
+      
+    <StyledImage source={src} rounded={rounded} />
+
     </Container>
   );
 };
 
-Button.defaultProps = {
+ImageButton.defaultProps = {
   isFilled: true,
 };
 
-Button.propTypes = {
+ImageButton.propTypes = {
   containerStyle: PropTypes.object,
-  title: PropTypes.string,
   onPress: PropTypes.func.isRequired,
   isFilled: PropTypes.bool,
   disabled: PropTypes.bool,
 };
 
-export default Button;
+export default ImageButton;

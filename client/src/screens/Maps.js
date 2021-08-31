@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import { Button, Image } from '@components';
+import { Button, ImageButton } from '@components';
 import { Platform, PermissionsAndroid, View, Text,StyleSheet } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-
+import { profile,button} from '../assets/index';
 const Container = styled.View`
   flex: 1;
 `;
@@ -107,8 +107,9 @@ const Maps = () => {
           onPress={() => {
             //TODO : 민들레 심기
           }}
-          width="100px"
-          height="40px"
+          width="200px"
+          height="60px"
+          fontSize='25'
         />
       </View>
       {/*왼쪽 프로필 이미지*/}
@@ -119,7 +120,7 @@ const Maps = () => {
           alignSelf: 'flex-start',
         }}
       >
-        <Image showButton rounded />
+        <ImageButton src={profile} onPress={()=>{}}rounded />
       </View>
 
       <View
@@ -129,7 +130,7 @@ const Maps = () => {
           alignSelf: 'flex-end',
         }}
       >
-        <Image showButton rounded />
+        <ImageButton src={button} onPress ={()=>{}} rounded />
       </View>
     </Container>
   );
