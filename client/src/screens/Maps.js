@@ -85,6 +85,7 @@ const Maps = () => {
         onMapReady={()=>{
           updateMapStyle()
         }}
+        // mapPadding={{top: 20, right: 20, bottom: 550, left: 20}}
       >
         <Marker
           coordinate={{ latitude: 37.28301, longitude: 127.04343 }}
