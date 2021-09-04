@@ -21,8 +21,16 @@ const Navigation = () => {
         const value = await AsyncStorage.getItem('token');
         if (value !== null) {
           const userData = decode(value);
-          setUid(value);
-          setEmail(userData.email);
+          const todayUTC = new Date().getTime() / 1000;
+          const expUTC = userData.exp;
+          console.log(expUTC - todayUTC);
+          if (expUTC - todayUTC <= 0) {
+            //expired
+            await AsyncStorage.removeItem('token');
+          } else {
+            setUid(value);
+            setEmail(userData.email);
+          }
         }
       } catch (e) {
         console.log(e);
