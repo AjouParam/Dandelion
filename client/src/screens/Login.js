@@ -102,7 +102,7 @@ const Login = ({ navigation }) => {
             try {
               AsyncStorage.setItem('token', res.data.accessToken);
               const userData = decode(res.data.accessToken);
-              setEmail(userData.email);
+              setEmail(emailInput); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
               setUid(res.data.accessToken);
             } catch (error) {
               throw new Error(res.data.message);
