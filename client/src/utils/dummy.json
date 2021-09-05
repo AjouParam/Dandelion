@@ -30,7 +30,8 @@
       "title": "사용자 근처",
       "description": "테스트용 마커4",
       "src": "mindle1",
-      "radius": 30
+      "radius": 30,
+      "overlap": false
     },
     {
       "latitude": 37.28156975715485,

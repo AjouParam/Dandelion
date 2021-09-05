@@ -36,6 +36,7 @@ const Button = ({
   height,
   fontColor = null,
   fontSize = '16px',
+  backgroundcolor,
 }) => {
   return (
     <Container
@@ -45,6 +46,7 @@ const Button = ({
       disabled={disabled}
       width={width ? width : '100%'}
       height={height ? height : '50px'}
+      backgroundcolor={backgroundcolor}
     >
       <Title isFilled={isFilled} fontColor={fontColor} fontSize={fontSize}>
         {title}

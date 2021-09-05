@@ -13,42 +13,56 @@ const Container = styled.View`
 const StyledText = styled.Text`
   font-size: 16px;
 `;
-const Markers = ({ dummy, location }) => {
+
+const Markers = ({ dummy, location, setBtnToggle }) => {
+  const [mindles, setMindles] = useState([]);
+  setBtnToggle(false);
   useEffect(() => {
-    console.log('MapView 랜더링 완료');
+    const distance = (mindlePOS, currnetPOS) => {
+      return (
+        Math.sqrt(
+          Math.pow(mindlePOS.latitude - currnetPOS.latitude, 2) +
+            Math.pow(mindlePOS.longitude - currnetPOS.longitude, 2),
+        ) <
+        0.00001 * mindlePOS.radius
+      );
+    };
+
+    const mindleList = dummy.data.map((props) => {
+      if (distance(props, location)) {
+        setBtnToggle(true);
+        console.log('버튼변경');
+      }
+      return {
+        latitude: props.latitude,
+        longitude: props.longitude,
+        title: props.title,
+        description: props.description,
+        src: props.src,
+        radius: props.radius,
+        overlap: distance(props, location),
+      };
+    });
+    //console.log(mindleList);
+    // console.log(dummy.data);
+    setMindles(mindleList);
+    // console.log('Mindles', mindles);
+
+    //console.log('MapView 랜더링 완료');
   }, [location]);
-  return dummy.data.map((props) => {
-    if (
-      Math.sqrt(Math.pow(props.latitude - location.latitude, 2) + Math.pow(props.longitude - location.longitude, 2)) <
-      0.00001 * props.radius
-    ) {
-      return (
-        <Mindle
-          latitude={props.latitude}
-          longitude={props.longitude}
-          title={props.title}
-          description={props.description}
-          src={mindle1}
-          radius={props.radius}
-          overlap={true}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-      );
-    } else {
-      return (
-        <Mindle
-          latitude={props.latitude}
-          longitude={props.longitude}
-          title={props.title}
-          description={props.description}
-          src={mindle1}
-          radius={props.radius}
-          overlap={false}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-      );
-    }
-  });
+
+  return mindles.map((props) => (
+    <Mindle
+      latitude={props.latitude}
+      longitude={props.longitude}
+      title={props.title}
+      description={props.description}
+      src={mindle1}
+      radius={props.radius}
+      overlap={props.overlap}
+      onPress={() => Alert.alert('민들레 터치 정상')}
+    />
+  ));
 };
 const requestPermission = async () => {
   try {
@@ -81,6 +95,7 @@ const Maps = ({ navigation }) => {
     latitudeDelta: 0.0001,
     longitudeDelta: 0.003,
   });
+  const [btnToggle, setBtnToggle] = useState();
 
   // if (!location) {
   //   return (
@@ -148,7 +163,7 @@ const Maps = ({ navigation }) => {
           onRegionChange(currnet);
         }}
       >
-        <Markers dummy={dummy} location={location} />
+        <Markers dummy={dummy} location={location} setBtnToggle={setBtnToggle} />
       </MapView>
       <View
         style={{
@@ -158,16 +173,29 @@ const Maps = ({ navigation }) => {
         }}
       >
         {/*버튼 컴포넌트 */}
-        <Button
-          title={'민들레 심기'}
-          onPress={() => {
-            //TODO : 민들레 심기
-            Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
-          }}
-          width="200px"
-          height="60px"
-          fontSize="25px"
-        />
+        {btnToggle ? (
+          <Button
+            title={'민들레 입장'}
+            onPress={() => {
+              //TODO : 민들레 심기
+              Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+            }}
+            width="200px"
+            height="60px"
+            fontSize="25px"
+          />
+        ) : (
+          <Button
+            title={'민들레 심기'}
+            onPress={() => {
+              //TODO : 민들레 심기
+              Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+            }}
+            width="200px"
+            height="60px"
+            fontSize="25px"
+          />
+        )}
       </View>
       {/*왼쪽 프로필 이미지*/}
       <View
