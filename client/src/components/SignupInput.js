@@ -24,7 +24,7 @@ const StyledTextInput = styled.TextInput.attrs(({ theme }) => ({
   font-size: 16px;
   border-radius: 2px;
   border-bottom-width: 2px;
-  border-color: ${({ theme }) => theme.text};
+  border-color: ${({ theme }) => theme.inputBorder};
 `;
 
 // border-color: ${({ theme, isFocused, isRight }) => {
