@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "latitude": 37.2833633,
+      "longitude": 127.0462105,
+      "title": "아주대학교",
+      "description": "테스트용_마커1",
+      "src": "mindle1",
+      "radius": 30
+    },
+    {
+      "latitude": 37.280675,
+      "longitude": 127.044,
+      "title": "아주대학교",
+      "description": "테스트용 마커2",
+      "src": "mindle1",
+      "radius": 50
+    },
+    {
+      "latitude": 37.2819531026684,
+      "longitude": 127.0414169691503,
+      "title": "사용자 근처",
+      "description": "테스트용 마커3",
+      "src": "mindle1",
+      "radius": 30
+    },
+    {
+      "latitude": 37.284387047692945,
+      "longitude": 127.04558646306396,
+      "title": "사용자 근처",
+      "description": "테스트용 마커4",
+      "src": "mindle1",
+      "radius": 30
+    },
+    {
+      "latitude": 37.28156975715485,
+      "longitude": 127.04407369717956,
+      "title": "사용자 근처",
+      "description": "테스트용 마커5",
+      "src": "mindle1",
+      "radius": 30
+    },
+    {
+      "latitude": 37.281438240116124,
+      "longitude": 127.0426038466394,
+      "title": "사용자 근처",
+      "description": "테스트용 마커6",
+      "src": "mindle1",
+      "radius": 30
+    }
+  ]
+}

@@ -6,13 +6,50 @@ import { Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'rea
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
 
+import dummy from '../utils/dummy.json';
 const Container = styled.View`
   flex: 1;
 `;
 const StyledText = styled.Text`
   font-size: 16px;
 `;
-
+const Markers = ({ dummy, location }) => {
+  useEffect(() => {
+    console.log('MapView 랜더링 완료');
+  }, [location]);
+  return dummy.data.map((props) => {
+    if (
+      Math.sqrt(Math.pow(props.latitude - location.latitude, 2) + Math.pow(props.longitude - location.longitude, 2)) <
+      0.00001 * props.radius
+    ) {
+      return (
+        <Mindle
+          latitude={props.latitude}
+          longitude={props.longitude}
+          title={props.title}
+          description={props.description}
+          src={mindle1}
+          radius={props.radius}
+          overlap={true}
+          onPress={() => Alert.alert('민들레 터치 정상')}
+        />
+      );
+    } else {
+      return (
+        <Mindle
+          latitude={props.latitude}
+          longitude={props.longitude}
+          title={props.title}
+          description={props.description}
+          src={mindle1}
+          radius={props.radius}
+          overlap={false}
+          onPress={() => Alert.alert('민들레 터치 정상')}
+        />
+      );
+    }
+  });
+};
 const requestPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
@@ -111,62 +148,8 @@ const Maps = ({ navigation }) => {
           onRegionChange(currnet);
         }}
       >
-        <Mindle
-          latitude={37.28301}
-          longitude={127.04343}
-          title="아주대학교"
-          description="테스트용 마커1"
-          src={mindle1}
-          radius={30}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-        <Mindle
-          latitude={37.280675}
-          longitude={127.044}
-          title="아주대학교"
-          description="테스트용 마커2"
-          src={mindle1}
-          radius={50}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-        <Mindle
-          latitude={37.2819531026684}
-          longitude={127.0414169691503}
-          title="사용자 근처"
-          description="테스트용 마커3"
-          src={mindle1}
-          radius={30}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-        <Mindle
-          latitude={37.284387047692945}
-          longitude={127.04558646306396}
-          title="사용자 근처"
-          description="테스트용 마커4"
-          src={mindle1}
-          radius={30}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-        <Mindle
-          latitude={37.28156975715485}
-          longitude={127.04407369717956}
-          title="사용자 근처"
-          description="테스트용 마커5"
-          src={mindle1}
-          radius={30}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
-        <Mindle
-          latitude={37.281438240116124}
-          longitude={127.0426038466394}
-          title="사용자 근처"
-          description="테스트용 마커6"
-          src={mindle1}
-          radius={30}
-          onPress={() => Alert.alert('민들레 터치 정상')}
-        />
+        <Markers dummy={dummy} location={location} />
       </MapView>
-
       <View
         style={{
           position: 'absolute', //use absolute position to show button on top of the map
