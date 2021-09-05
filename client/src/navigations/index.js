@@ -27,6 +27,7 @@ const Navigation = () => {
           if (expUTC - todayUTC <= 0) {
             //expired
             await AsyncStorage.removeItem('token');
+            //이후 토큰 갱신 코드 저장
           } else {
             setUid(value);
             setEmail(userData.email);

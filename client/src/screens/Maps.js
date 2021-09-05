@@ -126,7 +126,7 @@ const Maps = ({ navigation }) => {
           title="아주대학교"
           description="테스트용 마커2"
           src={mindle1}
-          radius={30}
+          radius={50}
           onPress={() => Alert.alert('민들레 터치 정상')}
         />
         <Mindle
