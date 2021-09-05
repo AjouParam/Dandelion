@@ -12,7 +12,7 @@ const Mindle = ({ latitude, longitude, radius, src, title, description, onPress 
         fillColor={'rgba(230,238,255,0.5)'}
       />
       <Marker
-        coordinate={{ latitude: latitude - 0.0002, longitude: longitude }}
+        coordinate={{ latitude: latitude, longitude: longitude }}
         title={title}
         description={description}
         onPress={onPress}

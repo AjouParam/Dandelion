@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { Image, SignupInput, SmallButton, Button } from '@components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { validateEmail, removeWhitespace, validatePassword } from '@utils/common';
+import { validateEmail, removeWhitespace, validatePassword, validateName } from '@utils/common';
 import { Alert } from 'react-native';
 import axios from 'axios';
 
@@ -49,7 +49,7 @@ const Signup = ({ navigation }) => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   // const [_errorMessage, setErrorMessage] = useState('');
 
-  const [name_errorMessage, setName_errorMessage] = useState('이름을 입력하세요');
+  const [name_errorMessage, setName_errorMessage] = useState('');
   const [email_errorMessage, setEmail_errorMessage] = useState('');
   const [password_errorMessage, setPassword_errorMessage] = useState('');
   const [passwordConfirm_errorMessage, setPasswordConfirm_errorMessage] = useState('');
@@ -71,28 +71,11 @@ const Signup = ({ navigation }) => {
   const passwordConfirmRef = useRef();
 
   const didMountRef = useRef();
-
-  useEffect(() => {
-    if (name) {
-      setNameButton(false);
-    } else {
-      setNameButton(true);
-    }
-    //TODO : 닉네임 정규표현식 적용. 정규 표현식 만족하지 않았을때 에러메세지
-    if (didMountRef.current) {
-      let errorMessage_name = '';
-      if (name === '') {
-        errorMessage_name = '이름을 입력하세요';
-        setNameRight(false);
-      } else {
-        errorMessage_name = '';
-        setNameRight(true);
-      }
-      setName_errorMessage(errorMessage_name);
-    } else {
-      didMountRef.current = true;
-    }
-  }, [name]);
+  const [emailClick, setEmailClick] = useState(false);
+  const [nameClick, setNameClick] = useState(false);
+  const [passClick, setPassClick] = useState(false);
+  const [passConClick, setPassConClick] = useState(false);
+  //초기 마운트 될 때에는 useState변수에 변화가 없으므로 useEffect 동작 안함
 
   useEffect(() => {
     if (email) {
@@ -104,7 +87,7 @@ const Signup = ({ navigation }) => {
       setEmailButton(true);
     }
 
-    if (didMountRef.current) {
+    if (emailClick) {
       let errorMessage_email = '';
       if (email && !validateEmail(email)) {
         errorMessage_email = '이메일을 확인해주세요';
@@ -115,12 +98,33 @@ const Signup = ({ navigation }) => {
       }
       setEmail_errorMessage(errorMessage_email);
     } else {
-      didMountRef.current = true;
+      setEmailClick(true);
     }
   }, [email]);
 
   useEffect(() => {
-    if (didMountRef.current) {
+    if (name) {
+      setNameButton(false);
+    } else {
+      setNameButton(true);
+    }
+    if (nameClick) {
+      let errorMessage_name = '';
+      if (!validateName(name)) {
+        errorMessage_name = '이름을 확인해주세요';
+        setNameRight(false);
+      } else {
+        errorMessage_name = '';
+        setNameRight(true);
+      }
+      setName_errorMessage(errorMessage_name);
+    } else {
+      setNameClick(true);
+    }
+  }, [name]);
+
+  useEffect(() => {
+    if (passClick) {
       let errorMessage_pass = '';
       if (password && !validatePassword(password)) {
         errorMessage_pass = '영어, 숫자, 특수문자 포함 8자 이상을 입력하세요.';
@@ -131,12 +135,12 @@ const Signup = ({ navigation }) => {
       }
       setPassword_errorMessage(errorMessage_pass);
     } else {
-      didMountRef.current = true;
+      setPassClick(true);
     }
   }, [password]);
 
   useEffect(() => {
-    if (didMountRef.current) {
+    if (passConClick) {
       let errorMessage_passcof = '';
       if (passwordConfirm && !validatePassword(passwordConfirm)) {
         errorMessage_passcof = '비밀번호가 일치하지 않습니다.';
@@ -147,7 +151,7 @@ const Signup = ({ navigation }) => {
       }
       setPasswordConfirm_errorMessage(errorMessage_passcof);
     } else {
-      didMountRef.current = true;
+      setPassConClick(true);
     }
   }, [passwordConfirm]);
 
