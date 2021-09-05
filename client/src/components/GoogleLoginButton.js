@@ -22,7 +22,6 @@ const GoogleLoginButton = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo.idToken);
       try {
         await axios.post('http://10.0.2.2:3000/account/google', userInfo.idToken).then((res) => {
           if (res.data.status === 'SUCCESS') {
