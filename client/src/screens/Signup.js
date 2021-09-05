@@ -71,13 +71,14 @@ const Signup = ({ navigation }) => {
   const passwordConfirmRef = useRef();
 
   const didMountRef = useRef();
-  //초기 마운트 될 때에는 useState변수에 변화가 없으므로 useEffect 동작 안함
+
   useEffect(() => {
     if (name) {
       setNameButton(false);
     } else {
       setNameButton(true);
     }
+    //TODO : 닉네임 정규표현식 적용. 정규 표현식 만족하지 않았을때 에러메세지
     if (didMountRef.current) {
       let errorMessage_name = '';
       if (name === '') {
@@ -105,7 +106,7 @@ const Signup = ({ navigation }) => {
 
     if (didMountRef.current) {
       let errorMessage_email = '';
-      if (!validateEmail(email)) {
+      if (email && !validateEmail(email)) {
         errorMessage_email = '이메일을 확인해주세요';
         setEmailRight(false);
       } else {
@@ -121,7 +122,7 @@ const Signup = ({ navigation }) => {
   useEffect(() => {
     if (didMountRef.current) {
       let errorMessage_pass = '';
-      if (!validatePassword(password)) {
+      if (password && !validatePassword(password)) {
         errorMessage_pass = '영어, 숫자, 특수문자 포함 8자 이상을 입력하세요.';
         setPassRight(false);
       } else {
@@ -137,7 +138,7 @@ const Signup = ({ navigation }) => {
   useEffect(() => {
     if (didMountRef.current) {
       let errorMessage_passcof = '';
-      if (!validatePassword(passwordConfirm)) {
+      if (passwordConfirm && !validatePassword(passwordConfirm)) {
         errorMessage_passcof = '비밀번호가 일치하지 않습니다.';
         setPassConRight(false);
       } else {
@@ -149,26 +150,6 @@ const Signup = ({ navigation }) => {
       didMountRef.current = true;
     }
   }, [passwordConfirm]);
-
-  // useEffect(() => {
-  //   if (didMountRef.current) {
-  //     let _errorMessage = '';
-  //     if (!name) {
-  //       _errorMessage = '이름을 입력하세요';
-  //     } else if (!validateEmail(email)) {
-  //       _errorMessage = '이메일을 확인해주세요';
-  //     } else if (!validatePassword(password)) {
-  //       _errorMessage = '숫자,문자,특수문자 1개 이상 6자에서 16자';
-  //     } else if (password !== passwordConfirm) {
-  //       _errorMessage = '비밀번호가 맞지 않습니다.';
-  //     } else {
-  //       _errorMessage = '';
-  //     }
-  //     setErrorMessage(_errorMessage);
-  //   } else {
-  //     didMountRef.current = true;
-  //   }
-  // }, [name, email, password, passwordConfirm]);
 
   useEffect(() => {
     setDisabled(
@@ -207,7 +188,6 @@ const Signup = ({ navigation }) => {
   };
 
   const signUp = async (email, password, name) => {
-    // API request
     await axios
       .post('http://10.0.2.2:3000/account/signup/', {
         name: name,
