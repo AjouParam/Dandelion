@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import decode from 'jwt-decode';
+import { Alert } from 'react-native';
 
 const Container = styled.View`
   align-items: center;
   width: 300px;
   margin-top: 10px;
-`;
-
-const UserImage = styled.Image`
-  margin: 10px;
-  width: 100;
-  height: 100;
 `;
 
 GoogleSignin.configure({
@@ -20,17 +18,29 @@ GoogleSignin.configure({
 });
 
 const GoogleLoginButton = () => {
-  const [userGoogleInfo, setUserGoogleInfo] = useState({});
-  const [loaded, setLoaded] = useState(false);
-
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      await setUserGoogleInfo(userInfo);
-      setLoaded(true);
-      console.log('success');
 
+      try {
+        axios.post('http://10.0.2.2:3000/account/google', userInfo.idToken).then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            try {
+              AsyncStorage.setItem('token', res.data.accessToken);
+              const userData = decode(res.data.accessToken);
+              setEmail(userData.email); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
+              setUid(res.data.accessToken);
+            } catch (error) {
+              Alert.alert('로그인 실패', '구글 계정 로그인에 실패하였습니다. 다시 시도해주세요');
+            }
+          } else if (res.data.status === 'FAILED') {
+            Alert.alert('로그인 실패', '구글 계정 인증에 실패하였습니다. 다시 시도해주세요');
+          }
+        });
+      } catch (err) {
+        Alert.alert('로그인 실패', '서버와의 통신에 실패하였습니다. 잠시 후 다시 시도해주세요.');
+      }
       /***
        * {
        *    "idToken": "",
@@ -47,7 +57,7 @@ const GoogleLoginButton = () => {
        * }
        */
     } catch (error) {
-      console.log(error.message);
+      Alert.alert('로그인 실패', '구글 계정 로그인에 실패하였습니다. 다시 시도해주세요.');
     }
   };
   return (
@@ -58,13 +68,6 @@ const GoogleLoginButton = () => {
         color={GoogleSigninButton.Color.Light}
         style={{ width: '100%', height: 60 }}
       />
-      {/* {loaded ? (
-        <>
-          <Text>{userGoogleInfo.user.name}</Text>
-          <Text>{userGoogleInfo.user.email}</Text>
-          <UserImage source={{ uri: userGoogleInfo.user.photo }} />
-        </>
-      ) : null} */}
     </Container>
   );
 };
