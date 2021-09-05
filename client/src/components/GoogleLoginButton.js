@@ -22,14 +22,14 @@ const GoogleLoginButton = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-
+      console.log(userInfo.idToken);
       try {
-        axios.post('http://10.0.2.2:3000/account/google', userInfo.idToken).then((res) => {
+        await axios.post('http://10.0.2.2:3000/account/google', userInfo.idToken).then((res) => {
           if (res.data.status === 'SUCCESS') {
             try {
               AsyncStorage.setItem('token', res.data.accessToken);
               const userData = decode(res.data.accessToken);
-              setEmail(userData.email); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
+              setEmail(userData.email);
               setUid(res.data.accessToken);
             } catch (error) {
               Alert.alert('로그인 실패', '구글 계정 로그인에 실패하였습니다. 다시 시도해주세요');
@@ -41,25 +41,11 @@ const GoogleLoginButton = () => {
       } catch (err) {
         Alert.alert('로그인 실패', '서버와의 통신에 실패하였습니다. 잠시 후 다시 시도해주세요.');
       }
-      /***
-       * {
-       *    "idToken": "",
-       *    "scopes": ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
-       *    "serverAuthCode": "4/0AX4XfWgg8SuZfxQO7MIkHciUnXKQ0XNxnnRvBFYC60aIL8zi8_oACrIAOLfx3wG9ikUjzw",
-       *    "user": {
-       *      "email": "dmstmdrbs98@gmail.com",
-       *      "familyName": null,
-       *      "givenName": "승균",
-       *      "id": "103518316964689714707",
-       *      "name": "승균",
-       *      "photo": "https://lh3.googleusercontent.com/a/AATXAJwM5cLCU5K6-4zus0tYCmZTq-6er6bv9Bd7k0JC=s96-c"
-       *  }
-       * }
-       */
     } catch (error) {
       Alert.alert('로그인 실패', '구글 계정 로그인에 실패하였습니다. 다시 시도해주세요.');
     }
   };
+
   return (
     <Container>
       <GoogleSigninButton
