@@ -180,7 +180,7 @@ const PasswordReset = ({ navigation }) => {
           />
           {!emailSent && !verified && (
             <Button
-              title="전송"
+              title="찾기"
               onPress={() => {
                 sendEmail();
               }}
