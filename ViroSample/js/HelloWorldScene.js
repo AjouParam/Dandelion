@@ -2,20 +2,15 @@
 
 import React, { Component } from 'react';
 
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {
-  ViroScene,
-  ViroText,
-  Viro360Image,
-} from 'react-viro';
+import { ViroScene, ViroText, Viro360Image } from 'react-viro';
 
 export default class HelloWorldScene extends Component {
-
   constructor() {
     super();
 
-    this.state = {} // Set initial state here
+    this.state = {}; // Set initial state here
   }
 
   render() {
@@ -26,7 +21,6 @@ export default class HelloWorldScene extends Component {
       </ViroScene>
     );
   }
-
 }
 
 var styles = StyleSheet.create({
@@ -35,7 +29,7 @@ var styles = StyleSheet.create({
     fontSize: 60,
     color: '#ffffff',
     textAlignVertical: 'center',
-    textAlign: 'center',  
+    textAlign: 'center',
   },
 });
 
