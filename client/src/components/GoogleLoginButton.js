@@ -5,6 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import decode from 'jwt-decode';
 import { Alert } from 'react-native';
+import userState from '@contexts/userState';
 
 const Container = styled.View`
   align-items: center;
@@ -18,6 +19,8 @@ GoogleSignin.configure({
 });
 
 const GoogleLoginButton = () => {
+  const [email, setEmail] = useRecoilState(userState.emailState);
+  const [uid, setUid] = useRecoilState(userState.uidState);
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
