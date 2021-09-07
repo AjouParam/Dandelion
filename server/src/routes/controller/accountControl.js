@@ -228,7 +228,7 @@ const account = {
             Verify.sendGmail({
               toEmail: email,
               subject: `안녕하세요. ${data[0].name}님 민들레입니다.`,
-              text: `<h1 style="color: #5e9ca0;">안녕하세요! <span style="color: #2b2301;">${
+              html: `<h1 style="color: #5e9ca0;">안녕하세요! <span style="color: #2b2301;">${
                 data[0].name
               }님</span> 민들레 입니다!</h1>
               <h2 >추억을 기록하고 공유하는 소셜 네트워크 서비스 <span style="color: #5e9ca0;">민들레</span></h2>

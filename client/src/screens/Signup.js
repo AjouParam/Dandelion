@@ -188,11 +188,11 @@ const Signup = ({ navigation }) => {
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
           setEmailButton(true); //사용가능한경우 disable=true 버튼 블락 / disabled=false 버튼 활성화
-          Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
+          Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.', error);
           setEmailValid(true);
           nameRef.current.focus();
         } else if (res.data.status === 'FAILED') {
-          Alert.alert('이메일 중복 확인', '이미 가입된 이메일입니다.');
+          Alert.alert('이메일 중복 확인', '이미 가입된 이메일입니다.', error);
           setEmail('');
           setEmailValid(false);
         }
