@@ -20,6 +20,8 @@ GoogleSignin.configure({
 });
 
 const GoogleLoginButton = () => {
+  const [email, setEmail] = useRecoilState(userState.emailState);
+  const [uid, setUid] = useRecoilState(userState.uidState);
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
