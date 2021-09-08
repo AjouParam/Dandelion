@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
@@ -14,56 +14,6 @@ const StyledText = styled.Text`
   font-size: 16px;
 `;
 
-const Markers = ({ dummy, location, setBtnToggle }) => {
-  const [mindles, setMindles] = useState([]);
-  setBtnToggle(false);
-  useEffect(() => {
-    const distance = (mindlePOS, currnetPOS) => {
-      return (
-        Math.sqrt(
-          Math.pow(mindlePOS.latitude - currnetPOS.latitude, 2) +
-            Math.pow(mindlePOS.longitude - currnetPOS.longitude, 2),
-        ) <
-        0.00001 * mindlePOS.radius
-      );
-    };
-
-    const mindleList = dummy.data.map((props) => {
-      if (distance(props, location)) {
-        setBtnToggle(true);
-        console.log('버튼변경');
-      }
-      return {
-        latitude: props.latitude,
-        longitude: props.longitude,
-        title: props.title,
-        description: props.description,
-        src: props.src,
-        radius: props.radius,
-        overlap: distance(props, location),
-      };
-    });
-    //console.log(mindleList);
-    // console.log(dummy.data);
-    setMindles(mindleList);
-    // console.log('Mindles', mindles);
-
-    //console.log('MapView 랜더링 완료');
-  }, [location]);
-
-  return mindles.map((props) => (
-    <Mindle
-      latitude={props.latitude}
-      longitude={props.longitude}
-      title={props.title}
-      description={props.description}
-      src={mindle1}
-      radius={props.radius}
-      overlap={props.overlap}
-      onPress={() => Alert.alert('민들레 터치 정상')}
-    />
-  ));
-};
 const requestPermission = async () => {
   try {
     if (Platform.OS === 'ios') {
@@ -80,6 +30,7 @@ const requestPermission = async () => {
 
 const Maps = ({ navigation }) => {
   const [mapWidth, setMapWidth] = useState('99%');
+  //현재 사용자 위치
   const [location, setLocation] = useState({
     accuracy: 20,
     altitude: 0,
@@ -104,32 +55,63 @@ const Maps = ({ navigation }) => {
   //     </View>
   //   );
   // }
+  const [mindles, setMindles] = useState([]);
   useEffect(() => {
-    requestPermission().then((result) => {
-      console.log({ result });
-      if (result === 'granted') {
-        Geolocation.getCurrentPosition(
-          (pos) => {
-            setLocation(pos.coords);
-            setRegion({
-              latitude: pos.coords.latitude + 0.0015,
-              longitude: pos.coords.longitude,
-              latitudeDelta: 0.0001,
-              longitudeDelta: 0.003,
-            });
-            console.log('My_Current', location, pos.coords);
-          },
-          (error) => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 3600,
-            maximumAge: 3600,
-          },
-        );
+    const _watchId = Geolocation.watchPosition(
+      (position) => {
+        setLocation(position.coords);
+        // console.log('positon.coords', position.coords);
+        setRegion({
+          latitude: position.coords.latitude + 0.0015,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0001,
+          longitudeDelta: 0.003,
+        });
+        const distance = (mindlePOS, currnetPOS) => {
+          return (
+            Math.sqrt(
+              Math.pow(mindlePOS.latitude - currnetPOS.latitude, 2) +
+                Math.pow(mindlePOS.longitude - currnetPOS.longitude, 2),
+            ) <
+            0.00001 * mindlePOS.radius
+          );
+        };
+        //dummy는 가상 데이터
+        const mindleList = dummy.data.map((props) => {
+          // console.log('positon.coords2', position.coords);
+          if (distance(props, position.coords)) {
+            setBtnToggle(true);
+            console.log('버튼변경');
+          }
+          return {
+            latitude: props.latitude,
+            longitude: props.longitude,
+            title: props.title,
+            description: props.description,
+            src: props.src,
+            radius: props.radius,
+            overlap: distance(props, position.coords),
+          };
+        });
+        //console.log(mindleList);
+        // console.log(dummy.data);
+        setMindles(mindleList);
+        // console.log(mindleList);
+      },
+      (error) => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        distanceFilter: 10,
+      },
+    );
+
+    return () => {
+      if (_watchId) {
+        Geolocation.clearWatch(_watchId);
       }
-    });
+    };
   }, []);
 
   const updateMapStyle = () => {
@@ -163,7 +145,20 @@ const Maps = ({ navigation }) => {
           onRegionChange(currnet);
         }}
       >
-        <Markers dummy={dummy} location={location} setBtnToggle={setBtnToggle} />
+        {mindles.map((props) => {
+          return (
+            <Mindle
+              latitude={props.latitude}
+              longitude={props.longitude}
+              title={props.title}
+              description={props.description}
+              src={mindle1}
+              radius={props.radius}
+              overlap={props.overlap}
+              onPress={() => Alert.alert('민들레 터치 정상')}
+            />
+          );
+        })}
       </MapView>
       <View
         style={{

@@ -159,7 +159,9 @@ const Signup = ({ navigation }) => {
     setDisabled(
       !(
         name &&
+        nameValid &&
         email &&
+        emailValid &&
         password &&
         passwordConfirm &&
         !email_errorMessage &&
@@ -179,16 +181,46 @@ const Signup = ({ navigation }) => {
     passwordConfirm_errorMessage,
   ]);
 
-  const checkEmailDuplicate = () => {
+  const checkEmailDuplicate = async () => {
     //TODO : API request
-    setEmailButton(false); //사용가능한경우 disable=true 버튼 블락 / disabled=false 버튼 활성화
-    Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
-    setEmailValid(true);
+    await axios
+      .post('http://10.0.2.2:3000/account/checkEmail', { email: email })
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          setEmailButton(true); //사용가능한경우 disable=true 버튼 블락 / disabled=false 버튼 활성화
+          Alert.alert('이메일 중복 확인', '사용할 수 있는 이메일 입니다.');
+          setEmailValid(true);
+          nameRef.current.focus();
+        } else if (res.data.status === 'FAILED') {
+          Alert.alert('이메일 중복 확인', '이미 가입된 이메일입니다.');
+          setEmail('');
+          setEmailValid(false);
+        }
+      })
+      .catch((err) => {
+        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      });
   };
 
-  const checkNameDuplicate = () => {
+  const checkNameDuplicate = async () => {
     //TODO : API request
-    setNameValid(true);
+    await axios
+      .post('http://10.0.2.2:3000/account/checkName', { name: name })
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          Alert.alert('닉네임 중복 확인', '사용 가능한 닉네임입니다.');
+          setNameValid(true);
+          setNameButton(true);
+          passwordRef.current.focus();
+        } else if (res.data.status === 'FAILED') {
+          Alert.alert('닉네임 중복 확인', '이미 사용중인 닉네임입니다.');
+          setName('');
+          setNameValid(false);
+        }
+      })
+      .catch((err) => {
+        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요');
+      });
   };
 
   const signUp = async (email, password, name) => {
@@ -242,7 +274,11 @@ const Signup = ({ navigation }) => {
               ref={emailRef}
               label="이메일"
               value={email}
-              onChangeText={(text) => setEmail(removeWhitespace(text))}
+              onChangeText={(text) => {
+                setEmail(removeWhitespace(text));
+                setEmailValid(false);
+                setEmailButton(false);
+              }}
               onSubmitEditing={() => nameRef.current.focus()}
               placeholder="이메일 주소"
               returnKeyType="next"
@@ -259,7 +295,6 @@ const Signup = ({ navigation }) => {
                 } else {
                   //TODO : 서버에서 이메일 중복 확인
                   checkEmailDuplicate();
-                  nameRef.current.focus();
                 }
               }}
               // disable=true 버튼 블락 / disabled=false 버튼 활성화
@@ -274,10 +309,13 @@ const Signup = ({ navigation }) => {
               ref={nameRef}
               label="닉네임"
               value={name}
-              onChangeText={(text) => setName(text)}
+              onChangeText={(text) => {
+                setName(text);
+                setNameValid(false);
+                setNameButton(false);
+              }}
               onSubmitEditing={() => {
                 setName(name.trim());
-                passwordRef.current.focus();
                 checkNameDuplicate();
               }}
               onBlur={() => setName(name.trim())}
@@ -293,7 +331,6 @@ const Signup = ({ navigation }) => {
               onPress={() => {
                 //TODO : 닉네임 중복 체크
                 checkNameDuplicate();
-                passwordRef.current.focus();
               }}
               // disable=true 버튼 블락 / disabled=false 버튼 활성화
               disabled={nameButton}
