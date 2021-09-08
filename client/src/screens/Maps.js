@@ -103,9 +103,7 @@ const Maps = ({ navigation }) => {
       },
       {
         enableHighAccuracy: true,
-        distanceFilter: 0,
-        interval: 1000000,
-        fastestInterval: 2000,
+        distanceFilter: 10,
       },
     );
 
