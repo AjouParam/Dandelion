@@ -5,6 +5,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import decode from 'jwt-decode';
 import { Alert } from 'react-native';
+import userState from '@contexts/userState';
+import { useRecoilState } from 'recoil';
 
 const Container = styled.View`
   align-items: center;
@@ -18,10 +20,13 @@ GoogleSignin.configure({
 });
 
 const GoogleLoginButton = () => {
+  const [email, setEmail] = useRecoilState(userState.emailState);
+  const [uid, setUid] = useRecoilState(userState.uidState);
   const signIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
       try {
         await axios.post('http://10.0.2.2:3000/account/google', userInfo.idToken).then((res) => {
           if (res.data.status === 'SUCCESS') {
@@ -34,7 +39,7 @@ const GoogleLoginButton = () => {
               Alert.alert('로그인 실패', '구글 계정 로그인에 실패하였습니다. 다시 시도해주세요');
             }
           } else if (res.data.status === 'FAILED') {
-            Alert.alert('로그인 실패', '구글 계정 인증에 실패하였습니다. 다시 시도해주세요');
+            Alert.alert('로그인 실패', '구글 계정 인증에 실패하였습니다. 다시 시도해주세요', err);
           }
         });
       } catch (err) {
