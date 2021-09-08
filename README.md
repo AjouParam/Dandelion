@@ -18,3 +18,6 @@
 | Front-end  |   React Native   |
 |  Back-end  |     node.js      |
 | Formatting | eslint, prettier |
+
+## 추가사항
+로그인 재구현
