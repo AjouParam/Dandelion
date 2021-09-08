@@ -1,3 +1,12 @@
 **node_modules/
+
+#folder
+android/app/build/
+android/build/
+
 firebase.json
-**.env
+
+#large_file
+*.hprof
+
+.env

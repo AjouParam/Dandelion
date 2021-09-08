@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react';
 import { Platform, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
-import { MaterialIcons } from '@expo/vector-icons';
 
 const Container = styled.View`
   align-self: center;
   margin-bottom: 30px;
+  margin-left: 15px;
+  margin-right: 15px;
 `;
 const StyledImage = styled.Image`
   background-color: ${({ theme }) => theme.imageBackground};
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   border-radius: ${({ rounded }) => (rounded ? 50 : 0)}px;
 `;
 
@@ -27,18 +28,14 @@ const ButtonContainer = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
 `;
-const ButtonIcon = styled(MaterialIcons).attrs({
-  name: 'photo-camera',
-  size: 22,
-})`
-  color: ${({ theme }) => theme.imageButtonIcon};
-`;
+// const ButtonIcon = styled(MaterialIcons).attrs({
+//   name: 'photo-camera',
+//   size: 22,
+// })`
+//   color: ${({ theme }) => theme.imageButtonIcon};
+// `;
 const PhotoButton = ({ onPress }) => {
-  return (
-    <ButtonContainer onPress={onPress}>
-      <ButtonIcon />
-    </ButtonContainer>
-  );
+  return <ButtonContainer onPress={onPress}>{/* <ButtonIcon /> */}</ButtonContainer>;
 };
 
 const Image = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
@@ -46,14 +43,9 @@ const Image = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
     (async () => {
       try {
         if (Platform.OS !== 'web') {
-          const {
-            status,
-          } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
           if (status !== 'granted') {
-            Alert.alert(
-              'Photo Permission',
-              'Please turn on the camera roll permissions.'
-            );
+            Alert.alert('Photo Permission', 'Please turn on the camera roll permissions.');
           }
         }
       } catch (e) {
@@ -83,6 +75,13 @@ const Image = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
     <Container>
       <StyledImage source={{ uri: url }} style={imageStyle} rounded={rounded} />
       {showButton && <PhotoButton onPress={_handleEditButton} />}
+      {/* {showButton && (
+        <PhotoButton
+          onPress={() => {
+            Alert.alert('Press photo button');
+          }}
+        />
+      )} */}
     </Container>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MainTab from './MainTab';
+// import MainTab from './MainTab';
+import { Maps, Mypage, HotSpot } from '../screens';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
   const theme = useContext(ThemeContext);
@@ -19,7 +20,10 @@ const MainStack = () => {
         headerBackTitleVisible: false,
       }}
     >
-      <Stack.Screen name="Main" component={MainTab} />
+      {/* <Stack.Screen name="Main" component={Map} /> */}
+      <Stack.Screen name="Main" component={Maps} options={{ headerShown: false }} />
+      <Stack.Screen name="Mypage" component={Mypage} options={{ headerShown: false }} />
+      <Stack.Screen name="HotSpot" component={HotSpot} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

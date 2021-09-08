@@ -12,11 +12,7 @@ const ProgressProvider = ({ children }) => {
     stop: () => setInProgress(false),
   };
   const value = { inProgress, spinner };
-  return (
-    <ProgressContext.Provider value={value}>
-      {children}
-    </ProgressContext.Provider>
-  );
+  return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 };
 
 export { ProgressContext, ProgressProvider };

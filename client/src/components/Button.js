@@ -5,31 +5,52 @@ import PropTypes from 'prop-types';
 const TRANSPARENT = 'transparent';
 
 const Container = styled.TouchableOpacity`
-  background-color: ${({ theme, isFilled }) =>
-    isFilled ? theme.buttonBackground : TRANSPARENT};
+  background-color: ${({ theme, isFilled, disabled }) =>
+    disabled ? theme.buttonDisabledBackground : isFilled ? theme.buttonBackground : TRANSPARENT};
   align-items: center;
+  justify-content:center;
   border-radius: 4px;
-  width: 100%;
+  width: ${(props) => props.width}
+  height:${(props) => props.height}
   padding: 10px;
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  
+  borderRadius:20px;
 `;
+
 const Title = styled.Text`
   height: 30px;
   line-height: 30px;
-  font-size: 16px;
-  color: ${({ theme, isFilled }) =>
-    isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
+  font-size: ${({ fontSize }) => fontSize};
+
+  color: ${({ theme, isFilled, fontColor }) =>
+    fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
 `;
 
-const Button = ({ containerStyle, title, onPress, isFilled, disabled }) => {
+const Button = ({
+  containerStyle,
+  title,
+  onPress,
+  isFilled,
+  disabled,
+  width,
+  height,
+  fontColor = null,
+  fontSize = '16px',
+  backgroundcolor,
+}) => {
   return (
     <Container
       style={containerStyle}
       onPress={onPress}
       isFilled={isFilled}
       disabled={disabled}
+      width={width ? width : '100%'}
+      height={height ? height : '50px'}
+      backgroundcolor={backgroundcolor}
     >
-      <Title isFilled={isFilled}>{title}</Title>
+      <Title isFilled={isFilled} fontColor={fontColor} fontSize={fontSize}>
+        {title}
+      </Title>
     </Container>
   );
 };
