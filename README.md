@@ -19,5 +19,43 @@
 |  Back-end  |     node.js      |
 | Formatting | eslint, prettier |
 
-## 추가사항
-로그인 재구현
+
+### Running back-end
+
+``` bash
+# go to directory
+$ cd server 
+
+$ sudo apt-get update 
+$ npm install
+
+# start server
+$ npm start
+```
+
+### Running front-end
+
+``` bash
+# go to directory
+$ cd client 
+
+$ sudo apt-get update 
+$ npm install
+
+# start react-native
+$ npm run android
+```
+## 구글 드라이브
+
+### [파란학기](https://drive.google.com/drive/folders/1haldL7pgfRgwhezaNGSIcNCibqLFe4u0?usp=sharing)
+### [요구사항](https://docs.google.com/spreadsheets/d/1B7ql-QsSK204Btj2gMK24LgE0Halmt6HPs-V_oERQ_Q/edit?usp=sharing)
+
+## 개발 일정
+1. 계정화면 및 로그인 절차 : 2주(~09/05)
+2. 메인화면 : 3주 (~09/19)
+3. 민들레 속 기능 : 3주 (~10/10)
+4. 마이페이지 : 3주 (~10/31)
+5. 핫스팟 : 2주 (~11/14)
+6. AR 기능 : 병렬 진행 (~11/21)
+7. 리팩토링 : 1주 (~11/28)
+8. 배포 및 가출원 : 2주 (~12/12)
