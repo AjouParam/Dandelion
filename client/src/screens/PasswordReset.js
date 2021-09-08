@@ -213,7 +213,6 @@ const PasswordReset = ({ navigation }) => {
           <>
             <Input
               ref={passwordRef}
-              label=""
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
@@ -228,7 +227,6 @@ const PasswordReset = ({ navigation }) => {
             />
             <Input
               ref={passwordConfirmRef}
-              label=""
               value={passwordConfirm}
               onChangeText={(text) => {
                 setPasswordConfirm(text);
