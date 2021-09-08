@@ -1,0 +1,21 @@
+{
+  "status": "상태",
+  "data": [
+    {
+      "latitude": "위도값1",
+      "longitude": "경도값1",
+      "title": "민들레이름1",
+      "description": "민들레 설명1",
+      "src": "크기에 따른 이미지 URL",
+      "radius": "민들레 반경 크기1"
+    },
+    {
+      "latitude": "위도값2",
+      "longitude": "경도값2",
+      "title": "민들레이름2",
+      "description": "민들레 설명2",
+      "src": "이미지 URL2",
+      "radius": "민들레 반경 크기2"
+    }
+  ]
+}
