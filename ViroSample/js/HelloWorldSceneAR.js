@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { ViroARScene, ViroText, ViroConstants, ViroButton } from 'react-viro';
+import { ViroARScene, ViroText, ViroConstants, ViroButton, ViroAnimations } from 'react-viro';
 
 export default class HelloWorldSceneAR extends Component {
   constructor() {
@@ -26,15 +26,16 @@ export default class HelloWorldSceneAR extends Component {
         <ViroText
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}
-          position={[0, 0, -1]}
+          position={[0, 0, -5]}
           style={styles.helloWorldTextStyle}
         />
         <ViroButton
           source={require('./res/emailenclose.png')}
           clickSource={require('./res/emailopen.png')}
-          position={[0, -1, -2]}
-          height={1}
-          width={1}
+          position={[0, -1, -5]}
+          height={0.5}
+          width={0.5}
+          animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
         />
       </ViroARScene>
@@ -53,6 +54,11 @@ export default class HelloWorldSceneAR extends Component {
     });
   }
 }
+ViroAnimations.registerAnimations({
+  moveRight: { properties: { positionX: '+=0.5' }, duration: 1000 },
+  moveLeft: { properties: { positionX: '-=0.5' }, duration: 1000 },
+  moveLeftandRight: [['moveRight', 'moveLeft', 'moveLeft', 'moveRight']],
+});
 
 var styles = StyleSheet.create({
   helloWorldTextStyle: {
