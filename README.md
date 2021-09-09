@@ -45,6 +45,19 @@ $ npm install
 # start react-native
 $ npm run android
 ```
+
+### Running AR-project
+
+``` bash
+# go to directory
+$ cd ViroSample 
+
+$ npm start
+```
+구글스토어에서 ViroMedia 를 다운받은 후에
+좌측 상단에 메뉴 창을 열고 Enter Testbed에
+IPv4 주소 000.000.000.000 을 입력 후 접속(같은 인터넷 환경이어야함)
+
 ## 구글 드라이브
 
 ### [파란학기](https://drive.google.com/drive/folders/1haldL7pgfRgwhezaNGSIcNCibqLFe4u0?usp=sharing)
