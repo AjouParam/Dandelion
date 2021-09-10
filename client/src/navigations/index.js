@@ -34,7 +34,7 @@ const Navigation = () => {
             //expired
             await AsyncStorage.removeItem('token');
             console.log('token expired');
-          } else if (expUTC - todayUTC <= 86400 && expUTC - todayUTC > 0) {
+          } else if (expUTC - todayUTC <= 864000 && expUTC - todayUTC > 0) {
             // token refresh
             await axios
               .get('http:/10.0.2.2:3000/account/regenerateToken', {
