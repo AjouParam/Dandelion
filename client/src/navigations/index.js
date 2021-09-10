@@ -9,6 +9,12 @@ import { Spinner } from '@components/index';
 import { ProgressContext } from '@contexts/Progress';
 import userState from '@contexts/userState';
 import MainStack from './MainStack';
+import axios from 'axios';
+
+const headers = {
+  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  Accept: '*/*',
+};
 
 const Navigation = () => {
   const { inProgress } = useContext(ProgressContext);
@@ -27,8 +33,30 @@ const Navigation = () => {
           if (expUTC - todayUTC <= 0) {
             //expired
             await AsyncStorage.removeItem('token');
-            //이후 토큰 갱신 코드 저장
+            console.log('token expired');
+          } else if (expUTC - todayUTC <= 86400 && expUTC - todayUTC > 0) {
+            // token refresh
+            await axios
+              .get('http:/10.0.2.2:3000/account/regenerateToken', {
+                headers: {
+                  'x-access-token': value,
+                },
+              })
+              .then(async (res) => {
+                if (res.data.status === 'SUCCESS') {
+                  console.log('refresh token');
+                  await AsyncStorage.setItem('token', res.data.accessToken);
+                  setUid(res.data.accessToken);
+                  setEmail(userData.email);
+                } else {
+                  console.log(res.data.message);
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           } else {
+            console.log('valid token');
             setUid(value);
             setEmail(userData.email);
           }
