@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
-import { Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
+import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
 import axios from 'axios';
 import dummy from '../utils/dummy.json';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
+import MindleInfo from '@screens/MindleInfo';
 
 const Container = styled.View`
   flex: 1;
 `;
 const StyledText = styled.Text`
   font-size: 16px;
+  font-weight: 600;
 `;
 //안드로이드 혹은 ios에서 지도 사용 승인 절차
 const requestPermission = async () => {
@@ -30,8 +34,48 @@ const requestPermission = async () => {
 };
 //안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
 
+// 민들레 정보
+
 //메인페이지 컴포넌트 시작
 const Maps = ({ navigation }) => {
+  const bottomSheet = useRef();
+  const fall = new Animated.Value(1);
+
+  const renderInner = () => (
+    <View style={styles.panel}>
+      <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
+        <View style={{ marginRight: 15 }}>
+          <StyledText>민들레 이름</StyledText>
+        </View>
+        <Text>made by 창시자</Text>
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
+        <View style={{ marginRight: 15 }}>
+          <Text>누적 방분자 1명</Text>
+        </View>
+        <View style={{ marginLeft: 15 }}>
+          <Text>실시간 1명</Text>
+        </View>
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
+        <View style={{ marginRight: 10 }}>
+          <Text>#아 배고파</Text>
+        </View>
+        <View style={{ marginRight: 10 }}>
+          <Text>#아 힘들어</Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
+
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
   const [mapWidth, setMapWidth] = useState('99%');
 
@@ -229,108 +273,155 @@ const Maps = ({ navigation }) => {
       width: '100%',
       height: '100%',
     },
+    container: {
+      flex: 1,
+    },
+    panel: {
+      padding: 15,
+      backgroundColor: '#FFFFFF',
+      paddingTop: 10,
+      height: 150,
+    },
+    header: {
+      backgroundColor: '#FFFFFF',
+      shadowColor: '#333333',
+      shadowOffset: { width: -1, height: -3 },
+      shadowRadius: 2,
+      shadowOpacity: 0.4,
+      // elevation: 5,
+      paddingTop: 15,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+    },
+    panelHeader: {
+      alignItems: 'center',
+    },
+    panelHandle: {
+      width: 40,
+      height: 6,
+      borderRadius: 4,
+      backgroundColor: '#00000040',
+      marginBottom: 5,
+    },
   });
 
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
+      <BottomSheet
+        ref={bottomSheet}
+        snapPoints={[150, 0]}
+        initialSnap={1}
+        callbackNode={fall}
+        enabledGestureInteraction={true}
+        renderHeader={renderHeader}
+        renderContent={renderInner}
+      />
       {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
-      <MapView
-        style={[styles.map, { width: mapWidth }]}
-        provider={PROVIDER_GOOGLE}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        region={region}
-        onMapReady={() => {
-          updateMapStyle();
-        }}
-        onRegionChangeComplete={(currnet) => {
-          onRegionChange(currnet);
-        }}
-      >
-        {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
-        {mindles.map((props) => {
-          return (
-            <Mindle
-              latitude={props.latitude}
-              longitude={props.longitude}
-              title={props.title}
-              description={props.description}
-              src={mindle1}
-              radius={props.radius}
-              overlap={props.overlap}
-              //겹치는 경우 민들레 심기 아닌 경우 민들레 입장
-              onPress={props.overlap ? () => Alert.alert('민들레 심기 정상') : () => Alert.alert('민들레 입장 정상')}
+      <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
+        <MapView
+          style={[styles.map, { width: mapWidth }]}
+          provider={PROVIDER_GOOGLE}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+          region={region}
+          onMapReady={() => {
+            updateMapStyle();
+          }}
+          onRegionChangeComplete={(currnet) => {
+            onRegionChange(currnet);
+          }}
+        >
+          {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
+          {mindles.map((props) => {
+            return (
+              <Mindle
+                latitude={props.latitude}
+                longitude={props.longitude}
+                title={props.title}
+                description={props.description}
+                src={mindle1}
+                radius={props.radius}
+                overlap={props.overlap}
+                //겹치는 경우 민들레 심기 아닌 경우 민들레 입장
+                onPress={
+                  props.overlap
+                    ? () => Alert.alert('민들레 심기 정상')
+                    : () => {
+                        bottomSheet.current.snapTo(0);
+                      }
+                }
+              />
+            );
+          })}
+          {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
+        </MapView>
+        {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
+
+        {/*B 지도 위에 메인 버튼 컴포넌트 */}
+        <View
+          style={{
+            position: 'absolute', //use absolute position to show button on top of the map
+            top: '90%', //for center align
+            alignSelf: 'center', //for align to right
+          }}
+        >
+          {/*메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
+          {btnToggle ? (
+            //현재 사용자와 민들레가 겹쳤을 때 생성되는 버튼
+            <Button
+              title={'민들레 입장'}
+              onPress={() => {
+                //TODO : 민들레 입장
+                Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+              }}
+              width="200px"
+              height="60px"
+              fontSize="25px"
             />
-          );
-        })}
-        {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
-      </MapView>
-      {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
+          ) : (
+            // 현재 사용자와 민들레가 겹치지 않았을 때 생성되는 버튼
+            <Button
+              title={'민들레 심기'}
+              onPress={() => {
+                //TODO : 민들레 심기
+                Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+              }}
+              width="200px"
+              height="60px"
+              fontSize="25px"
+            />
+          )}
+          {/* 메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
+        </View>
+        {/*B 지도 위에 메인 버튼 컴포넌트 */}
 
-      {/*B 지도 위에 메인 버튼 컴포넌트 */}
-      <View
-        style={{
-          position: 'absolute', //use absolute position to show button on top of the map
-          top: '90%', //for center align
-          alignSelf: 'center', //for align to right
-        }}
-      >
-        {/*메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
-        {btnToggle ? (
-          //현재 사용자와 민들레가 겹쳤을 때 생성되는 버튼
-          <Button
-            title={'민들레 입장'}
-            onPress={() => {
-              //TODO : 민들레 입장
-              Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
-            }}
-            width="200px"
-            height="60px"
-            fontSize="25px"
-          />
-        ) : (
-          // 현재 사용자와 민들레가 겹치지 않았을 때 생성되는 버튼
-          <Button
-            title={'민들레 심기'}
-            onPress={() => {
-              //TODO : 민들레 심기
-              Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
-            }}
-            width="200px"
-            height="60px"
-            fontSize="25px"
-          />
-        )}
-        {/* 메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
-      </View>
-      {/*B 지도 위에 메인 버튼 컴포넌트 */}
+        {/*C 하단왼쪽 프로필 이미지 버튼 */}
+        <View
+          style={{
+            position: 'absolute',
+            top: '90%',
+            alignSelf: 'flex-start',
+          }}
+        >
+          {/* 현재 ../asset/index.js에 있는 profile 이미지로 버튼 생성 rounded 값으로 둥근 형태 */}
+          <ImageButton src={profile} onPress={() => navigation.navigate('Mypage')} rounded />
+        </View>
+        {/*C 하단 왼쪽 프로필 이미지 버튼 */}
 
-      {/*C 하단왼쪽 프로필 이미지 버튼 */}
-      <View
-        style={{
-          position: 'absolute',
-          top: '90%',
-          alignSelf: 'flex-start',
-        }}
-      >
-        {/* 현재 ../asset/index.js에 있는 profile 이미지로 버튼 생성 rounded 값으로 둥근 형태 */}
-        <ImageButton src={profile} onPress={() => navigation.navigate('Mypage')} rounded />
-      </View>
-      {/*C 하단 왼쪽 프로필 이미지 버튼 */}
-
-      {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
-      <View
-        style={{
-          position: 'absolute',
-          top: '90%',
-          alignSelf: 'flex-end',
-        }}
-      >
-        {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
-        <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
-      </View>
-      {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
+        {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
+        <View
+          style={{
+            position: 'absolute',
+            top: '90%',
+            alignSelf: 'flex-end',
+          }}
+        >
+          {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
+          <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
+        </View>
+        {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
+      </Animated.View>
     </Container>
   );
 };
