@@ -118,7 +118,9 @@ const Login = ({ navigation }) => {
         });
       //spinner.start();
     } catch (e) {
-      Alert.alert('로그인 에러', e.message);
+      const message = e.message.toString().slice(7);
+      console.log(message);
+      Alert.alert('로그인 에러', message);
     } finally {
       //spinner.stop();
     }
