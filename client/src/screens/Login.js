@@ -96,11 +96,11 @@ const Login = ({ navigation }) => {
       //API request
       await axios
         .post('http://10.0.2.2:3000/account/signin', { email: emailInput, password: password })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res.data);
           if (res.data.status === 'SUCCESS') {
             try {
-              AsyncStorage.setItem('token', res.data.accessToken);
+              await AsyncStorage.setItem('token', res.data.accessToken);
               const userData = decode(res.data.accessToken);
               setEmail(emailInput); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
               setUid(res.data.accessToken);
