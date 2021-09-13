@@ -21,8 +21,9 @@ export default class HelloWorldSceneAR extends Component {
   }
 
   render() {
+    this._onInitialized();
     return (
-      <ViroARScene onTrackingUpdated={this._onInitialized}>
+      <ViroARScene>
         <ViroText
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}

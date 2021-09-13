@@ -9,9 +9,8 @@
 
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, PixelRatio, TouchableHighlight } from 'react-native';
-
-import { ViroVRSceneNavigator, ViroARSceneNavigator } from 'react-viro';
-
+import { ViroARSceneNavigator } from 'react-viro';
+import ARDrivingCar from './js/RCcar/ARDrivingCar';
 /*
  TODO: Insert your API key below
  */
@@ -20,24 +19,79 @@ var sharedProps = {
 };
 
 // Sets the default scene you want for AR and VR
-var InitialARScene = require('./js/HelloWorldSceneAR');
+var InitialNormalScene = require('./js/HelloWorldSceneAR');
+var InitialRCcarScene = require('./js/RCcar/ARDrivingCar');
+
+var UNSET = 'UNSET';
+var Normal_NAVIGATOR_TYPE = 'Normal';
+var RCcar_NAVIGATOR_TYPE = 'Car';
+
+var defaultNavigatorType = UNSET;
 
 export default class ViroSample extends Component {
   constructor() {
     super();
 
     this.state = {
+      navigatorType: defaultNavigatorType,
       sharedProps: sharedProps,
     };
-    this._getARNavigator = this._getARNavigator.bind(this);
+
+    this._getExperienceSelector = this._getExperienceSelector.bind(this);
+    this._getNormalNavigator = this._getNormalNavigator.bind(this);
+    this._getRCcarNavigator = this._getRCcarNavigator.bind(this);
+    this._getButtonOnPress = this._getButtonOnPress.bind(this);
   }
 
   render() {
-    return this._getARNavigator();
+    if (this.state.navigatorType == UNSET) {
+      return this._getExperienceSelector();
+    } else if (this.state.navigatorType == Normal_NAVIGATOR_TYPE) {
+      return this._getNormalNavigator();
+    } else if (this.state.navigatorType == RCcar_NAVIGATOR_TYPE) {
+      return this._getRCcarNavigator();
+    }
   }
-  // Returns the ViroARSceneNavigator which will start the AR experience
-  _getARNavigator() {
-    return <ViroARSceneNavigator {...this.state.sharedProps} initialScene={{ scene: InitialARScene }} />;
+
+  _getExperienceSelector() {
+    return (
+      <View style={localStyles.outer}>
+        <View style={localStyles.inner}>
+          <Text style={localStyles.titleText}>Choose Two Experience</Text>
+
+          <TouchableHighlight
+            style={localStyles.buttons}
+            onPress={this._getButtonOnPress(Normal_NAVIGATOR_TYPE)}
+            underlayColor={'#68a0ff'}
+          >
+            <Text style={localStyles.buttonText}>Normal</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            style={localStyles.buttons}
+            onPress={this._getButtonOnPress(RCcar_NAVIGATOR_TYPE)}
+            underlayColor={'#68a0ff'}
+          >
+            <Text style={localStyles.buttonText}>RCcar</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
+  }
+
+  _getNormalNavigator() {
+    return <ViroARSceneNavigator {...this.state.sharedProps} initialScene={{ scene: InitialNormalScene }} />;
+  }
+  _getRCcarNavigator() {
+    return <ARDrivingCar></ARDrivingCar>;
+  }
+
+  _getButtonOnPress(navigatorType) {
+    return () => {
+      this.setState({
+        navigatorType: navigatorType,
+      });
+    };
   }
 }
 
@@ -95,5 +149,4 @@ var localStyles = StyleSheet.create({
     borderColor: '#fff',
   },
 });
-
 module.exports = ViroSample;
