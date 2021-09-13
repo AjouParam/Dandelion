@@ -21,15 +21,15 @@ export default class HelloWorldSceneAR extends Component {
   }
 
   render() {
-    this._onInitialized();
     return (
-      <ViroARScene>
+      <ViroARScene onTrackingInitialized={this._onInitialized}>
         <ViroText
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}
           position={[0, 0, -5]}
           style={styles.helloWorldTextStyle}
         />
+
         <ViroButton
           source={require('./res/emailenclose.png')}
           clickSource={require('./res/emailopen.png')}
