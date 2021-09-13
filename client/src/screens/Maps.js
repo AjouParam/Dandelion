@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
+import Modal from '@components/Modal';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
@@ -10,6 +11,7 @@ import dummy from '../utils/dummy.json';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import MindleInfo from '@screens/MindleInfo';
+import CreateMindle from '@components/CreateMindle';
 
 const Container = styled.View`
   flex: 1;
@@ -100,9 +102,10 @@ const Maps = ({ navigation }) => {
     latitudeDelta: 0.0001,
     longitudeDelta: 0.003,
   });
-
+  const [test, setTest] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   const [mindles, setMindles] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   //초기 위치에서 10m 이상 차이 발생시 새로운 좌표 값 설정
   useEffect(() => {
@@ -113,10 +116,27 @@ const Maps = ({ navigation }) => {
         //변화된 좌표 값 획득
         Geolocation.watchPosition(
           (position) => {
+            /*
+            {
+              "coords": {
+                          "accuracy": 20, 
+                          "altitude": 0, 
+                          "altitudeAccuracy": 40, 
+                          "heading": 90, 
+                          "latitude": 37.2811483, 
+                          "longitude": 127.0435583, 
+                          "speed": 0
+                        }, 
+              "mocked": false, 
+              "provider": "fused", 
+              "timestamp": 1631366250000
+            }
+            */
+
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
             // console.log('positon.coords', position.coords);
-
+            setTest(position);
             //지도에서 현재 기준으로 삼고 있는 위치 최신화
             //현재 사용자 위치에서 위도를 0.0015로 높게 설정
             setRegion({
@@ -264,6 +284,13 @@ const Maps = ({ navigation }) => {
   //지도의 기준 좌표가 변경시 호출 되는 함수
   const onRegionChange = (region) => {
     console.log('currnet : ', region);
+    /*const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
+    const latDelta = test.coords.accuracy / oneDegreeOfLatitudeInMeters;
+    const longDelta =
+      test.coords.accuracy / (oneDegreeOfLatitudeInMeters * Math.cos(test.coords.latitude * (Math.PI / 180)));
+    console.log(test);
+    console.log(latDelta, longDelta);
+    */
   };
 
   //지도에서 사용되어지는 StyleSheet
@@ -308,6 +335,9 @@ const Maps = ({ navigation }) => {
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
+      <Modal modalVisible={modalVisible} setModalVisible={setModalVisible}>
+        <CreateMindle />
+      </Modal>
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[150, 0]}
@@ -385,7 +415,8 @@ const Maps = ({ navigation }) => {
               title={'민들레 심기'}
               onPress={() => {
                 //TODO : 민들레 심기
-                Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+                setModalVisible(true);
+                console.log('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
               }}
               width="200px"
               height="60px"
