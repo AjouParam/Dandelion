@@ -24,28 +24,20 @@ const Content = styled.View`
   height: 250px;
   border-radius: 20px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 10px;
 `;
 const CustomModal = ({ modalVisible, setModalVisible, children }) => {
   return modalVisible ? (
     <Modal animationType={'fade'} transparent={true} visible={modalVisible}>
       <Container>
-        <BlackSpace
+        {/* <BlackSpace
           onTouchEnd={() => {
             setModalVisible(false);
           }}
-        >
-          <Content>
-            {children}
-            <Button
-              title="확인"
-              onPress={() => {
-                setModalVisible(false);
-              }}
-            />
-          </Content>
-        </BlackSpace>
+        > */}
+        <Content>{children}</Content>
+        {/* </BlackSpace> */}
       </Container>
     </Modal>
   ) : null;
