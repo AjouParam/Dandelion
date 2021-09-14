@@ -6,4 +6,5 @@ import Maps from './Maps';
 import HotSpot from './HotSpot';
 import Settings from './Settings';
 import Mypage from './Mypage';
-export { Login, Signup, Profile, Award, Maps, HotSpot, Settings, Mypage };
+import MypageList from './MypageList';
+export { Login, Signup, Profile, Award, Maps, HotSpot, Settings, Mypage, MypageList };
