@@ -43,39 +43,40 @@ const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
   const fall = new Animated.Value(1);
 
-  const renderInner = () => (
-    <View style={styles.panel}>
-      <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
-        <View style={{ marginRight: 15 }}>
-          <StyledText>민들레 이름</StyledText>
-        </View>
-        <Text>made by 창시자</Text>
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-        <View style={{ marginRight: 15 }}>
-          <Text>누적 방분자 1명</Text>
-        </View>
-        <View style={{ marginLeft: 15 }}>
-          <Text>실시간 1명</Text>
-        </View>
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-        <View style={{ marginRight: 10 }}>
-          <Text>#아 배고파</Text>
-        </View>
-        <View style={{ marginRight: 10 }}>
-          <Text>#아 힘들어</Text>
-        </View>
-      </View>
-    </View>
-  );
+  const renderInner = () => <></>;
 
   const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
+    <>
+      <View style={styles.header}>
+        <View style={styles.panelHeader}>
+          <View style={styles.panelHandle} />
+        </View>
       </View>
-    </View>
+      <View style={styles.panel}>
+        <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
+          <View style={{ marginRight: 15 }}>
+            <StyledText>민들레 이름</StyledText>
+          </View>
+          <Text>made by 창시자</Text>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
+          <View style={{ marginRight: 15 }}>
+            <Text>누적 방문자 1명</Text>
+          </View>
+          <View style={{ marginLeft: 15 }}>
+            <Text>실시간 1명</Text>
+          </View>
+        </View>
+        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
+          <View style={{ marginRight: 10 }}>
+            <Text>#아 배고파</Text>
+          </View>
+          <View style={{ marginRight: 10 }}>
+            <Text>#아 힘들어</Text>
+          </View>
+        </View>
+      </View>
+    </>
   );
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
@@ -335,9 +336,8 @@ const Maps = ({ navigation }) => {
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
-      <Modal modalVisible={modalVisible} setModalVisible={setModalVisible}>
-        <CreateMindle />
-      </Modal>
+      <CreateMindle modalVisible={modalVisible} setModalVisible={setModalVisible} />
+
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[150, 0]}
