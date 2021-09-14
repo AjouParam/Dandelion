@@ -3,7 +3,7 @@ import { ThemeContext } from 'styled-components/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // import MainTab from './MainTab';
-import { Maps, Mypage, HotSpot } from '../screens';
+import { Maps, Mypage, HotSpot, MindleInfo } from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +22,7 @@ const MainStack = () => {
     >
       {/* <Stack.Screen name="Main" component={Map} /> */}
       <Stack.Screen name="Main" component={Maps} options={{ headerShown: false }} />
+      <Stack.Screen name="MindleInfo" component={MindleInfo} options={{ headerShown: true }} />
       <Stack.Screen name="Mypage" component={Mypage} options={{ headerShown: false }} />
       <Stack.Screen name="HotSpot" component={HotSpot} options={{ headerShown: false }} />
     </Stack.Navigator>

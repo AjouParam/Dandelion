@@ -2,7 +2,6 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
-import Modal from '@components/Modal';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
@@ -10,7 +9,6 @@ import axios from 'axios';
 import dummy from '../utils/dummy.json';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import MindleInfo from '@screens/MindleInfo';
 import CreateMindle from '@components/CreateMindle';
 
 const Container = styled.View`
@@ -41,9 +39,15 @@ const requestPermission = async () => {
 //메인페이지 컴포넌트 시작
 const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
-  const fall = new Animated.Value(1);
+  const fall = new Animated.Value(2);
 
-  const renderInner = () => <></>;
+  const renderInner = () => (
+    <View style={{ height: 610, backgroundColor: '#ffffff' }}>
+      <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <StyledText>민들레 세부 정보</StyledText>
+      </View>
+    </View>
+  );
 
   const renderHeader = () => (
     <>
@@ -306,10 +310,9 @@ const Maps = ({ navigation }) => {
     },
     panel: {
       padding: 15,
-      backgroundColor: '#FFFFFF',
-      paddingTop: 10,
-      height: 150,
+      backgroundColor: '#ffffff',
     },
+
     header: {
       backgroundColor: '#FFFFFF',
       shadowColor: '#333333',
@@ -333,19 +336,25 @@ const Maps = ({ navigation }) => {
     },
   });
 
+  const navigateToInfo = () => {
+    bottomSheet.current.snapTo(1);
+    console.log('called function');
+    navigation.navigate('MindleInfo');
+  };
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
-      <CreateMindle modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      <CreateMindle modalVisible={modalVisible} setModalVisible={setModalVisible} position={location} />
 
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[150, 0]}
-        initialSnap={1}
+        snapPoints={[750, 150, 0]}
+        initialSnap={2}
         callbackNode={fall}
         enabledGestureInteraction={true}
         renderHeader={renderHeader}
         renderContent={renderInner}
+        onOpenEnd={navigateToInfo}
       />
       {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
@@ -378,7 +387,7 @@ const Maps = ({ navigation }) => {
                   props.overlap
                     ? () => Alert.alert('민들레 심기 정상')
                     : () => {
-                        bottomSheet.current.snapTo(0);
+                        bottomSheet.current.snapTo(1);
                       }
                 }
               />
