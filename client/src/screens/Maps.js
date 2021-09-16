@@ -10,6 +10,7 @@ import dummy from '../utils/dummy.json';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
+import MindleInfo from '@screens/MindleInfo';
 
 const Container = styled.View`
   flex: 1;
@@ -50,10 +51,8 @@ const Maps = ({ navigation }) => {
   });
 
   const renderInner = () => (
-    <View style={{ height: 100, backgroundColor: '#ffffff' }}>
-      <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <StyledText>세부 정보 로딩</StyledText>
-      </View>
+    <View style={{ height: '100%' }}>
+      <MindleInfo mindleInfo={clickedMindleInfo} />
     </View>
   );
 
@@ -366,13 +365,16 @@ const Maps = ({ navigation }) => {
 
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[250, 150, 0]}
+        snapPoints={[700, 140, 0]}
         initialSnap={2}
         callbackNode={fall}
         enabledGestureInteraction={true}
         renderHeader={renderHeader}
         renderContent={renderInner}
-        onOpenEnd={navigateToInfo}
+        enabledContentGestureInteraction={true}
+        enabledContentTapInteraction={false}
+        enabledInnerScrolling={true}
+        //onOpenEnd={navigateToInfo}
       />
       {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
