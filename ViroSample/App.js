@@ -11,6 +11,7 @@ import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, PixelRatio, TouchableHighlight } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import ARDrivingCar from './js/RCcar/ARDrivingCar';
+import ARHitApp from './js/HitPractice/ARHItApp';
 /*
  TODO: Insert your API key below
  */
@@ -20,11 +21,11 @@ var sharedProps = {
 
 // Sets the default scene you want for AR and VR
 var InitialNormalScene = require('./js/HelloWorldSceneAR');
-var InitialRCcarScene = require('./js/RCcar/ARDrivingCar');
 
 var UNSET = 'UNSET';
 var Normal_NAVIGATOR_TYPE = 'Normal';
 var RCcar_NAVIGATOR_TYPE = 'Car';
+var ARHit_NaviGator_TYPE = 'Hit';
 
 var defaultNavigatorType = UNSET;
 
@@ -40,6 +41,7 @@ export default class ViroSample extends Component {
     this._getExperienceSelector = this._getExperienceSelector.bind(this);
     this._getNormalNavigator = this._getNormalNavigator.bind(this);
     this._getRCcarNavigator = this._getRCcarNavigator.bind(this);
+    this._getARHitNavigator = this._getARHitNavigator.bind(this);
     this._getButtonOnPress = this._getButtonOnPress.bind(this);
   }
 
@@ -50,6 +52,8 @@ export default class ViroSample extends Component {
       return this._getNormalNavigator();
     } else if (this.state.navigatorType == RCcar_NAVIGATOR_TYPE) {
       return this._getRCcarNavigator();
+    } else if (this.state.navigatorType == ARHit_NaviGator_TYPE) {
+      return this._getARHitNavigator();
     }
   }
 
@@ -57,12 +61,12 @@ export default class ViroSample extends Component {
     return (
       <View style={localStyles.outer}>
         <View style={localStyles.inner}>
-          <Text style={localStyles.titleText}>Choose Two Experience</Text>
+          <Text style={localStyles.titleText}>Choose Three Experience</Text>
 
           <TouchableHighlight
             style={localStyles.buttons}
             onPress={this._getButtonOnPress(Normal_NAVIGATOR_TYPE)}
-            underlayColor={'#68a0ff'}
+            underlayColor={'#000000'}
           >
             <Text style={localStyles.buttonText}>Normal</Text>
           </TouchableHighlight>
@@ -70,9 +74,17 @@ export default class ViroSample extends Component {
           <TouchableHighlight
             style={localStyles.buttons}
             onPress={this._getButtonOnPress(RCcar_NAVIGATOR_TYPE)}
-            underlayColor={'#68a0ff'}
+            underlayColor={'#000000'}
           >
             <Text style={localStyles.buttonText}>RCcar</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            style={localStyles.buttons}
+            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
+            underlayColor={'#000000'}
+          >
+            <Text style={localStyles.buttonText}>ARHit</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -84,6 +96,9 @@ export default class ViroSample extends Component {
   }
   _getRCcarNavigator() {
     return <ARDrivingCar></ARDrivingCar>;
+  }
+  _getARHitNavigator() {
+    return <ARHitApp></ARHitApp>;
   }
 
   _getButtonOnPress(navigatorType) {
@@ -131,7 +146,7 @@ var localStyles = StyleSheet.create({
     paddingBottom: 20,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: '#68a0cf',
+    backgroundColor: '#000000',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
