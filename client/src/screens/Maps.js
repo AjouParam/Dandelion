@@ -374,6 +374,9 @@ const Maps = ({ navigation }) => {
         enabledContentGestureInteraction={true}
         enabledContentTapInteraction={false}
         enabledInnerScrolling={true}
+        onCloseEnd={() => {
+          setClickedMindleInfo(null);
+        }}
         //onOpenEnd={navigateToInfo}
       />
       {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
