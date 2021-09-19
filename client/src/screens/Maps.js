@@ -353,11 +353,7 @@ const Maps = ({ navigation }) => {
     };
     setClickedMindleInfo(mindleInfo);
   };
-  const navigateToInfo = () => {
-    bottomSheet.current.snapTo(1);
-    console.log('called function');
-    navigation.navigate('MindleInfo', { mindleInfo: clickedMindleInfo });
-  };
+
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
@@ -395,9 +391,10 @@ const Maps = ({ navigation }) => {
           }}
         >
           {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
-          {mindles.map((props) => {
+          {mindles.map((props, index) => {
             return (
               <Mindle
+                key={String(index)} //TODO : 올바른 key 값으로 수정 필요
                 latitude={props.latitude}
                 longitude={props.longitude}
                 title={props.title}
