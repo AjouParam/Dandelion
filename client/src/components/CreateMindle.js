@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import Modal from '@components/Modal';
 import { Input, Button } from '@components';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
@@ -20,29 +22,47 @@ const BtnContainer = styled.View`
   justify-content: space-around;
   width: 100%;
 `;
+
+const headers = {
+  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+  Accept: '*/*',
+};
+
 const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
+  const jwtToken = useRecoilValue(userState.uidState);
   const nameRef = useRef();
   const hashtagRef = useRef();
   const [mindleName, setMindleName] = useState('');
   const [hashtag, setHashtag] = useState('');
-  const [hashtagList, setHashtagList] = useState([]);
+
+  useEffect(() => {
+    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.headers.common['Authorization'] = jwtToken;
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  }, []);
 
   const modalClose = () => {
     setModalVisible(false);
     setMindleName('');
     setHashtag('');
-    setHashtagList([]);
   };
 
-  const createMindle = () => {
-    if (hashtag) {
-      const list = hashtag.split(' ');
-      console.log(list);
-      setHashtagList(list);
-    }
+  const createMindle = async () => {
     if (position) console.log(`create in (longitude, latitude) : (${position.longitude}, ${position.latitude})`);
 
-    modalClose();
+    await axios
+      .post('dandelion/create', { name: mindleName, location: position, description: hashtag })
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          Alert.alert('성공', '민들레 심기 성공');
+          modalClose();
+        } else if (res.data.status === 'FAILED') {
+          Alert.alert('실패', res.data.message);
+        }
+      })
+      .catch((error) => {
+        Alert.alert('실패', error.message.slice(5, error.message.length));
+      });
   };
 
   return (
