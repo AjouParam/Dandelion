@@ -9,6 +9,7 @@ const Container = styled.View`
   padding: 15px 15px;
   height: 100%;
   background-color: #ffffff;
+  justify-content: center;
 `;
 
 const Divider = styled.View`
