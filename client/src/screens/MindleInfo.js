@@ -86,7 +86,14 @@ const BoardTipContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
-
+const Tab = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 50px;
+  padding: 5px;
+  justify-content: space-evenly;
+`;
 const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes, commentsNum }) => {
   return (
     <>
@@ -111,7 +118,7 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
           </BoardContentImageContainer>
           <BoardTipContainer>
             <Text>Like {likes}</Text>
-            <Text>Comments {commentsNum}</Text>
+            <Text>Cormments {commentsNum}</Text>
           </BoardTipContainer>
         </BoardContents>
       </BoardContainer>
@@ -206,10 +213,13 @@ const MindleInfo = (props) => {
     },
   ];
 
+  const [tabClicked, setTabClicked] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [inMindle, setInMindle] = useState();
 
   useEffect(() => {
+    setInMindle(true);
     setMindleInfo(props.mindleInfo);
     setTimeout(() => {
       if (mindleInfo) console.log(mindleInfo);
@@ -261,8 +271,16 @@ const MindleInfo = (props) => {
 
         <FlatList
           style={{ zIndex: 1 }}
-          data={data}
-          renderItem={renderItem}
+          data={tabClicked === 0 ? data : [0]}
+          renderItem={
+            tabClicked === 0
+              ? renderItem
+              : () => (
+                  <View>
+                    <Text>이벤트 목록</Text>
+                  </View>
+                )
+          }
           keyExtractor={(item, idx) => String(idx)}
           //onEndReached={handleLoadMore}
           //onEndReachedThreshold={0.4}
@@ -279,6 +297,34 @@ const MindleInfo = (props) => {
                 <Image></Image>
               </ImageContainer>
               <Divider />
+              <Tab>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTabClicked(0);
+                  }}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '50%',
+                    backgroundColor: tabClicked === 0 ? '#bdbdbd' : '#fefefe',
+                  }}
+                >
+                  <Text>게시글</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTabClicked(1);
+                  }}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '50%',
+                    backgroundColor: tabClicked === 0 ? '#fefefe' : '#bdbdbd',
+                  }}
+                >
+                  <Text>이벤트</Text>
+                </TouchableOpacity>
+              </Tab>
             </>
           )}
         />
