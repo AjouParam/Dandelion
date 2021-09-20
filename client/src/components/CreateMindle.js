@@ -39,7 +39,6 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    console.log('jwtToken', jwtToken);
   }, []);
 
   const modalClose = () => {
