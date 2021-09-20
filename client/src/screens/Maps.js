@@ -7,6 +7,8 @@ import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
 import axios from 'axios';
 import dummy from '../utils/dummy.json';
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
@@ -130,6 +132,15 @@ const Maps = ({ navigation }) => {
       0.00001 * mindlePOS.radius
     );
   };
+  const headers = {
+    'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    Accept: '*/*',
+  };
+  const jwtToken = useRecoilValue(userState.uidState);
+  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.headers.common['x-access-token'] = jwtToken;
+  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  console.log('jwtToken', jwtToken);
   useEffect(() => {
     //GPS 이용 승인
     requestPermission().then((result) => {
@@ -165,7 +176,7 @@ const Maps = ({ navigation }) => {
             setBtnToggle(false);
             try {
               await axios
-                .post('http://10.0.2.2:3000/dandelion/get', {
+                .post('/dandelion/get', {
                   //위도 값, 경도 값 json 형식으로 post 전송
                   centerPosition: { latitude: position.coords.latitude, longitude: position.coords.longitude },
                   maxDistance: 100,
@@ -232,7 +243,7 @@ const Maps = ({ navigation }) => {
     //초기 메인 버튼을 민들레 심기로 설정
     setBtnToggle(false);
     await axios
-      .post('http://10.0.2.2:3000/dandelion/get', {
+      .post('/dandelion/get', {
         //위도 값, 경도 값 json 형식으로 post 전송
         centerPosition: { latitude: region.latitude, longitude: region.longitude },
         maxDistance: 100,

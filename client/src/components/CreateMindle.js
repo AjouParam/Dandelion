@@ -37,8 +37,9 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
 
   useEffect(() => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-    axios.defaults.headers.common['Authorization'] = jwtToken;
+    axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    console.log('jwtToken', jwtToken);
   }, []);
 
   const modalClose = () => {
@@ -51,7 +52,7 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
     if (position) console.log(`create in (longitude, latitude) : (${position.longitude}, ${position.latitude})`);
 
     await axios
-      .post('http://10.0.2.2:3000/dandelion/create', {
+      .post('/dandelion/create', {
         name: mindleName,
         location: { longitude: position.longitude, latitude: position.latitude },
         description: hashtag,
@@ -67,7 +68,6 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
       .catch((error) => {
         Alert.alert('실패', error.message.slice(5, error.message.length));
         console.log('실패 좌표값', position);
-        console.log('실패 res', res);
       });
   };
 
