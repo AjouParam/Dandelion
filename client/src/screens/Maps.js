@@ -36,10 +36,6 @@ const requestPermission = async () => {
   }
 };
 //안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
-const jwtToken = useRecoilValue(userState.uidState);
-axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-axios.defaults.headers.common['x-access-token'] = jwtToken;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 // 민들레 정보
 
 //메인페이지 컴포넌트 시작
@@ -125,7 +121,7 @@ const Maps = ({ navigation }) => {
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   const [mindles, setMindles] = useState([]);
   const [ApiData, setAPIDATA] = useState([]);
-  //초기 위치에서 10m 이상 차이 발생시 새로운 좌표 값 설정
+  //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
   const levelToRadius = (num) => {
     if (num == 1) {
       return 30;
@@ -143,6 +139,10 @@ const Maps = ({ navigation }) => {
       0.00001 * levelToRadius(mindlePOS.level)
     );
   };
+  const jwtToken = useRecoilValue(userState.uidState);
+  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.headers.common['x-access-token'] = jwtToken;
+  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
   useEffect(() => {
     //GPS 이용 승인
     requestPermission().then((result) => {
@@ -175,7 +175,7 @@ const Maps = ({ navigation }) => {
             //지도에서 현재 기준으로 삼고 있는 위치 최신화
             //현재 사용자 위치에서 위도를 0.0015로 높게 설정
             setRegion({
-              latitude: position.coords.latitude + 0.0015,
+              latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
@@ -190,7 +190,7 @@ const Maps = ({ navigation }) => {
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude,
                 },
-                maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
+                maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
               })
               .then((res) => {
                 //올바른 데이터 전송시
@@ -292,7 +292,7 @@ const Maps = ({ navigation }) => {
             //높은 정확도 설정
             enableHighAccuracy: true,
             //재측정할 변화 차이
-            distanceFilter: 10,
+            distanceFilter: 20,
           },
         );
       }
