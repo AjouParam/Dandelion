@@ -213,22 +213,32 @@ const MindleInfo = (props) => {
     },
   ];
 
-  const [tabClicked, setTabClicked] = useState(0);
+  const [tabIndex, setTabIndex] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inMindle, setInMindle] = useState();
 
   useEffect(() => {
+    setLoading(true);
     setInMindle(true);
     setMindleInfo(props.mindleInfo);
+    setTabIndex(0);
+    setData(DATA);
     setTimeout(() => {
       if (mindleInfo) console.log(mindleInfo);
-    }, 200);
+      setLoading(false);
+    }, 2000);
     //setLoading(true);
     //getData();
-    setData(DATA);
   }, []);
 
+  useEffect(() => {
+    //TODO : data 불러왔는지 확인 후 안불러왔으면 로딩, 데이터 불러오기
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [tabIndex]);
   const renderItem = ({ item }) => {
     return (
       <>
@@ -268,66 +278,68 @@ const MindleInfo = (props) => {
     <>
       <Container>
         {/* <Header /> */}
-
-        <FlatList
-          style={{ zIndex: 1 }}
-          data={tabClicked === 0 ? data : [0]}
-          renderItem={
-            tabClicked === 0
-              ? renderItem
-              : () => (
-                  <View>
-                    <Text>이벤트 목록</Text>
-                  </View>
-                )
-          }
-          keyExtractor={(item, idx) => String(idx)}
-          //onEndReached={handleLoadMore}
-          //onEndReachedThreshold={0.4}
-          ListHeaderComponent={() => (
-            <>
-              <ImageContainer>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-              </ImageContainer>
-              <Divider />
-              <Tab>
-                <TouchableOpacity
-                  onPress={() => {
-                    setTabClicked(0);
-                  }}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '50%',
-                    backgroundColor: tabClicked === 0 ? '#bdbdbd' : '#fefefe',
-                  }}
-                >
-                  <Text>게시글</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    setTabClicked(1);
-                  }}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '50%',
-                    backgroundColor: tabClicked === 0 ? '#fefefe' : '#bdbdbd',
-                  }}
-                >
-                  <Text>이벤트</Text>
-                </TouchableOpacity>
-              </Tab>
-            </>
-          )}
-        />
+        {!loading && (
+          <FlatList
+            style={{ zIndex: 1 }}
+            data={tabIndex === 0 ? data : [0]}
+            renderItem={
+              tabIndex === 0
+                ? renderItem
+                : () => (
+                    <View>
+                      <Text>이벤트 목록</Text>
+                    </View>
+                  )
+            }
+            keyExtractor={(item, idx) => String(idx)}
+            //onEndReached={handleLoadMore}
+            //onEndReachedThreshold={0.4}
+            ListHeaderComponent={() => (
+              <>
+                <ImageContainer>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                </ImageContainer>
+                <Divider />
+                <Tab>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setTabIndex(0);
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '50%',
+                      backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+                    }}
+                  >
+                    <Text>게시글</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setTabIndex(1);
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '50%',
+                      backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+                    }}
+                  >
+                    <Text>이벤트</Text>
+                  </TouchableOpacity>
+                </Tab>
+              </>
+            )}
+          />
+        )}
+        {loading && <ActivityIndicator size="large" color="0000ff" />}
       </Container>
     </>
   );
