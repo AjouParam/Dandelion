@@ -2,7 +2,6 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
-import Modal from '@components/Modal';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, mindle1 } from '../assets/index';
@@ -10,8 +9,8 @@ import axios from 'axios';
 import dummy from '../utils/dummy.json';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
-import MindleInfo from '@screens/MindleInfo';
 import CreateMindle from '@components/CreateMindle';
+import MindleInfo from '@screens/MindleInfo';
 
 const Container = styled.View`
   flex: 1;
@@ -41,42 +40,57 @@ const requestPermission = async () => {
 //메인페이지 컴포넌트 시작
 const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
-  const fall = new Animated.Value(1);
+  const fall = new Animated.Value(2);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [clickedMindleInfo, setClickedMindleInfo] = useState({
+    name: '',
+    madeby: '',
+    hashtag: [],
+    visitCount: '',
+    current: '',
+  });
 
   const renderInner = () => (
-    <View style={styles.panel}>
-      <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
-        <View style={{ marginRight: 15 }}>
-          <StyledText>민들레 이름</StyledText>
-        </View>
-        <Text>made by 창시자</Text>
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-        <View style={{ marginRight: 15 }}>
-          <Text>누적 방분자 1명</Text>
-        </View>
-        <View style={{ marginLeft: 15 }}>
-          <Text>실시간 1명</Text>
-        </View>
-      </View>
-      <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-        <View style={{ marginRight: 10 }}>
-          <Text>#아 배고파</Text>
-        </View>
-        <View style={{ marginRight: 10 }}>
-          <Text>#아 힘들어</Text>
-        </View>
-      </View>
+    <View style={{ height: '100%' }}>
+      <MindleInfo mindleInfo={clickedMindleInfo} />
     </View>
   );
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
+  const renderHeader = () => {
+    if (clickedMindleInfo)
+      return (
+        <>
+          <View style={styles.header}>
+            <View style={styles.panelHeader}>
+              <View style={styles.panelHandle} />
+            </View>
+          </View>
+          <View style={styles.panel}>
+            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
+              <View style={{ marginRight: 15 }}>
+                <StyledText>{clickedMindleInfo.name}</StyledText>
+              </View>
+              <Text>made by {clickedMindleInfo.madeby}</Text>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
+              <View style={{ marginRight: 15 }}>
+                <Text>누적 방문자 {clickedMindleInfo.visitCount}</Text>
+              </View>
+              <View style={{ marginLeft: 15 }}>
+                <Text>실시간 {clickedMindleInfo.current}</Text>
+              </View>
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
+              {clickedMindleInfo.hashtag.map((item, idx) => (
+                <View key={idx} style={{ marginRight: 10 }}>
+                  <Text>{item}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </>
+      );
+  };
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
   const [mapWidth, setMapWidth] = useState('99%');
@@ -105,8 +119,6 @@ const Maps = ({ navigation }) => {
   const [test, setTest] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   const [mindles, setMindles] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-
   //초기 위치에서 10m 이상 차이 발생시 새로운 좌표 값 설정
   useEffect(() => {
     //GPS 이용 승인
@@ -305,10 +317,9 @@ const Maps = ({ navigation }) => {
     },
     panel: {
       padding: 15,
-      backgroundColor: '#FFFFFF',
-      paddingTop: 10,
-      height: 150,
+      backgroundColor: '#ffffff',
     },
+
     header: {
       backgroundColor: '#FFFFFF',
       shadowColor: '#333333',
@@ -332,20 +343,37 @@ const Maps = ({ navigation }) => {
     },
   });
 
+  const getClickedMindleInfo = () => {
+    const mindleInfo = {
+      name: '동관 앞',
+      madeby: '창시자',
+      hashtag: ['#아주대', '#공대', '#뿌셔', '#졸려'],
+      visitCount: 6,
+      current: 2,
+    };
+    setClickedMindleInfo(mindleInfo);
+  };
+
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
-      <Modal modalVisible={modalVisible} setModalVisible={setModalVisible}>
-        <CreateMindle />
-      </Modal>
+      <CreateMindle modalVisible={modalVisible} setModalVisible={setModalVisible} position={location} />
+
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[150, 0]}
-        initialSnap={1}
+        snapPoints={[700, 140, 0]}
+        initialSnap={2}
         callbackNode={fall}
         enabledGestureInteraction={true}
         renderHeader={renderHeader}
         renderContent={renderInner}
+        enabledContentGestureInteraction={true}
+        enabledContentTapInteraction={false}
+        enabledInnerScrolling={true}
+        onCloseEnd={() => {
+          setClickedMindleInfo(null);
+        }}
+        //onOpenEnd={navigateToInfo}
       />
       {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
@@ -363,9 +391,10 @@ const Maps = ({ navigation }) => {
           }}
         >
           {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
-          {mindles.map((props) => {
+          {mindles.map((props, index) => {
             return (
               <Mindle
+                key={String(index)} //TODO : 올바른 key 값으로 수정 필요
                 latitude={props.latitude}
                 longitude={props.longitude}
                 title={props.title}
@@ -378,7 +407,8 @@ const Maps = ({ navigation }) => {
                   props.overlap
                     ? () => Alert.alert('민들레 심기 정상')
                     : () => {
-                        bottomSheet.current.snapTo(0);
+                        getClickedMindleInfo();
+                        bottomSheet.current.snapTo(1);
                       }
                 }
               />

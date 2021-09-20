@@ -6,5 +6,6 @@ import Maps from './Maps';
 import HotSpot from './HotSpot';
 import Settings from './Settings';
 import Mypage from './Mypage';
+import MindleInfo from './MindleInfo';
 import MypageList from './MypageList';
-export { Login, Signup, Profile, Award, Maps, HotSpot, Settings, Mypage, MypageList };
+export { Login, Signup, Profile, Award, Maps, HotSpot, Settings, Mypage, MypageList, MindleInfo };
