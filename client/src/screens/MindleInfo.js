@@ -128,7 +128,7 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
 };
 const MindleInfo = (props) => {
   const [page, setPage] = useState(0);
-  const [mindleInfo, setMindleInfo] = useState({ name: '', madeby: '', hashtag: [], visitCount: '', current: '' });
+  const [mindleInfo, setMindleInfo] = useState({ name: '', madeby: '', description: '', visitCount: '', current: '' });
   let DATA = [
     {
       userPhoto:

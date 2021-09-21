@@ -28,12 +28,12 @@ const headers = {
   Accept: '*/*',
 };
 
-const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
+const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) => {
   const jwtToken = useRecoilValue(userState.uidState);
   const nameRef = useRef();
-  const hashtagRef = useRef();
+  const descriptionRef = useRef();
   const [mindleName, setMindleName] = useState('');
-  const [hashtag, setHashtag] = useState('');
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
@@ -44,9 +44,15 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
   const modalClose = () => {
     setModalVisible(false);
     setMindleName('');
-    setHashtag('');
+    setDescription('');
   };
-
+  const levelToRadius = (num) => {
+    if (num == 1) {
+      return 30;
+    } else {
+      return 50;
+    }
+  };
   const createMindle = async () => {
     if (position) console.log(`create in (longitude, latitude) : (${position.longitude}, ${position.latitude})`);
 
@@ -54,10 +60,41 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
       .post('/dandelion/create', {
         name: mindleName,
         location: { longitude: position.longitude, latitude: position.latitude },
-        description: hashtag,
+        description: description,
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
+          /**
+           *  <Mindle
+                key={String(index)} //TODO : 올바른 key 값으로 수정 필요
+                latitude={props.latitude}
+                longitude={props.longitude}
+                title={props.title}
+                description={props.description}
+                src={mindle1}
+                radius={props.radius}
+                overlap={props.overlap}
+                //겹치는 경우 민들레 심기 아닌 경우 민들레 입장
+                onPress={
+                  props.overlap
+                    ? () => Alert.alert('민들레 심기 정상')
+                    : () => {
+                        getClickedMindleInfo();
+                        bottomSheet.current.snapTo(1);
+                      }
+                }
+              />
+           */
+          setMindles((prev) =>
+            prev.push({
+              latitude: res.data.data.location.coordinates[1],
+              longitude: res.data.data.location.coordinates[0],
+              title: res.data.data.name,
+              description: res.data.data.description,
+              radius: levelToRadius(res.data.data.level),
+              overlap: true,
+            }),
+          );
           Alert.alert('성공', '민들레 심기 성공');
           modalClose();
         } else if (res.data.status === 'FAILED') {
@@ -80,18 +117,18 @@ const CreateMindle = ({ modalVisible, setModalVisible, position }) => {
           onChangeText={(text) => {
             setMindleName(text);
           }}
-          onSubmitEditing={() => hashtagRef.current.focus()}
+          onSubmitEditing={() => descriptionRef.current.focus()}
           placeholder="민들레 이름"
           returnKeyType="next"
           width="250px"
         />
         <Input
-          label="해시태그"
-          value={hashtag}
+          label="설명"
+          value={description}
           onChangeText={(text) => {
-            setHashtag(text);
+            setDescription(text);
           }}
-          placeholder="#태그1 #태그2 #태그3 ..."
+          placeholder="민들레에 대한 설명"
           returnKeyType="next"
           width="250px"
         />
