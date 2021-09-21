@@ -11,6 +11,8 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
 import MindleInfo from '@screens/MindleInfo';
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
@@ -34,7 +36,6 @@ const requestPermission = async () => {
   }
 };
 //안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
-
 // 민들레 정보
 
 //메인페이지 컴포넌트 시작
@@ -119,7 +120,29 @@ const Maps = ({ navigation }) => {
   const [test, setTest] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   const [mindles, setMindles] = useState([]);
-  //초기 위치에서 10m 이상 차이 발생시 새로운 좌표 값 설정
+  const [ApiData, setAPIDATA] = useState([]);
+  //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
+  const levelToRadius = (num) => {
+    if (num == 1) {
+      return 30;
+    } else {
+      return 50;
+    }
+  };
+  //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
+  const distance = (mindlePOS, currnetPOS) => {
+    return (
+      Math.sqrt(
+        Math.pow(mindlePOS.location.latitude - currnetPOS.latitude, 2) +
+          Math.pow(mindlePOS.location.longitude - currnetPOS.longitude, 2),
+      ) <
+      0.00001 * levelToRadius(mindlePOS.level)
+    );
+  };
+  const jwtToken = useRecoilValue(userState.uidState);
+  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.headers.common['x-access-token'] = jwtToken;
+  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
   useEffect(() => {
     //GPS 이용 승인
     requestPermission().then((result) => {
@@ -127,7 +150,7 @@ const Maps = ({ navigation }) => {
       if (result == 'granted') {
         //변화된 좌표 값 획득
         Geolocation.watchPosition(
-          (position) => {
+          async (position) => {
             /*
             {
               "coords": {
@@ -152,26 +175,61 @@ const Maps = ({ navigation }) => {
             //지도에서 현재 기준으로 삼고 있는 위치 최신화
             //현재 사용자 위치에서 위도를 0.0015로 높게 설정
             setRegion({
-              latitude: position.coords.latitude + 0.0015,
+              latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
             });
 
-            //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
-            const distance = (mindlePOS, currnetPOS) => {
-              return (
-                Math.sqrt(
-                  Math.pow(mindlePOS.latitude - currnetPOS.latitude, 2) +
-                    Math.pow(mindlePOS.longitude - currnetPOS.longitude, 2),
-                ) <
-                0.00001 * mindlePOS.radius
-              );
-            };
-
             //초기 메인 버튼을 민들레 심기로 설정
             setBtnToggle(false);
+            await axios
+              .post('/dandelion/get', {
+                //위도 값, 경도 값 json 형식으로 post 전송
+                centerPosition: {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                },
+                maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
+              })
+              .then((res) => {
+                //올바른 데이터 전송시
+                if (res.data.status === 'SUCCESS') {
+                  //! 추후 res 데이터 값에 따라 변경
+                  //mindles에 저장할 임시 데이터 생성
+                  const mindleList = res.data.data.map((props) => {
+                    // console.log('positon.coords2', position.coords);
+                    //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+                    if (distance(props, position.coords)) {
+                      setBtnToggle(true);
+                      //console.log('버튼변경');
+                    }
+                    //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
+                    return {
+                      latitude: props.location.latitude,
+                      longitude: props.location.longitude,
+                      title: props.name,
+                      description: props.name,
+                      src: props.src,
+                      radius: levelToRadius(props.level),
+                      overlap: distance(props, position.coords),
+                    };
+                  });
+                  //console.log(mindleList);
+                  // console.log(dummy.data);
 
+                  //임시로 만든 mindleList 값을 mindles에 저장
+                  setMindles(mindleList);
+                  // console.log(mindleList);
+                } else if (res.data.status === 'FAILED') {
+                  //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
+                  Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
+                }
+              })
+              .catch((err) => {
+                //예상치 못한 오류 발생시
+                Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+              });
             //------API 구현시 백엔드로 부터 민들레 데이터 가져오는 부분----------------------
             /*
               예상되어지는 데이터 값
@@ -199,79 +257,32 @@ const Maps = ({ navigation }) => {
                 ]
               }
               */
-            /*
-            //API로 데이터 요청 부분
-            await axios
-              .post('http://10.0.2.2:3000/(현재 위치 근방 민들레 가져오는 API)', {
-                //위도 값, 경도 값 json 형식으로 post 전송
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-              })
-              .then((res) => {
-                //올바른 데이터 전송시
-                if (res.data.status === 'SUCCESS') {
-                  //! 추후 res 데이터 값에 따라 변경
-                  //mindles에 저장할 임시 데이터 생성
-                  const mindleList = res.data.data.map((props) => {
-                    // console.log('positon.coords2', position.coords);
-                    //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경 
-                    if (distance(props, position.coords)) {
-                      setBtnToggle(true); 
-                      //console.log('버튼변경');
-                    }
-                    //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
-                    return {
-                      latitude: props.latitude,
-                      longitude: props.longitude,
-                      title: props.title,
-                      description: props.description,
-                      src: props.src,
-                      radius: props.radius,
-                      overlap: distance(props, position.coords),
-                    };
-                  });
-                  //console.log(mindleList);
-                  // console.log(dummy.data);
-                  
-                  //임시로 만든 mindleList 값을 mindles에 저장
-                  setMindles(mindleList);
-                  // console.log(mindleList);
-                } else if (res.data.status === 'FAILED') {
-                  //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
-                  Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
-                }
-              })
-              .catch((err) => {
-                //예상치 못한 오류 발생시
-                Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-              });
-              */
-            //------API 구현시 백엔드로 부터 민들레 데이터 가져오는 부분----------------------
 
             //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
-            const mindleList = dummy.data.map((props) => {
-              // console.log('positon.coords2', position.coords);
+            // const mindleList = ApiData.map((props) => {
+            //   // console.log('positon.coords2', position.coords);
 
-              //현재 사용자 위치와 민들레가 겹칠 경우 민들레 심기에서 입장으로 변경
-              if (distance(props, position.coords)) {
-                setBtnToggle(true);
-                console.log('버튼변경');
-              }
-              //얻은 데이터에서 거리를 측정하여 overlap attr 추가 -> 민들레 색상 및 동작 함수 변경 예정
-              return {
-                latitude: props.latitude,
-                longitude: props.longitude,
-                title: props.title,
-                description: props.description,
-                src: props.src,
-                radius: props.radius,
-                overlap: distance(props, position.coords),
-              };
-            });
+            //   //현재 사용자 위치와 민들레가 겹칠 경우 민들레 심기에서 입장으로 변경
+            //   if (distance(props, position.coords)) {
+            //     setBtnToggle(true);
+            //     console.log('버튼변경');
+            //   }
+            //   //얻은 데이터에서 거리를 측정하여 overlap attr 추가 -> 민들레 색상 및 동작 함수 변경 예정
+            //   return {
+            //     latitude: props.location.latitude,
+            //     longitude: props.location.longitude,
+            //     title: props.name,
+            //     description: props.name,
+            //     key: props._id,
+            //     src: props.src,
+            //     radius: levelToRadius(props.level),
+            //     overlap: distance(props, position.coords),
+            //   };
+            // });
             //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
 
             //임시로 생성된 mindleList 값을 mindles에 저장
-            setMindles(mindleList);
+            // setMindles(mindleList);
           },
           //Geolocation.watchPosition 에러 발생
           (error) => {
@@ -281,7 +292,7 @@ const Maps = ({ navigation }) => {
             //높은 정확도 설정
             enableHighAccuracy: true,
             //재측정할 변화 차이
-            distanceFilter: 10,
+            distanceFilter: 20,
           },
         );
       }
@@ -294,8 +305,9 @@ const Maps = ({ navigation }) => {
   };
 
   //지도의 기준 좌표가 변경시 호출 되는 함수
-  const onRegionChange = (region) => {
-    console.log('currnet : ', region);
+  const onRegionChange = async (pos) => {
+    console.log('currnet : ', pos);
+
     /*const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
     const latDelta = test.coords.accuracy / oneDegreeOfLatitudeInMeters;
     const longDelta =
