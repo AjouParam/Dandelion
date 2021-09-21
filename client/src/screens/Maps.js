@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
@@ -201,7 +201,15 @@ const Maps = ({ navigation }) => {
                     // console.log('positon.coords2', position.coords);
                     //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
                     if (distance(props, position.coords)) {
-                      setCurrentMindle(props);
+                      setCurrentMindle({
+                        latitude: props.location.latitude,
+                        longitude: props.location.longitude,
+                        title: props.name,
+                        description: props.description,
+                        src: props.src,
+                        radius: levelToRadius(props.level),
+                        overlap: distance(props, position.coords),
+                      });
                       setBtnToggle(true);
                       //console.log('버튼변경');
                     }
@@ -367,7 +375,7 @@ const Maps = ({ navigation }) => {
     setClickedMindleInfo({
       name: mindle.title,
       madeby: '창시자', //데이터 필요
-      description: mindleInfo.description,
+      description: mindle.description,
       visitCount: 18, //데이터 필요
       current: 1, //데이터 필요
     });
