@@ -9,6 +9,7 @@ const Container = styled.View`
   padding: 15px 15px;
   height: 100%;
   background-color: #ffffff;
+  justify-content: center;
 `;
 
 const Divider = styled.View`
@@ -86,7 +87,14 @@ const BoardTipContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
-
+const Tab = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 50px;
+  padding: 5px;
+  justify-content: space-evenly;
+`;
 const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes, commentsNum }) => {
   return (
     <>
@@ -111,7 +119,7 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
           </BoardContentImageContainer>
           <BoardTipContainer>
             <Text>Like {likes}</Text>
-            <Text>Comments {commentsNum}</Text>
+            <Text>Cormments {commentsNum}</Text>
           </BoardTipContainer>
         </BoardContents>
       </BoardContainer>
@@ -120,7 +128,7 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
 };
 const MindleInfo = (props) => {
   const [page, setPage] = useState(0);
-  const [mindleInfo, setMindleInfo] = useState({ name: '', madeby: '', hashtag: [], visitCount: '', current: '' });
+  const [mindleInfo, setMindleInfo] = useState({ name: '', madeby: '', description: '', visitCount: '', current: '' });
   let DATA = [
     {
       userPhoto:
@@ -206,19 +214,32 @@ const MindleInfo = (props) => {
     },
   ];
 
+  const [tabIndex, setTabIndex] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [inMindle, setInMindle] = useState();
 
   useEffect(() => {
+    setLoading(true);
+    setInMindle(true);
     setMindleInfo(props.mindleInfo);
+    setTabIndex(0);
+    setData(DATA);
     setTimeout(() => {
       if (mindleInfo) console.log(mindleInfo);
-    }, 200);
+      setLoading(false);
+    }, 2000);
     //setLoading(true);
     //getData();
-    setData(DATA);
   }, []);
 
+  useEffect(() => {
+    //TODO : data 불러왔는지 확인 후 안불러왔으면 로딩, 데이터 불러오기
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [tabIndex]);
   const renderItem = ({ item }) => {
     return (
       <>
@@ -258,30 +279,68 @@ const MindleInfo = (props) => {
     <>
       <Container>
         {/* <Header /> */}
-
-        <FlatList
-          style={{ zIndex: 1 }}
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item, idx) => String(idx)}
-          //onEndReached={handleLoadMore}
-          //onEndReachedThreshold={0.4}
-          ListHeaderComponent={() => (
-            <>
-              <ImageContainer>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-                <Image></Image>
-              </ImageContainer>
-              <Divider />
-            </>
-          )}
-        />
+        {!loading && (
+          <FlatList
+            style={{ zIndex: 1 }}
+            data={tabIndex === 0 ? data : [0]}
+            renderItem={
+              tabIndex === 0
+                ? renderItem
+                : () => (
+                    <View>
+                      <Text>이벤트 목록</Text>
+                    </View>
+                  )
+            }
+            keyExtractor={(item, idx) => String(idx)}
+            //onEndReached={handleLoadMore}
+            //onEndReachedThreshold={0.4}
+            ListHeaderComponent={() => (
+              <>
+                <ImageContainer>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                  <Image></Image>
+                </ImageContainer>
+                <Divider />
+                <Tab>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setTabIndex(0);
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '50%',
+                      backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+                    }}
+                  >
+                    <Text>게시글</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setTabIndex(1);
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '50%',
+                      backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+                    }}
+                  >
+                    <Text>이벤트</Text>
+                  </TouchableOpacity>
+                </Tab>
+              </>
+            )}
+          />
+        )}
+        {loading && <ActivityIndicator size="large" color="0000ff" />}
       </Container>
     </>
   );

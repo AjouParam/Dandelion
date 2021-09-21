@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
@@ -46,7 +46,7 @@ const Maps = ({ navigation }) => {
   const [clickedMindleInfo, setClickedMindleInfo] = useState({
     name: '',
     madeby: '',
-    hashtag: [],
+    description: [],
     visitCount: '',
     current: '',
   });
@@ -81,12 +81,9 @@ const Maps = ({ navigation }) => {
                 <Text>실시간 {clickedMindleInfo.current}</Text>
               </View>
             </View>
-            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5 }}>
-              {clickedMindleInfo.hashtag.map((item, idx) => (
-                <View key={idx} style={{ marginRight: 10 }}>
-                  <Text>{item}</Text>
-                </View>
-              ))}
+
+            <View style={{ marginRight: 10 }}>
+              <Text>{clickedMindleInfo.description}</Text>
             </View>
           </View>
         </>
@@ -117,8 +114,9 @@ const Maps = ({ navigation }) => {
     latitudeDelta: 0.0001,
     longitudeDelta: 0.003,
   });
-  const [test, setTest] = useState({});
+  const [currentMindle, setCurrentMindle] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
+  //TODO : useMemo
   const [mindles, setMindles] = useState([]);
   const [ApiData, setAPIDATA] = useState([]);
   //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
@@ -139,11 +137,13 @@ const Maps = ({ navigation }) => {
       0.00001 * levelToRadius(mindlePOS.level)
     );
   };
+
   const jwtToken = useRecoilValue(userState.uidState);
-  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-  axios.defaults.headers.common['x-access-token'] = jwtToken;
-  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
   useEffect(() => {
+    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.headers.common['x-access-token'] = jwtToken;
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     //GPS 이용 승인
     requestPermission().then((result) => {
       //사용자 승인 후 좌표 값 획득
@@ -171,7 +171,7 @@ const Maps = ({ navigation }) => {
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
             // console.log('positon.coords', position.coords);
-            setTest(position);
+
             //지도에서 현재 기준으로 삼고 있는 위치 최신화
             //현재 사용자 위치에서 위도를 0.0015로 높게 설정
             setRegion({
@@ -201,6 +201,15 @@ const Maps = ({ navigation }) => {
                     // console.log('positon.coords2', position.coords);
                     //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
                     if (distance(props, position.coords)) {
+                      setCurrentMindle({
+                        latitude: props.location.latitude,
+                        longitude: props.location.longitude,
+                        title: props.name,
+                        description: props.description,
+                        src: props.src,
+                        radius: levelToRadius(props.level),
+                        overlap: distance(props, position.coords),
+                      });
                       setBtnToggle(true);
                       //console.log('버튼변경');
                     }
@@ -209,7 +218,7 @@ const Maps = ({ navigation }) => {
                       latitude: props.location.latitude,
                       longitude: props.location.longitude,
                       title: props.name,
-                      description: props.name,
+                      description: props.description,
                       src: props.src,
                       radius: levelToRadius(props.level),
                       overlap: distance(props, position.coords),
@@ -355,21 +364,32 @@ const Maps = ({ navigation }) => {
     },
   });
 
-  const getClickedMindleInfo = () => {
+  const getClickedMindleInfo = (mindle) => {
     const mindleInfo = {
       name: '동관 앞',
       madeby: '창시자',
-      hashtag: ['#아주대', '#공대', '#뿌셔', '#졸려'],
+      description: '#아주대 #공대 #뿌셔 #졸려',
       visitCount: 6,
       current: 2,
     };
-    setClickedMindleInfo(mindleInfo);
+    setClickedMindleInfo({
+      name: mindle.title,
+      madeby: '창시자', //데이터 필요
+      description: mindle.description,
+      visitCount: 18, //데이터 필요
+      current: 1, //데이터 필요
+    });
   };
 
   //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
-      <CreateMindle modalVisible={modalVisible} setModalVisible={setModalVisible} position={location} />
+      <CreateMindle
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        position={location}
+        setMindles={setMindles}
+      />
 
       <BottomSheet
         ref={bottomSheet}
@@ -414,15 +434,10 @@ const Maps = ({ navigation }) => {
                 src={mindle1}
                 radius={props.radius}
                 overlap={props.overlap}
-                //겹치는 경우 민들레 심기 아닌 경우 민들레 입장
-                onPress={
-                  props.overlap
-                    ? () => Alert.alert('민들레 심기 정상')
-                    : () => {
-                        getClickedMindleInfo();
-                        bottomSheet.current.snapTo(1);
-                      }
-                }
+                onPress={() => {
+                  getClickedMindleInfo(props);
+                  bottomSheet.current.snapTo(1);
+                }}
               />
             );
           })}
@@ -445,7 +460,8 @@ const Maps = ({ navigation }) => {
               title={'민들레 입장'}
               onPress={() => {
                 //TODO : 민들레 입장
-                Alert.alert('현재 좌표값', 'latitude : ' + location.latitude + '\nlongitude : ' + location.longitude); //좌표값 확인을 위한 팝업
+                getClickedMindleInfo(currentMindle);
+                bottomSheet.current.snapTo(1);
               }}
               width="200px"
               height="60px"
