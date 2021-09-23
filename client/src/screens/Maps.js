@@ -369,7 +369,7 @@ const Maps = ({ navigation }) => {
                 description: props.description,
                 src: props.src,
                 radius: levelToRadius(props.level),
-                overlap: distance(props, position.coords),
+                overlap: distance(props, location),
                 key: props._id,
               });
               setBtnToggle(true);
