@@ -21,6 +21,7 @@ const StyledText = styled.Text`
   font-size: 16px;
   font-weight: 600;
 `;
+
 //안드로이드 혹은 ios에서 지도 사용 승인 절차
 const requestPermission = async () => {
   try {
@@ -109,8 +110,8 @@ const Maps = ({ navigation }) => {
 
   //지도에서 현재 기준으로 삼고 있는 위치
   const [region, setRegion] = useState({
-    latitude: 37.280675,
-    longitude: 127.043705,
+    latitude: 0,
+    longitude: 0,
     latitudeDelta: 0.0001,
     longitudeDelta: 0.003,
   });
@@ -118,7 +119,6 @@ const Maps = ({ navigation }) => {
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
-  const [ApiData, setAPIDATA] = useState([]);
   //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
   const levelToRadius = (num) => {
     if (num == 1) {
@@ -170,17 +170,7 @@ const Maps = ({ navigation }) => {
 
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
-            // console.log('positon.coords', position.coords);
-
-            //지도에서 현재 기준으로 삼고 있는 위치 최신화
-            //현재 사용자 위치에서 위도를 0.0015로 높게 설정
-            setRegion({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.0001,
-              longitudeDelta: 0.003,
-            });
-
+            console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
             //초기 메인 버튼을 민들레 심기로 설정
             setBtnToggle(false);
             await axios
@@ -209,6 +199,7 @@ const Maps = ({ navigation }) => {
                         src: props.src,
                         radius: levelToRadius(props.level),
                         overlap: distance(props, position.coords),
+                        key: props._id,
                       });
                       setBtnToggle(true);
                       //console.log('버튼변경');
@@ -222,6 +213,7 @@ const Maps = ({ navigation }) => {
                       src: props.src,
                       radius: levelToRadius(props.level),
                       overlap: distance(props, position.coords),
+                      key: props._id,
                     };
                   });
                   //console.log(mindleList);
@@ -307,23 +299,156 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-
+  const [reload, setReload] = useState(false);
+  const [initregion, setInitRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0001,
+    longitudeDelta: 0.003,
+  });
   //지도가 준비 될 경우 실행되는 함수
   const updateMapStyle = () => {
     setMapWidth('100%');
+    //지도에서 현재 기준으로 삼고 있는 위치 최신화
+
+    requestPermission().then((result) => {
+      if (result === 'granted') {
+        Geolocation.getCurrentPosition(
+          (pos) => {
+            setRegion({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              latitudeDelta: 0.0001,
+              longitudeDelta: 0.003,
+            });
+            setInitRegion({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              latitudeDelta: 0.0001,
+              longitudeDelta: 0.003,
+            });
+
+            console.log('UpdateMap', pos);
+          },
+          (error) => {
+            console.log(error);
+          },
+          { enableHighAccuracy: true, timeout: 3600, maximumAge: 3600 },
+        );
+      }
+    });
   };
 
-  //지도의 기준 좌표가 변경시 호출 되는 함수
-  const onRegionChange = async (pos) => {
-    console.log('currnet : ', pos);
+  const getData = async () => {
+    //초기 메인 버튼을 민들레 심기로 설정
+    //setBtnToggle(false);
+    //console.log('getData: latitude', curregion.latitude, 'longitude:', curregion.longitude);
+    setReload(false);
+    //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
+    const mindleList = ApiData.map((props) => {
+      // console.log('positon.coords2', position.coords);
 
-    /*const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
-    const latDelta = test.coords.accuracy / oneDegreeOfLatitudeInMeters;
-    const longDelta =
-      test.coords.accuracy / (oneDegreeOfLatitudeInMeters * Math.cos(test.coords.latitude * (Math.PI / 180)));
-    console.log(test);
-    console.log(latDelta, longDelta);
-    */
+      //현재 사용자 위치와 민들레가 겹칠 경우 민들레 심기에서 입장으로 변경
+      if (distance(props, position.coords)) {
+        setBtnToggle(true);
+        console.log('버튼변경');
+      }
+      //얻은 데이터에서 거리를 측정하여 overlap attr 추가 -> 민들레 색상 및 동작 함수 변경 예정
+      return {
+        latitude: props.location.latitude,
+        longitude: props.location.longitude,
+        title: props.name,
+        description: props.name,
+        key: props._id,
+        src: props.src,
+        radius: levelToRadius(props.level),
+        overlap: distance(props, position.coords),
+      };
+    });
+    setMindles(mindleList);
+    //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
+    // await axios
+    //   .post('/dandelion/get', {
+    //     //위도 값, 경도 값 json 형식으로 post 전송
+    //     centerPosition: {
+    //       latitude: region.latitude,
+    //       longitude: region.longitude,
+    //     },
+    //     maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
+    //   })
+    //   .then((res) => {
+    //     //올바른 데이터 전송시
+    //     if (res.data.status === 'SUCCESS') {
+    //       //! 추후 res 데이터 값에 따라 변경
+    //       //mindles에 저장할 임시 데이터 생성
+    //       const mindleList = res.data.data.map((props) => {
+    //         // console.log('positon.coords2', position.coords);
+    //         //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+    //         if (distance(props, position.coords)) {
+    //           setCurrentMindle({
+    //             latitude: props.location.latitude,
+    //             longitude: props.location.longitude,
+    //             title: props.name,
+    //             description: props.description,
+    //             src: props.src,
+    //             radius: levelToRadius(props.level),
+    //             overlap: distance(props, position.coords),
+    //             key: props._id,
+    //           });
+    //           setBtnToggle(true);
+    //           //console.log('버튼변경');
+    //         }
+    //         //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
+    //         return {
+    //           latitude: props.location.latitude,
+    //           longitude: props.location.longitude,
+    //           title: props.name,
+    //           description: props.description,
+    //           src: props.src,
+    //           radius: levelToRadius(props.level),
+    //           overlap: distance(props, position.coords),
+    //           key: props._id,
+    //         };
+    //       });
+    //       //console.log(mindleList);
+    //       // console.log(dummy.data);
+
+    //       //임시로 만든 mindleList 값을 mindles에 저장
+    //       setMindles(mindleList);
+    //       // console.log(mindleList);
+    //     } else if (res.data.status === 'FAILED') {
+    //       //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
+    //       Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     //예상치 못한 오류 발생시
+    //     Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.', err);
+    //   });
+    // //------API 구현시 백엔드로 부터 민들레 데이터 가져오는 부분----------------------
+  };
+  //지도의 기준 좌표가 변경시 호출 되는 함수
+  const onRegionChange = (pos) => {
+    if (
+      Math.abs(region.latitude - initregion.latitude) > 0.0000005 ||
+      Math.abs(region.longitude - initregion.longitude) > 0.0000005
+    ) {
+      setReload(true);
+      setRegion({
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        latitudeDelta: 0.0001,
+        longitudeDelta: 0.003,
+      });
+    } else if (pos.latitude != 0 || pos.longitude != 0) {
+      setReload(false);
+      setRegion({
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        latitudeDelta: 0.0001,
+        longitudeDelta: 0.003,
+      });
+    }
   };
 
   //지도에서 사용되어지는 StyleSheet
@@ -424,9 +549,11 @@ const Maps = ({ navigation }) => {
         >
           {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
           {mindles.map((props, index) => {
+            console.log('index:', index);
             return (
               <Mindle
-                key={String(index)} //TODO : 올바른 key 값으로 수정 필요
+                // key={String(index)} //TODO : 올바른 key 값으로 수정 필요
+                key={props.key}
                 latitude={props.latitude}
                 longitude={props.longitude}
                 title={props.title}
@@ -510,6 +637,15 @@ const Maps = ({ navigation }) => {
           <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
         </View>
         {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
+        <View
+          style={{
+            position: 'absolute',
+            top: '3%',
+            alignSelf: 'center',
+          }}
+        >
+          {reload && <Button title={'이 지역에서 재검색'} onPress={() => getData()} />}
+        </View>
       </Animated.View>
     </Container>
   );
