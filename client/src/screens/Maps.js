@@ -187,8 +187,7 @@ const Maps = ({ navigation }) => {
                 if (res.data.status === 'SUCCESS') {
                   //! 추후 res 데이터 값에 따라 변경
                   //mindles에 저장할 임시 데이터 생성
-                  const mindleList = res.data.data.map((props) => {
-                    // console.log('positon.coords2', position.coords);
+                  const mindleList = res.data.data.map((props, index) => {
                     //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
                     if (distance(props, position.coords)) {
                       setCurrentMindle({
@@ -221,7 +220,6 @@ const Maps = ({ navigation }) => {
 
                   //임시로 만든 mindleList 값을 mindles에 저장
                   setMindles(mindleList);
-                  // console.log(mindleList);
                 } else if (res.data.status === 'FAILED') {
                   //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
                   Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
@@ -358,7 +356,9 @@ const Maps = ({ navigation }) => {
         if (res.data.status === 'SUCCESS') {
           //! 추후 res 데이터 값에 따라 변경
           //mindles에 저장할 임시 데이터 생성
-          const mindleList = res.data.data.map((props) => {
+          console.log('res status:', res.data.data);
+
+          const list = res.data.data.map((props) => {
             // console.log('positon.coords2', position.coords);
             //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
             if (distance(props, location)) {
@@ -376,31 +376,34 @@ const Maps = ({ navigation }) => {
               //console.log('버튼변경');
             }
             //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
+            console.log('after return', props);
             return {
               latitude: props.location.latitude,
               longitude: props.location.longitude,
               title: props.name,
-              description: props.description,
-              src: props.src,
+              description: props.description, //이게 없는데요?
+              src: props.src, //이것도 없고
               radius: levelToRadius(props.level),
-              overlap: distance(props, position.coords),
+              overlap: distance(props, location),
               key: props._id,
             };
           });
+          return list;
           //console.log(mindleList);
           // console.log(dummy.data);
-
-          //임시로 만든 mindleList 값을 mindles에 저장
-          setMindles(mindleList);
           // console.log(mindleList);
         } else if (res.data.status === 'FAILED') {
           //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
           Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
         }
       })
+      .then((list) => {
+        console.log('Search Mindle:', list);
+        setMindles(list);
+      })
       .catch((err) => {
         //예상치 못한 오류 발생시
-        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.', err);
+        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       });
     // //------API 구현시 백엔드로 부터 민들레 데이터 가져오는 부분----------------------
   };
