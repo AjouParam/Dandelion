@@ -180,7 +180,7 @@ const Maps = ({ navigation }) => {
                   latitude: position.coords.latitude,
                   longitude: position.coords.longitude,
                 },
-                maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
+                maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
               })
               .then((res) => {
                 //올바른 데이터 전송시
@@ -297,8 +297,13 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-  const [reload, setReload] = useState(false);
   const [initregion, setInitRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0001,
+    longitudeDelta: 0.003,
+  });
+  const [BaseRegion, setBaseRegion] = useState({
     latitude: 0,
     longitude: 0,
     latitudeDelta: 0.0001,
@@ -325,6 +330,12 @@ const Maps = ({ navigation }) => {
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
             });
+            setBaseRegion({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+              latitudeDelta: 0.0001,
+              longitudeDelta: 0.003,
+            });
 
             console.log('UpdateMap', pos);
           },
@@ -337,19 +348,18 @@ const Maps = ({ navigation }) => {
     });
   };
 
-  const getData = async () => {
+  const getData = async (latitude, longitude) => {
     //초기 메인 버튼을 민들레 심기로 설정
     //setBtnToggle(false);
     //console.log('getData: latitude', curregion.latitude, 'longitude:', curregion.longitude);
-    setReload(false);
     await axios
       .post('/dandelion/get', {
         //위도 값, 경도 값 json 형식으로 post 전송
         centerPosition: {
-          latitude: region.latitude,
-          longitude: region.longitude,
+          latitude: latitude,
+          longitude: longitude,
         },
-        maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
+        maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
       })
       .then((res) => {
         //올바른 데이터 전송시
@@ -376,7 +386,6 @@ const Maps = ({ navigation }) => {
               //console.log('버튼변경');
             }
             //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
-            console.log('after return', props);
             return {
               latitude: props.location.latitude,
               longitude: props.location.longitude,
@@ -388,7 +397,7 @@ const Maps = ({ navigation }) => {
               key: props._id,
             };
           });
-          return list;
+          setMindles(list);
           //console.log(mindleList);
           // console.log(dummy.data);
           // console.log(mindleList);
@@ -396,10 +405,6 @@ const Maps = ({ navigation }) => {
           //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
           Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
         }
-      })
-      .then((list) => {
-        console.log('Search Mindle:', list);
-        setMindles(list);
       })
       .catch((err) => {
         //예상치 못한 오류 발생시
@@ -409,24 +414,42 @@ const Maps = ({ navigation }) => {
   };
   //지도의 기준 좌표가 변경시 호출 되는 함수
   const onRegionChange = (pos) => {
+    console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
     if (
       Math.abs(region.latitude - initregion.latitude) > 0.0000005 ||
       Math.abs(region.longitude - initregion.longitude) > 0.0000005
     ) {
-      setReload(true);
-      setRegion({
-        latitude: pos.latitude,
-        longitude: pos.longitude,
-        latitudeDelta: 0.0001,
-        longitudeDelta: 0.003,
-      });
+      if (
+        Math.abs(BaseRegion.latitude - pos.latitude) > BaseRegion.latitudeDelta / 4 ||
+        Math.abs(BaseRegion.longitude - pos.longitude) > BaseRegion.longitudeDelta / 8
+      ) {
+        setBaseRegion({
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+          latitudeDelta: pos.latitudeDelta,
+          longitudeDelta: pos.longitudeDelta,
+        });
+        setRegion({
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+          latitudeDelta: pos.latitudeDelta,
+          longitudeDelta: pos.longitudeDelta,
+        });
+        getData(pos.latitude, pos.longitude);
+      } else {
+        setRegion({
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+          latitudeDelta: pos.latitudeDelta,
+          longitudeDelta: pos.longitudeDelta,
+        });
+      }
     } else if (pos.latitude != 0 || pos.longitude != 0) {
-      setReload(false);
       setRegion({
         latitude: pos.latitude,
         longitude: pos.longitude,
-        latitudeDelta: 0.0001,
-        longitudeDelta: 0.003,
+        latitudeDelta: pos.latitudeDelta,
+        longitudeDelta: pos.longitudeDelta,
       });
     }
   };
@@ -520,6 +543,8 @@ const Maps = ({ navigation }) => {
           showsUserLocation={true}
           showsMyLocationButton={true}
           region={region}
+          maxZoomLevel={19}
+          minZoomLevel={17}
           onMapReady={() => {
             updateMapStyle();
           }}
@@ -529,7 +554,6 @@ const Maps = ({ navigation }) => {
         >
           {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
           {mindles.map((props, index) => {
-            console.log('index:', index);
             return (
               <Mindle
                 // key={String(index)} //TODO : 올바른 key 값으로 수정 필요
@@ -617,15 +641,6 @@ const Maps = ({ navigation }) => {
           <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
         </View>
         {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
-        <View
-          style={{
-            position: 'absolute',
-            top: '3%',
-            alignSelf: 'center',
-          }}
-        >
-          {reload && <Button title={'이 지역에서 재검색'} onPress={() => getData()} />}
-        </View>
       </Animated.View>
     </Container>
   );
