@@ -344,87 +344,64 @@ const Maps = ({ navigation }) => {
     //setBtnToggle(false);
     //console.log('getData: latitude', curregion.latitude, 'longitude:', curregion.longitude);
     setReload(false);
-    //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
-    const mindleList = ApiData.map((props) => {
-      // console.log('positon.coords2', position.coords);
+    await axios
+      .post('/dandelion/get', {
+        //위도 값, 경도 값 json 형식으로 post 전송
+        centerPosition: {
+          latitude: region.latitude,
+          longitude: region.longitude,
+        },
+        maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
+      })
+      .then((res) => {
+        //올바른 데이터 전송시
+        if (res.data.status === 'SUCCESS') {
+          //! 추후 res 데이터 값에 따라 변경
+          //mindles에 저장할 임시 데이터 생성
+          const mindleList = res.data.data.map((props) => {
+            // console.log('positon.coords2', position.coords);
+            //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+            if (distance(props, location)) {
+              setCurrentMindle({
+                latitude: props.location.latitude,
+                longitude: props.location.longitude,
+                title: props.name,
+                description: props.description,
+                src: props.src,
+                radius: levelToRadius(props.level),
+                overlap: distance(props, position.coords),
+                key: props._id,
+              });
+              setBtnToggle(true);
+              //console.log('버튼변경');
+            }
+            //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
+            return {
+              latitude: props.location.latitude,
+              longitude: props.location.longitude,
+              title: props.name,
+              description: props.description,
+              src: props.src,
+              radius: levelToRadius(props.level),
+              overlap: distance(props, position.coords),
+              key: props._id,
+            };
+          });
+          //console.log(mindleList);
+          // console.log(dummy.data);
 
-      //현재 사용자 위치와 민들레가 겹칠 경우 민들레 심기에서 입장으로 변경
-      if (distance(props, position.coords)) {
-        setBtnToggle(true);
-        console.log('버튼변경');
-      }
-      //얻은 데이터에서 거리를 측정하여 overlap attr 추가 -> 민들레 색상 및 동작 함수 변경 예정
-      return {
-        latitude: props.location.latitude,
-        longitude: props.location.longitude,
-        title: props.name,
-        description: props.name,
-        key: props._id,
-        src: props.src,
-        radius: levelToRadius(props.level),
-        overlap: distance(props, position.coords),
-      };
-    });
-    setMindles(mindleList);
-    //------API 구현전 '../utils/dummy.json'에서 가져오는 더미 데이터로 구현------
-    // await axios
-    //   .post('/dandelion/get', {
-    //     //위도 값, 경도 값 json 형식으로 post 전송
-    //     centerPosition: {
-    //       latitude: region.latitude,
-    //       longitude: region.longitude,
-    //     },
-    //     maxDistance: 100, //maxDistance는 최대 몇 m까지 불러올 것인가
-    //   })
-    //   .then((res) => {
-    //     //올바른 데이터 전송시
-    //     if (res.data.status === 'SUCCESS') {
-    //       //! 추후 res 데이터 값에 따라 변경
-    //       //mindles에 저장할 임시 데이터 생성
-    //       const mindleList = res.data.data.map((props) => {
-    //         // console.log('positon.coords2', position.coords);
-    //         //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-    //         if (distance(props, position.coords)) {
-    //           setCurrentMindle({
-    //             latitude: props.location.latitude,
-    //             longitude: props.location.longitude,
-    //             title: props.name,
-    //             description: props.description,
-    //             src: props.src,
-    //             radius: levelToRadius(props.level),
-    //             overlap: distance(props, position.coords),
-    //             key: props._id,
-    //           });
-    //           setBtnToggle(true);
-    //           //console.log('버튼변경');
-    //         }
-    //         //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
-    //         return {
-    //           latitude: props.location.latitude,
-    //           longitude: props.location.longitude,
-    //           title: props.name,
-    //           description: props.description,
-    //           src: props.src,
-    //           radius: levelToRadius(props.level),
-    //           overlap: distance(props, position.coords),
-    //           key: props._id,
-    //         };
-    //       });
-    //       //console.log(mindleList);
-    //       // console.log(dummy.data);
-
-    //       //임시로 만든 mindleList 값을 mindles에 저장
-    //       setMindles(mindleList);
-    //       // console.log(mindleList);
-    //     } else if (res.data.status === 'FAILED') {
-    //       //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
-    //       Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     //예상치 못한 오류 발생시
-    //     Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.', err);
-    //   });
+          //임시로 만든 mindleList 값을 mindles에 저장
+          setMindles(mindleList);
+          // console.log(mindleList);
+        } else if (res.data.status === 'FAILED') {
+          //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
+          Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
+        }
+      })
+      .catch((err) => {
+        //예상치 못한 오류 발생시
+        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.', err);
+      });
     // //------API 구현시 백엔드로 부터 민들레 데이터 가져오는 부분----------------------
   };
   //지도의 기준 좌표가 변경시 호출 되는 함수
