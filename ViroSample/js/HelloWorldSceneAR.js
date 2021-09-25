@@ -4,7 +4,15 @@ import React, { Component } from 'react';
 
 import { StyleSheet } from 'react-native';
 
-import { ViroARScene, ViroText, ViroConstants, ViroButton, ViroAnimations } from 'react-viro';
+import {
+  ViroARScene,
+  ViroText,
+  ViroConstants,
+  ViroButton,
+  ViroAnimations,
+  ViroPolyline,
+  ViroMaterials,
+} from 'react-viro';
 
 export default class HelloWorldSceneAR extends Component {
   constructor() {
@@ -39,6 +47,17 @@ export default class HelloWorldSceneAR extends Component {
           animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
         />
+
+        <ViroPolyline
+          position={[0, 2, -5]}
+          points={[
+            [0, 0, 0],
+            [0.5, 0.5, 0.5],
+            [1, 0, 0],
+          ]}
+          thickness={0.2}
+          materials={'white'}
+        />
       </ViroARScene>
     );
   }
@@ -59,6 +78,12 @@ ViroAnimations.registerAnimations({
   moveRight: { properties: { positionX: '+=0.5' }, duration: 1000 },
   moveLeft: { properties: { positionX: '-=0.5' }, duration: 1000 },
   moveLeftandRight: [['moveRight', 'moveLeft', 'moveLeft', 'moveRight']],
+});
+
+ViroMaterials.createMaterials({
+  white: {
+    diffuseColor: '#ffffff',
+  },
 });
 
 var styles = StyleSheet.create({
