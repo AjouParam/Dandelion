@@ -27,7 +27,6 @@ const requestPermission = async () => {
     if (Platform.OS === 'ios') {
       return await Geolocation.requestAuthorization('always');
     }
-    // 안드로이드 위치 정보 수집 권한 요청
     if (Platform.OS === 'android') {
       return await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
     }
@@ -36,9 +35,7 @@ const requestPermission = async () => {
   }
 };
 //안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
-// 민들레 정보
 
-//메인페이지 컴포넌트 시작
 const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
   const fall = new Animated.Value(2);
@@ -51,11 +48,49 @@ const Maps = ({ navigation }) => {
     current: '',
   });
 
+  //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
+  const [mapWidth, setMapWidth] = useState('99%');
+
+  //사용자와 서클이 겹침에 따라 버튼 구별
+  const [btnToggle, setBtnToggle] = useState();
+
+  //현재 사용자 위치
+  const [location, setLocation] = useState({
+    accuracy: 20,
+    altitude: 0,
+    altitudeAccuracy: 40,
+    heading: 0,
+    latitude: 37.5,
+    longitude: 127.043705,
+    speed: 0,
+  });
+
+  //지도에서 현재 기준으로 삼고 있는 위치
+  const [currentMapCoord, setCurrentMapCoord] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0001,
+    longitudeDelta: 0.003,
+  });
+  const [currentMindle, setCurrentMindle] = useState({});
+  //지도에 표시하기 위한 민들레 값들을 저장하는 변수
+  //TODO : useMemo
+  const [mindles, setMindles] = useState([]);
   const renderInner = () => (
     <View style={{ height: '100%' }}>
       <MindleInfo mindleInfo={clickedMindleInfo} />
     </View>
   );
+
+  //API 기준 좌표
+  const [mindleBaseCoord, setMindleBaseCoord] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0001,
+    longitudeDelta: 0.003,
+  });
+
+  const [API_TIMER, setApiTimer] = useState();
 
   const renderHeader = () => {
     if (clickedMindleInfo)
@@ -90,34 +125,6 @@ const Maps = ({ navigation }) => {
       );
   };
 
-  //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
-  const [mapWidth, setMapWidth] = useState('99%');
-
-  //사용자와 서클이 겹침에 따라 버튼 구별
-  const [btnToggle, setBtnToggle] = useState();
-
-  //현재 사용자 위치
-  const [location, setLocation] = useState({
-    accuracy: 20,
-    altitude: 0,
-    altitudeAccuracy: 40,
-    heading: 0,
-    latitude: 37.5,
-    longitude: 127.043705,
-    speed: 0,
-  });
-
-  //지도에서 현재 기준으로 삼고 있는 위치
-  const [currentMapCoord, setCurrentMapCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
-  const [currentMindle, setCurrentMindle] = useState({});
-  //지도에 표시하기 위한 민들레 값들을 저장하는 변수
-  //TODO : useMemo
-  const [mindles, setMindles] = useState([]);
   //level별 반경 크기
   const levelToRadius = (num) => {
     if (num == 1 || num == 2) {
@@ -161,7 +168,6 @@ const Maps = ({ navigation }) => {
     setBtnToggle(false);
     await axios
       .post('/dandelion/get', {
-        //위도 값, 경도 값 json 형식으로 post 전송
         centerPosition: {
           latitude: TargetPOS.latitude,
           longitude: TargetPOS.longitude,
@@ -169,9 +175,7 @@ const Maps = ({ navigation }) => {
         maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
       })
       .then((res) => {
-        //올바른 데이터 전송시
         if (res.data.status === 'SUCCESS') {
-          //mindles에 저장할 임시 데이터 생성
           const list = res.data.data.map((props) => {
             //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
             if (distance(props, currentPOS)) {
@@ -186,7 +190,7 @@ const Maps = ({ navigation }) => {
               });
               setBtnToggle(true);
             }
-            //기존 받아온 데이터에서 overlap 값 추가 overlap 값으로 반경 색상 및 작동하는 함수 변경
+
             return {
               latitude: props.location.latitude,
               longitude: props.location.longitude,
@@ -199,12 +203,10 @@ const Maps = ({ navigation }) => {
           });
           setMindles(list);
         } else if (res.data.status === 'FAILED') {
-          //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
           Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
         }
       })
       .catch((err) => {
-        //예상치 못한 오류 발생시
         Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       });
   };
@@ -218,22 +220,6 @@ const Maps = ({ navigation }) => {
         //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
         Geolocation.watchPosition(
           async (position) => {
-            /*
-            "position":{
-              "coords": {
-                          "accuracy": 20, 
-                          "altitude": 0, 
-                          "altitudeAccuracy": 40, 
-                          "heading": 90, 
-                          "latitude": 37.2811483, 
-                          "longitude": 127.0435583, 
-                          "speed": 0
-                        }, 
-              "mocked": false, 
-              "provider": "fused", 
-              "timestamp": 1631366250000
-            }
-            */
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
             if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
@@ -247,12 +233,10 @@ const Maps = ({ navigation }) => {
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
             // getData(position.coords, position.coords); 사용자가 보는 위치에 따라 계산하므로 없어도 크게 다르지 않을 듯
           },
-          //Geolocation.watchPosition 에러 발생
           (error) => {
             console.log(error);
           },
           {
-            //높은 정확도 설정
             enableHighAccuracy: true,
             //재측정할 변화 차이
             distanceFilter: 20,
@@ -261,19 +245,10 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-  //API 기준 좌표
-  const [mindleBaseCoord, setMindleBaseCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
   //지도가 준비 될 경우 실행되는 함수
   const updateMapStyle = () => {
     setMapWidth('100%');
   };
-
-  const [API_TIMER, setApiTimer] = useState();
   //지도의 좌표가 변경시 호출 되는 함수
   const onRegionChange = (pos) => {
     console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
@@ -302,62 +277,17 @@ const Maps = ({ navigation }) => {
       }
     }
   };
-  //지도에서 사용되어지는 StyleSheet
-  const styles = StyleSheet.create({
-    map: {
-      flex: 1,
-      width: '100%',
-      height: '100%',
-    },
-    container: {
-      flex: 1,
-    },
-    panel: {
-      padding: 15,
-      backgroundColor: '#ffffff',
-    },
-
-    header: {
-      backgroundColor: '#FFFFFF',
-      shadowColor: '#333333',
-      shadowOffset: { width: -1, height: -3 },
-      shadowRadius: 2,
-      shadowOpacity: 0.4,
-      // elevation: 5,
-      paddingTop: 15,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-    },
-    panelHeader: {
-      alignItems: 'center',
-    },
-    panelHandle: {
-      width: 40,
-      height: 6,
-      borderRadius: 4,
-      backgroundColor: '#00000040',
-      marginBottom: 5,
-    },
-  });
 
   const getClickedMindleInfo = (mindle) => {
-    const mindleInfo = {
-      name: '동관 앞',
-      madeby: '창시자',
-      description: '#아주대 #공대 #뿌셔 #졸려',
-      visitCount: 6,
-      current: 2,
-    };
     setClickedMindleInfo({
       name: mindle.title,
       madeby: '창시자', //데이터 필요
-      description: mindle.description,
+      description: mindle.description || '민들레 설명 데이터 없음',
       visitCount: 18, //데이터 필요
       current: 1, //데이터 필요
     });
   };
 
-  //Maps에서 랜더링 하는 컴포넌트
   return (
     <Container>
       <CreateMindle
@@ -381,7 +311,6 @@ const Maps = ({ navigation }) => {
         onCloseEnd={() => {
           setClickedMindleInfo(null);
         }}
-        //onOpenEnd={navigateToInfo}
       />
 
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
@@ -403,7 +332,6 @@ const Maps = ({ navigation }) => {
           {mindles.map((props, index) => {
             return (
               <Mindle
-                // key={String(index)} //TODO : 올바른 key 값으로 수정 필요
                 key={props.key}
                 latitude={props.latitude}
                 longitude={props.longitude}
@@ -419,7 +347,6 @@ const Maps = ({ navigation }) => {
             );
           })}
         </MapView>
-
         <View
           style={{
             position: 'absolute', //use absolute position to show button on top of the map
@@ -427,9 +354,7 @@ const Maps = ({ navigation }) => {
             alignSelf: 'center', //for align to right
           }}
         >
-          {/*메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
           {btnToggle ? (
-            //현재 사용자와 민들레가 겹쳤을 때 생성되는 버튼
             <Button
               title={'민들레 입장'}
               onPress={() => {
@@ -442,7 +367,6 @@ const Maps = ({ navigation }) => {
               fontSize="25px"
             />
           ) : (
-            // 현재 사용자와 민들레가 겹치지 않았을 때 생성되는 버튼
             <Button
               title={'민들레 심기'}
               onPress={() => {
@@ -456,9 +380,6 @@ const Maps = ({ navigation }) => {
             />
           )}
         </View>
-        {/*B 지도 위에 메인 버튼 컴포넌트 */}
-
-        {/*C 하단왼쪽 프로필 이미지 버튼 */}
         <View
           style={{
             position: 'absolute',
@@ -469,9 +390,6 @@ const Maps = ({ navigation }) => {
           {/* 현재 ../asset/index.js에 있는 profile 이미지로 버튼 생성 rounded 값으로 둥근 형태 */}
           <ImageButton src={profile} onPress={() => navigation.navigate('Mypage')} rounded />
         </View>
-        {/*C 하단 왼쪽 프로필 이미지 버튼 */}
-
-        {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
         <View
           style={{
             position: 'absolute',
@@ -482,11 +400,45 @@ const Maps = ({ navigation }) => {
           {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
           <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
         </View>
-        {/*D 하단 오른쪽 핫스팟 리스트 버튼 */}
       </Animated.View>
     </Container>
   );
 };
-//메인페이지 컴포넌트 끝
 
+const styles = StyleSheet.create({
+  map: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+  },
+  panel: {
+    padding: 15,
+    backgroundColor: '#ffffff',
+  },
+
+  header: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#333333',
+    shadowOffset: { width: -1, height: -3 },
+    shadowRadius: 2,
+    shadowOpacity: 0.4,
+    // elevation: 5,
+    paddingTop: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: '#00000040',
+    marginBottom: 5,
+  },
+});
 export default Maps;
