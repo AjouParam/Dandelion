@@ -122,7 +122,7 @@ const Maps = ({ navigation }) => {
   //level별 반경 크기
   const levelToRadius = (num) => {
     if (num == 1 || level2) {
-      return 30;
+      return 40;
     } else if (num == 3) {
       return 40;
     } else {
@@ -132,7 +132,7 @@ const Maps = ({ navigation }) => {
   //level별 민들레 이미지
   const levelToIMG = (num) => {
     if (num == 1) {
-      return level1;
+      return level3;
     } else if (num == 2) {
       return level2;
     } else if (num == 3) {
@@ -459,8 +459,7 @@ const Maps = ({ navigation }) => {
                 latitude={props.latitude}
                 longitude={props.longitude}
                 title={props.title}
-                description={props.description}
-                src={mindle1}
+                src={props.src}
                 radius={props.radius}
                 overlap={props.overlap}
                 onPress={() => {
