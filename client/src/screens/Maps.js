@@ -6,7 +6,6 @@ import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet,
 import Geolocation from 'react-native-geolocation-service';
 import { profile, button, level1, level2, level3, level4 } from '../assets/index';
 import axios from 'axios';
-import dummy from '../utils/dummy.json';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
@@ -109,7 +108,7 @@ const Maps = ({ navigation }) => {
   });
 
   //지도에서 현재 기준으로 삼고 있는 위치
-  const [region, setRegion] = useState({
+  const [currentMapCoord, setCurrentMapCoord] = useState({
     latitude: 0,
     longitude: 0,
     latitudeDelta: 0.0001,
@@ -154,7 +153,7 @@ const Maps = ({ navigation }) => {
 
   const jwtToken = useRecoilValue(userState.uidState);
   //API로 데이터 가져오는 함수
-  const getData = async (Targetpos, currentPOS) => {
+  const getData = async (TargetPOS, currentPOS) => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -164,8 +163,8 @@ const Maps = ({ navigation }) => {
       .post('/dandelion/get', {
         //위도 값, 경도 값 json 형식으로 post 전송
         centerPosition: {
-          latitude: Targetpos.latitude,
-          longitude: Targetpos.longitude,
+          latitude: TargetPOS.latitude,
+          longitude: TargetPOS.longitude,
         },
         maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
       })
@@ -259,8 +258,8 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-
-  const [BaseRegion, setBaseRegion] = useState({
+  //API 좌표저장
+  const [mindleBaseCoord, setMindleBaseCoord] = useState({
     latitude: 0,
     longitude: 0,
     latitudeDelta: 0.0001,
@@ -275,13 +274,13 @@ const Maps = ({ navigation }) => {
       if (result === 'granted') {
         Geolocation.getCurrentPosition(
           (pos) => {
-            setRegion({
+            setcurrentMapCoord({
               latitude: pos.coords.latitude,
               longitude: pos.coords.longitude,
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
             });
-            setBaseRegion({
+            setMindleBaseCoord({
               latitude: pos.coords.latitude,
               longitude: pos.coords.longitude,
               latitudeDelta: 0.0001,
@@ -306,7 +305,7 @@ const Maps = ({ navigation }) => {
     console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
     if (pos.latitude != 0 && pos.longitude != 0) {
       setTimeout(() => {
-        setRegion({
+        setCurrentMapCoord({
           latitude: pos.latitude,
           longitude: pos.longitude,
           latitudeDelta: pos.latitudeDelta,
@@ -314,13 +313,13 @@ const Maps = ({ navigation }) => {
         });
       }, 300);
       if (
-        Math.abs(BaseRegion.latitude - pos.latitude) > BaseRegion.latitudeDelta / 4 ||
-        Math.abs(BaseRegion.longitude - pos.longitude) > BaseRegion.longitudeDelta / 4
+        Math.abs(mindleBaseCoord.latitude - pos.latitude) > mindleBaseCoord.latitudeDelta / 4 ||
+        Math.abs(mindleBaseCoord.longitude - pos.longitude) > mindleBaseCoord.longitudeDelta / 4
       ) {
         clearTimeout(API_TIMER); //기존에 실행이 남아있으면 API 취소
         const timerID = setTimeout(() => {
           getData(pos, location);
-          setBaseRegion({
+          setMindleBaseCoord({
             latitude: pos.latitude,
             longitude: pos.longitude,
             latitudeDelta: pos.latitudeDelta,
@@ -419,7 +418,7 @@ const Maps = ({ navigation }) => {
           provider={PROVIDER_GOOGLE}
           showsUserLocation={true}
           showsMyLocationButton={true}
-          region={region}
+          region={currentMapCoord}
           maxZoomLevel={19}
           minZoomLevel={17}
           onMapReady={() => {
