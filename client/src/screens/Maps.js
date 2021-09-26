@@ -151,8 +151,13 @@ const Maps = ({ navigation }) => {
       0.00001 * levelToRadius(mindlePOS.level)
     );
   };
+
+  const jwtToken = useRecoilValue(userState.uidState);
   //API로 데이터 가져오는 함수
   const getData = async (Targetpos, currentPOS) => {
+    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.headers.common['x-access-token'] = jwtToken;
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     //초기 메인 버튼을 민들레 심기로 설정
     setBtnToggle(false);
     await axios
@@ -167,7 +172,7 @@ const Maps = ({ navigation }) => {
       .then((res) => {
         //올바른 데이터 전송시
         if (res.data.status === 'SUCCESS') {
-          console.log('res status:', res.data.data);
+          // console.log('res status:', res.data.data);
           //mindles에 저장할 임시 데이터 생성
           const list = res.data.data.map((props) => {
             // console.log('positon.coords2', position.coords);
@@ -209,12 +214,8 @@ const Maps = ({ navigation }) => {
         Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       });
   };
-  const jwtToken = useRecoilValue(userState.uidState);
 
   useEffect(() => {
-    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-    axios.defaults.headers.common['x-access-token'] = jwtToken;
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     //GPS 이용 승인
     requestPermission().then((result) => {
       //사용자 승인 후 좌표 값 획득
@@ -242,7 +243,7 @@ const Maps = ({ navigation }) => {
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            getData(position.coords, position.coords);
+            // getData(position.coords, position.coords); 사용자가 보는 위치에 따라 계산하므로 없어도 크게 다르지 않을 듯
           },
           //Geolocation.watchPosition 에러 발생
           (error) => {
@@ -259,12 +260,6 @@ const Maps = ({ navigation }) => {
     });
   }, []);
 
-  const [initregion, setInitRegion] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
   const [BaseRegion, setBaseRegion] = useState({
     latitude: 0,
     longitude: 0,
@@ -286,19 +281,13 @@ const Maps = ({ navigation }) => {
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
             });
-            setInitRegion({
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-              latitudeDelta: 0.0001,
-              longitudeDelta: 0.003,
-            });
             setBaseRegion({
               latitude: pos.coords.latitude,
               longitude: pos.coords.longitude,
               latitudeDelta: 0.0001,
               longitudeDelta: 0.003,
             });
-
+            getData(pos.coords, pos.coords);
             console.log('UpdateMap', pos);
           },
           (error) => {
@@ -311,47 +300,37 @@ const Maps = ({ navigation }) => {
   };
 
   //지도의 기준 좌표가 변경시 호출 되는 함수
+  const [API_TIMER, setApiTimer] = useState();
+
   const onRegionChange = (pos) => {
     console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
-    if (
-      Math.abs(region.latitude - initregion.latitude) > 0.0000005 ||
-      Math.abs(region.longitude - initregion.longitude) > 0.0000005
-    ) {
+    if (pos.latitude != 0 && pos.longitude != 0) {
+      setTimeout(() => {
+        setRegion({
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+          latitudeDelta: pos.latitudeDelta,
+          longitudeDelta: pos.longitudeDelta,
+        });
+      }, 300);
       if (
         Math.abs(BaseRegion.latitude - pos.latitude) > BaseRegion.latitudeDelta / 4 ||
-        Math.abs(BaseRegion.longitude - pos.longitude) > BaseRegion.longitudeDelta / 8
+        Math.abs(BaseRegion.longitude - pos.longitude) > BaseRegion.longitudeDelta / 4
       ) {
-        setBaseRegion({
-          latitude: pos.latitude,
-          longitude: pos.longitude,
-          latitudeDelta: pos.latitudeDelta,
-          longitudeDelta: pos.longitudeDelta,
-        });
-        setRegion({
-          latitude: pos.latitude,
-          longitude: pos.longitude,
-          latitudeDelta: pos.latitudeDelta,
-          longitudeDelta: pos.longitudeDelta,
-        });
-        getData(pos, location);
-      } else {
-        setRegion({
-          latitude: pos.latitude,
-          longitude: pos.longitude,
-          latitudeDelta: pos.latitudeDelta,
-          longitudeDelta: pos.longitudeDelta,
-        });
+        clearTimeout(API_TIMER); //기존에 실행이 남아있으면 API 취소
+        const timerID = setTimeout(() => {
+          getData(pos, location);
+          setBaseRegion({
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+            latitudeDelta: pos.latitudeDelta,
+            longitudeDelta: pos.longitudeDelta,
+          });
+        }, 1000);
+        setApiTimer(timerID);
       }
-    } else if (pos.latitude != 0 || pos.longitude != 0) {
-      setRegion({
-        latitude: pos.latitude,
-        longitude: pos.longitude,
-        latitudeDelta: pos.latitudeDelta,
-        longitudeDelta: pos.longitudeDelta,
-      });
     }
   };
-
   //지도에서 사용되어지는 StyleSheet
   const styles = StyleSheet.create({
     map: {
