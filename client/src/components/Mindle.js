@@ -8,8 +8,8 @@ const Mindle = ({ latitude, longitude, radius, src, title, description, onPress,
         center={{ latitude: latitude, longitude: longitude }}
         radius={radius}
         strokeWidth={1}
-        strokeColor={overlap ? '#ff1a7d' : '#1a66ff'}
-        fillColor={overlap ? 'rgba(255,230,238,0.5)' : 'rgba(230,238,255,0.5)'}
+        strokeColor={overlap ? '#50BCDF' : '#00FF00'}
+        fillColor={overlap ? 'rgba(184,248,251,0.3)' : 'rgba(144,238,144,0.3)'}
       />
       <Marker
         coordinate={{ latitude: latitude, longitude: longitude }}
