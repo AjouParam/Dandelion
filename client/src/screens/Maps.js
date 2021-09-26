@@ -171,10 +171,8 @@ const Maps = ({ navigation }) => {
       .then((res) => {
         //올바른 데이터 전송시
         if (res.data.status === 'SUCCESS') {
-          // console.log('res status:', res.data.data);
           //mindles에 저장할 임시 데이터 생성
           const list = res.data.data.map((props) => {
-            // console.log('positon.coords2', position.coords);
             //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
             if (distance(props, currentPOS)) {
               setCurrentMindle({
@@ -200,9 +198,6 @@ const Maps = ({ navigation }) => {
             };
           });
           setMindles(list);
-          //console.log(mindleList);
-          // console.log(dummy.data);
-          // console.log(mindleList);
         } else if (res.data.status === 'FAILED') {
           //서버에서 제대로 된 정보를 가지고 오지 못하였을 때
           Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
@@ -241,6 +236,14 @@ const Maps = ({ navigation }) => {
             */
             //변화된 사용자 좌표 location 변수에 최신화
             setLocation(position.coords);
+            if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
+              setCurrentMapCoord({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0001,
+                longitudeDelta: 0.003,
+              });
+            }
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
             // getData(position.coords, position.coords); 사용자가 보는 위치에 따라 계산하므로 없어도 크게 다르지 않을 듯
           },
@@ -258,7 +261,7 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-  //API 좌표저장
+  //API 기준 좌표
   const [mindleBaseCoord, setMindleBaseCoord] = useState({
     latitude: 0,
     longitude: 0,
@@ -268,50 +271,19 @@ const Maps = ({ navigation }) => {
   //지도가 준비 될 경우 실행되는 함수
   const updateMapStyle = () => {
     setMapWidth('100%');
-    //지도에서 현재 기준으로 삼고 있는 위치 최신화
-
-    requestPermission().then((result) => {
-      if (result === 'granted') {
-        Geolocation.getCurrentPosition(
-          (pos) => {
-            setcurrentMapCoord({
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-              latitudeDelta: 0.0001,
-              longitudeDelta: 0.003,
-            });
-            setMindleBaseCoord({
-              latitude: pos.coords.latitude,
-              longitude: pos.coords.longitude,
-              latitudeDelta: 0.0001,
-              longitudeDelta: 0.003,
-            });
-            getData(pos.coords, pos.coords);
-            console.log('UpdateMap', pos);
-          },
-          (error) => {
-            console.log(error);
-          },
-          { enableHighAccuracy: true, timeout: 3600, maximumAge: 3600 },
-        );
-      }
-    });
   };
 
-  //지도의 기준 좌표가 변경시 호출 되는 함수
   const [API_TIMER, setApiTimer] = useState();
-
+  //지도의 좌표가 변경시 호출 되는 함수
   const onRegionChange = (pos) => {
     console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
     if (pos.latitude != 0 && pos.longitude != 0) {
-      setTimeout(() => {
-        setCurrentMapCoord({
-          latitude: pos.latitude,
-          longitude: pos.longitude,
-          latitudeDelta: pos.latitudeDelta,
-          longitudeDelta: pos.longitudeDelta,
-        });
-      }, 300);
+      setCurrentMapCoord({
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        latitudeDelta: pos.latitudeDelta,
+        longitudeDelta: pos.longitudeDelta,
+      });
       if (
         Math.abs(mindleBaseCoord.latitude - pos.latitude) > mindleBaseCoord.latitudeDelta / 4 ||
         Math.abs(mindleBaseCoord.longitude - pos.longitude) > mindleBaseCoord.longitudeDelta / 4
@@ -411,7 +383,7 @@ const Maps = ({ navigation }) => {
         }}
         //onOpenEnd={navigateToInfo}
       />
-      {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
+
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
         <MapView
           style={[styles.map, { width: mapWidth }]}
@@ -428,7 +400,6 @@ const Maps = ({ navigation }) => {
             onRegionChange(currnet);
           }}
         >
-          {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
           {mindles.map((props, index) => {
             return (
               <Mindle
@@ -447,11 +418,8 @@ const Maps = ({ navigation }) => {
               />
             );
           })}
-          {/*A-1 설정된 midles에 의해 민들레를 랜더링하는 부분 */}
         </MapView>
-        {/*A. 현재 사용되어지는 Goole 지도 컴포넌트 */}
 
-        {/*B 지도 위에 메인 버튼 컴포넌트 */}
         <View
           style={{
             position: 'absolute', //use absolute position to show button on top of the map
@@ -487,7 +455,6 @@ const Maps = ({ navigation }) => {
               fontSize="25px"
             />
           )}
-          {/* 메인 버튼 컴포넌트 btnToggle 값에 따라 민들레 입장(true) or 민들레 심기로 변경(false)*/}
         </View>
         {/*B 지도 위에 메인 버튼 컴포넌트 */}
 
