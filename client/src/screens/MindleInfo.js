@@ -1,9 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
-const Container = styled.View`
+const Container = styled.SafeAreaView`
   flex: 1;
   display: flex;
   padding: 15px 15px;
@@ -32,9 +32,11 @@ const Image = styled.View`
 `;
 
 const BoardContainer = styled.View`
-  flex: 1;
   height: 220px;
+  width: 100%;
   padding: 10px 10px;
+  border-bottom-width: 1px;
+  border-bottom-color: black;
 `;
 const BoardUserInfo = styled.View`
   width: 100%;
@@ -126,93 +128,93 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
     </>
   );
 };
+const DATA = [
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '부끄러운 개',
+    date: '2021-09-21',
+    content: '부끄러운 개님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 20,
+    commentsNum: 17,
+  },
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '즐거운 세숑',
+    date: '2021-09-21',
+    content: '즐거운 세숑님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 14,
+    commentsNum: 11,
+  },
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '미친 고릴라',
+    date: '2021-09-20',
+    content: '미친 고릴라님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 17,
+    commentsNum: 12,
+  },
+
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '성난 닭',
+    date: '2021-09-19',
+    content: '성난 닭님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 8,
+    commentsNum: 6,
+  },
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '살찐 황소',
+    date: '2021-09-19',
+    content: '살찐 황소님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 11,
+    commentsNum: 9,
+  },
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '신난 어피치',
+    date: '2021-09-18',
+    content: '신난 어피치님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 2,
+    commentsNum: 1,
+  },
+
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '상큼한 무지',
+    date: '2021-09-18',
+    content: '상큼한 무지님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 6,
+    commentsNum: 4,
+  },
+  {
+    userPhoto:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+    userName: '화난 라이언',
+    date: '2021-09-17',
+    content: '화난 라이언님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+    photoContents: ['', ''],
+    likes: 51,
+    commentsNum: 71,
+  },
+];
 const MindleInfo = (props) => {
   const [page, setPage] = useState(0);
   const [mindleInfo, setMindleInfo] = useState({ name: '', madeby: '', description: '', visitCount: '', current: '' });
-  let DATA = [
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '부끄러운 개',
-      date: '2021-09-21',
-      content: '부끄러운 개님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 20,
-      commentsNum: 17,
-    },
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '즐거운 세숑',
-      date: '2021-09-21',
-      content: '즐거운 세숑님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 14,
-      commentsNum: 11,
-    },
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '미친 고릴라',
-      date: '2021-09-20',
-      content: '미친 고릴라님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 17,
-      commentsNum: 12,
-    },
-
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '성난 닭',
-      date: '2021-09-19',
-      content: '성난 닭님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 8,
-      commentsNum: 6,
-    },
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '살찐 황소',
-      date: '2021-09-19',
-      content: '살찐 황소님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 11,
-      commentsNum: 9,
-    },
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '신난 어피치',
-      date: '2021-09-18',
-      content: '신난 어피치님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 2,
-      commentsNum: 1,
-    },
-
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '상큼한 무지',
-      date: '2021-09-18',
-      content: '상큼한 무지님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 6,
-      commentsNum: 4,
-    },
-    {
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '화난 라이언',
-      date: '2021-09-17',
-      content: '화난 라이언님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
-      likes: 51,
-      commentsNum: 71,
-    },
-  ];
 
   const [tabIndex, setTabIndex] = useState(null);
   const [data, setData] = useState([]);
@@ -224,11 +226,12 @@ const MindleInfo = (props) => {
     setInMindle(true);
     setMindleInfo(props.mindleInfo);
     setTabIndex(0);
-    setData(DATA);
+    setData(DATA.splice(0, 3));
+    setPage((prev) => prev + 1);
     setTimeout(() => {
       if (mindleInfo) console.log(mindleInfo);
       setLoading(false);
-    }, 2000);
+    }, 1000);
     //setLoading(true);
     //getData();
   }, []);
@@ -240,8 +243,9 @@ const MindleInfo = (props) => {
       setLoading(false);
     }, 1000);
   }, [tabIndex]);
-  const renderItem = ({ item }) => {
-    return (
+
+  const renderItem = useCallback(
+    ({ item }) => (
       <>
         <BoardContent
           userPhoto={item.userPhoto}
@@ -253,26 +257,31 @@ const MindleInfo = (props) => {
           commentsNum={item.commentsNum}
         />
       </>
-    );
-  };
+    ),
+    [],
+  );
 
-  const getData = () => {
+  const getData = (callback) => {
     //TODO : get contents API
-    if (page < DATA.length) {
-      console.log('get data');
-      let newData = DATA[page];
+    try {
+      const newData = DATA.splice(0, 3);
       setData((prev) => [...prev, ...newData]);
-      setPage(page + 1);
-    } else {
-      console.log('No more data');
+      setPage((prev) => prev + 1);
+      callback(newData);
+    } catch (e) {
+      const newData = DATA.splice(0, DATA.length);
+      setData((prev) => [...prev, ...newData]);
+      setPage((prev) => prev + 1);
+      callback(newData);
     }
-    setLoading(false);
   };
 
   const handleLoadMore = () => {
     console.log('load more!');
     setLoading(true);
-    getData();
+    getData((newData) => {
+      if (newData) setLoading(false);
+    });
   };
 
   return (
@@ -281,7 +290,6 @@ const MindleInfo = (props) => {
         {/* <Header /> */}
         {!loading && (
           <FlatList
-            style={{ zIndex: 1 }}
             data={tabIndex === 0 ? data : [0]}
             renderItem={
               tabIndex === 0
@@ -293,8 +301,8 @@ const MindleInfo = (props) => {
                   )
             }
             keyExtractor={(item, idx) => String(idx)}
-            //onEndReached={handleLoadMore}
-            //onEndReachedThreshold={0.4}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.2}
             ListHeaderComponent={() => (
               <>
                 <ImageContainer>
