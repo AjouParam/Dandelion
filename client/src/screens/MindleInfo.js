@@ -317,6 +317,7 @@ const MindleInfo = ({ key, name, overlap }) => {
             <Text>이벤트</Text>
           </TouchableOpacity>
         </Tab>
+
         <Divider />
         {!loading && overlap && (
           <>
@@ -336,16 +337,18 @@ const MindleInfo = ({ key, name, overlap }) => {
               onEndReachedThreshold={0.2}
               ListHeaderComponent={() => (
                 <>
-                  <ImageContainer>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                  </ImageContainer>
+                  {tabIndex === 0 && (
+                    <ImageContainer>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                      <Image></Image>
+                    </ImageContainer>
+                  )}
                 </>
               )}
             />
@@ -367,7 +370,11 @@ const MindleInfo = ({ key, name, overlap }) => {
             </TouchableOpacity>
           </>
         )}
-        {loading && <ActivityIndicator size="large" color="0000ff" />}
+        {loading && (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="0000ff" />
+          </View>
+        )}
       </Container>
     </>
   );
