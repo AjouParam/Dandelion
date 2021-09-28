@@ -9,12 +9,12 @@ const Container = styled.SafeAreaView`
   padding: 15px 15px;
   height: 100%;
   background-color: #ffffff;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const Divider = styled.View`
   margin-top: 10px;
-  height: 1px;
+  height: 0.5px;
   border: 0.5px solid #000000;
 `;
 const ImageContainer = styled.View`
@@ -33,6 +33,7 @@ const Image = styled.View`
 
 const BoardContainer = styled.View`
   height: 220px;
+
   width: 100%;
   padding: 10px 10px;
   border-bottom-width: 1px;
@@ -60,7 +61,6 @@ const BoardUserName = styled.Text`
   margin-bottom: 3px;
 `;
 const BoardContents = styled.View`
-  flex: 1;
   padding-top: 10px;
   padding-left: 55px;
 `;
@@ -120,8 +120,12 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
             <BoardContentImage />
           </BoardContentImageContainer>
           <BoardTipContainer>
-            <Text>Like {likes}</Text>
-            <Text>Cormments {commentsNum}</Text>
+            <TouchableOpacity>
+              <Text>Like {likes}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text>Comments {commentsNum}</Text>
+            </TouchableOpacity>
           </BoardTipContainer>
         </BoardContents>
       </BoardContainer>
@@ -129,7 +133,7 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
   );
 };
 
-const MindleInfo = ({ key, name }) => {
+const MindleInfo = ({ key, name, overlap }) => {
   const [page, setPage] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
   const [data, setData] = useState([]);
@@ -219,6 +223,7 @@ const MindleInfo = ({ key, name }) => {
     },
   ]);
   useEffect(() => {
+    console.log(overlap);
     setLoading(true);
     setData(DATA.splice(0, 3));
     setPage((prev) => prev + 1);
@@ -283,65 +288,84 @@ const MindleInfo = ({ key, name }) => {
     <>
       <Container>
         {/* <Header /> */}
-        {!loading && (
-          <FlatList
-            data={tabIndex === 0 ? data : [0]}
-            renderItem={
-              tabIndex === 0
-                ? renderItem
-                : () => (
-                    <View>
-                      <Text>이벤트 목록</Text>
-                    </View>
-                  )
-            }
-            keyExtractor={(item, idx) => String(idx)}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.2}
-            ListHeaderComponent={() => (
-              <>
-                <ImageContainer>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                  <Image></Image>
-                </ImageContainer>
-                <Divider />
-                <Tab>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setTabIndex(0);
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '50%',
-                      backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
-                    }}
-                  >
-                    <Text>게시글</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setTabIndex(1);
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '50%',
-                      backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
-                    }}
-                  >
-                    <Text>이벤트</Text>
-                  </TouchableOpacity>
-                </Tab>
-              </>
-            )}
-          />
+
+        <Tab>
+          <TouchableOpacity
+            onPress={() => {
+              setTabIndex(0);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '50%',
+              backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+            }}
+          >
+            <Text>게시글</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setTabIndex(1);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '50%',
+              backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+            }}
+          >
+            <Text>이벤트</Text>
+          </TouchableOpacity>
+        </Tab>
+        <Divider />
+        {!loading && overlap && (
+          <>
+            <FlatList
+              data={tabIndex === 0 ? data : [0]}
+              renderItem={
+                tabIndex === 0
+                  ? renderItem
+                  : () => (
+                      <View>
+                        <Text>이벤트 목록</Text>
+                      </View>
+                    )
+              }
+              keyExtractor={(item, idx) => String(idx)}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.2}
+              ListHeaderComponent={() => (
+                <>
+                  <ImageContainer>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                  </ImageContainer>
+                </>
+              )}
+            />
+            <TouchableOpacity
+              style={{
+                width: 60,
+                height: 60,
+                position: 'absolute',
+                top: '90%',
+                right: '5%',
+                alignSelf: 'flex-end',
+                borderWidth: 1,
+                borderRadius: 50,
+                justifyContent: 'center',
+                backgroundColor: '#dbdbdb',
+              }}
+            >
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
+            </TouchableOpacity>
+          </>
         )}
         {loading && <ActivityIndicator size="large" color="0000ff" />}
       </Container>

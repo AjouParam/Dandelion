@@ -80,7 +80,7 @@ const Maps = ({ navigation }) => {
   const renderInner = () =>
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
-        <MindleInfo key={clickedMindleInfo.key} name={clickedMindleInfo.name} />
+        <MindleInfo key={clickedMindleInfo.key} name={clickedMindleInfo.name} overlap={clickedMindleInfo.overlap} />
       </View>
     );
 
@@ -288,6 +288,7 @@ const Maps = ({ navigation }) => {
       description: mindle.description || '민들레 설명 데이터 없음',
       visitCount: 18, //데이터 필요
       current: 1, //데이터 필요
+      overlap: mindle.overlap,
     });
     console.log(mindle);
   };
