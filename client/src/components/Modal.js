@@ -20,24 +20,25 @@ const BlackSpace = styled.View`
 
 const Content = styled.View`
   background-color: #ffffff;
-  width: 300px;
-  height: 250px;
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
   border-radius: 20px;
   align-items: center;
   justify-content: center;
   padding: 10px;
 `;
-const CustomModal = ({ modalVisible, setModalVisible, children }) => {
+const CustomModal = ({ width, height, modalVisible, setModalVisible, children }) => {
   return modalVisible ? (
     <Modal animationType={'fade'} transparent={true} visible={modalVisible}>
       <Container>
-        {/* <BlackSpace
+        <BlackSpace
           onTouchEnd={() => {
             setModalVisible(false);
           }}
-        > */}
-        <Content>{children}</Content>
-        {/* </BlackSpace> */}
+        ></BlackSpace>
+        <Content width={width ? width : '300px'} height={height ? height : '250px'}>
+          {children}
+        </Content>
       </Container>
     </Modal>
   ) : null;
