@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import ProfileModal from '@components/Modal';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -44,7 +45,7 @@ const BoardUserInfo = styled.View`
   display: flex;
   flex-direction: row;
 `;
-const BoardUserImageContainer = styled.View`
+const BoardUserImageContainer = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   padding: 5px 5px;
@@ -97,16 +98,26 @@ const Tab = styled.View`
   padding: 5px;
   justify-content: space-evenly;
 `;
-const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes, commentsNum }) => {
+const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes, commentsNum, setMenuOpen }) => {
   return (
     <>
       <BoardContainer>
         <BoardUserInfo>
-          <BoardUserImageContainer>
+          <BoardUserImageContainer
+            onPress={() => {
+              setMenuOpen(true);
+            }}
+          >
             <BoardUserImage source={{ uri: userPhoto }} />
           </BoardUserImageContainer>
           <View style={{ flex: 1, padding: 5 }}>
-            <BoardUserName>{userName}</BoardUserName>
+            <BoardUserName
+              onPress={() => {
+                setMenuOpen(true);
+              }}
+            >
+              {userName}
+            </BoardUserName>
             <Text>{date}</Text>
           </View>
         </BoardUserInfo>
@@ -133,7 +144,8 @@ const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes
   );
 };
 
-const MindleInfo = ({ key, name, overlap }) => {
+const MindleInfo = ({ mindleKey, name, overlap }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
   const [data, setData] = useState([]);
@@ -222,6 +234,7 @@ const MindleInfo = ({ key, name, overlap }) => {
       commentsNum: 71,
     },
   ]);
+
   useEffect(() => {
     console.log(overlap);
     setLoading(true);
@@ -234,7 +247,7 @@ const MindleInfo = ({ key, name, overlap }) => {
     return () => {
       setData(null);
     };
-  }, [key]);
+  }, [mindleKey]);
 
   useEffect(() => {
     //TODO : data 불러왔는지 확인 후 안불러왔으면 로딩, 데이터 불러오기
@@ -255,6 +268,7 @@ const MindleInfo = ({ key, name, overlap }) => {
           photoContents={item.photoContents}
           likes={item.likes}
           commentsNum={item.commentsNum}
+          setMenuOpen={setMenuOpen}
         />
       </>
     ),
@@ -375,6 +389,12 @@ const MindleInfo = ({ key, name, overlap }) => {
             <ActivityIndicator size="large" color="0000ff" />
           </View>
         )}
+
+        <ProfileModal width={'200px'} height={'50px'} modalVisible={menuOpen} setModalVisible={setMenuOpen}>
+          <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 18 }}>쪽지 보내기</Text>
+          </View>
+        </ProfileModal>
       </Container>
     </>
   );
