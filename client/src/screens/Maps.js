@@ -9,6 +9,7 @@ import axios from 'axios';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
+import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
@@ -80,7 +81,15 @@ const Maps = ({ navigation }) => {
   const renderInner = () =>
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
-        <MindleInfo key={clickedMindleInfo.key} name={clickedMindleInfo.name} overlap={clickedMindleInfo.overlap} />
+        {clickedMindleInfo.overlap ? (
+          <MindleInfo key={clickedMindleInfo.key} name={clickedMindleInfo.name} overlap={clickedMindleInfo.overlap} />
+        ) : (
+          <MindlePreview
+            key={clickedMindleInfo.key}
+            name={clickedMindleInfo.name}
+            overlap={clickedMindleInfo.overlap}
+          />
+        )}
       </View>
     );
 
