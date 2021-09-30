@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import ProfileModal from '@components/Modal';
 
@@ -15,8 +15,8 @@ const Container = styled.SafeAreaView`
 
 const Divider = styled.View`
   margin-top: 10px;
-  height: 0.5px;
-  border: 0.5px solid #000000;
+  height: 1px;
+  border: 0.3px solid #000000;
 `;
 const ImageContainer = styled.View`
   display: flex;
@@ -390,9 +390,55 @@ const MindleInfo = ({ mindleKey, name, overlap }) => {
           </View>
         )}
 
-        <ProfileModal width={'200px'} height={'50px'} modalVisible={menuOpen} setModalVisible={setMenuOpen}>
-          <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 18 }}>쪽지 보내기</Text>
+        <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              justifyContent: 'space-evenly',
+              padding: 5,
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TouchableOpacity
+                style={{ justifyContent: 'center' }}
+                onPress={() => {
+                  Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
+              </TouchableOpacity>
+            </View>
+            <Divider />
+            <View
+              style={{
+                flex: 1,
+                borderBottomLeftRadius: 20,
+                borderBottomRightRadius: 20,
+                width: '100%',
+                marginTop: 5,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setMenuOpen(false);
+                }}
+                style={{ justifyContent: 'center' }}
+              >
+                <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ProfileModal>
       </Container>

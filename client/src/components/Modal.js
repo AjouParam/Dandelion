@@ -25,7 +25,6 @@ const Content = styled.View`
   border-radius: 20px;
   align-items: center;
   justify-content: center;
-  padding: 10px;
 `;
 const CustomModal = ({ width, height, modalVisible, setModalVisible, children }) => {
   return modalVisible ? (

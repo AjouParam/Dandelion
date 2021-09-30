@@ -9,6 +9,7 @@ import userState from '@contexts/userState';
 
 const Container = styled.View`
   flex: 1;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
