@@ -9,6 +9,7 @@ import axios from 'axios';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
+import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
@@ -41,6 +42,7 @@ const Maps = ({ navigation }) => {
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
   const [clickedMindleInfo, setClickedMindleInfo] = useState({
+    key: '',
     name: '',
     madeby: '',
     description: [],
@@ -76,11 +78,24 @@ const Maps = ({ navigation }) => {
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
-  const renderInner = () => (
-    <View style={{ height: '100%' }}>
-      <MindleInfo mindleInfo={clickedMindleInfo} />
-    </View>
-  );
+  const renderInner = () =>
+    clickedMindleInfo && (
+      <View style={{ height: '100%' }}>
+        {clickedMindleInfo.overlap ? (
+          <MindleInfo
+            mindleKey={clickedMindleInfo.key}
+            name={clickedMindleInfo.name}
+            overlap={clickedMindleInfo.overlap}
+          />
+        ) : (
+          <MindlePreview
+            mindleKey={clickedMindleInfo.key}
+            name={clickedMindleInfo.name}
+            overlap={clickedMindleInfo.overlap}
+          />
+        )}
+      </View>
+    );
 
   //API 기준 좌표
   const [mindleBaseCoord, setMindleBaseCoord] = useState({
@@ -280,12 +295,15 @@ const Maps = ({ navigation }) => {
 
   const getClickedMindleInfo = (mindle) => {
     setClickedMindleInfo({
+      key: mindle.key,
       name: mindle.title,
       madeby: '창시자', //데이터 필요
       description: mindle.description || '민들레 설명 데이터 없음',
       visitCount: 18, //데이터 필요
       current: 1, //데이터 필요
+      overlap: mindle.overlap,
     });
+    console.log(mindle);
   };
 
   return (
