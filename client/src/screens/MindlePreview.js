@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import BoardContent from '@components/MindlePostContent';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -31,64 +31,6 @@ const Image = styled.View`
   margin: 5px;
 `;
 
-const BoardContainer = styled.View`
-  height: 220px;
-
-  width: 100%;
-  padding: 10px 10px;
-  border-bottom-width: 1px;
-  border-bottom-color: black;
-`;
-const BoardUserInfo = styled.View`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-`;
-const BoardUserImageContainer = styled.View`
-  width: 50px;
-  height: 50px;
-  padding: 5px 5px;
-  align-items: center;
-  justify-content: center;
-`;
-const BoardUserImage = styled.Image`
-  width: 40px;
-  height: 40px;
-`;
-const BoardUserName = styled.Text`
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 3px;
-`;
-const BoardContents = styled.View`
-  padding-top: 10px;
-  padding-left: 55px;
-`;
-const BoardContentTextContainer = styled.View`
-  height: 50px;
-  justify-content: flex-start;
-`;
-const BoardContentImageContainer = styled.View`
-  margin-top: 5px;
-  margin-bottom: 5px;
-  height: 55px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-const BoardContentImage = styled.View`
-  border: 1px solid black;
-  width: 70px;
-  height: 55px;
-  margin-right: 10px;
-`;
-const BoardTipContainer = styled.View`
-  height: 30px;
-  padding-top: 5px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
 const Tab = styled.View`
   display: flex;
   flex-direction: row;
@@ -97,41 +39,6 @@ const Tab = styled.View`
   padding: 5px;
   justify-content: space-evenly;
 `;
-const BoardContent = ({ userPhoto, userName, date, content, photoContents, likes, commentsNum }) => {
-  return (
-    <>
-      <BoardContainer>
-        <BoardUserInfo>
-          <BoardUserImageContainer>
-            <BoardUserImage source={{ uri: userPhoto }} />
-          </BoardUserImageContainer>
-          <View style={{ flex: 1, padding: 5 }}>
-            <BoardUserName>{userName}</BoardUserName>
-            <Text>{date}</Text>
-          </View>
-        </BoardUserInfo>
-        <BoardContents>
-          <BoardContentTextContainer>
-            <Text>{content}</Text>
-          </BoardContentTextContainer>
-          <BoardContentImageContainer>
-            <BoardContentImage />
-            <BoardContentImage />
-            <BoardContentImage />
-          </BoardContentImageContainer>
-          <BoardTipContainer>
-            <TouchableOpacity>
-              <Text>Like {likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text>Comments {commentsNum}</Text>
-            </TouchableOpacity>
-          </BoardTipContainer>
-        </BoardContents>
-      </BoardContainer>
-    </>
-  );
-};
 
 const MindlePreview = ({ key, name, overlap }) => {
   const [tabIndex, setTabIndex] = useState(0);
