@@ -410,7 +410,7 @@ const MindleInfo = ({ mindleKey, name, overlap }) => {
               }}
             >
               <TouchableOpacity
-                style={{ justifyContent: 'center' }}
+                style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
                 onPress={() => {
                   Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
                 }}
@@ -434,7 +434,7 @@ const MindleInfo = ({ mindleKey, name, overlap }) => {
                 onPress={() => {
                   setMenuOpen(false);
                 }}
-                style={{ justifyContent: 'center' }}
+                style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
               >
                 <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
               </TouchableOpacity>
