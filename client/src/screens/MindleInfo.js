@@ -135,6 +135,8 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
 
   useEffect(() => {
     console.log(overlap);
+    console.log('민들레 정보 포지션');
+    console.log(position);
     setLoading(true);
     setData(DATA.splice(0, 3));
     setPage((prev) => prev + 1);
@@ -279,7 +281,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
                 backgroundColor: '#dbdbdb',
               }}
               onPress={() => {
-                navigation.navigate('MakePost', { position: position });
+                navigation.navigate('MakePost', { latitude: position.latitude, longitude: position.longitude });
               }}
             >
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Alert } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 
@@ -38,10 +39,18 @@ const Footer = styled.View`
 const SelectPhotoButton = styled.TouchableOpacity``;
 const PostButton = styled.TouchableOpacity``;
 
-const MakePost = ({ navigation, position }) => {
+const MakePost = ({ navigation, route }) => {
   const [title, setTitle] = useState('');
   const [bodyText, setBodyText] = useState('');
   const [images, setImages] = useState([]);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+
+  useEffect(() => {
+    console.log(route);
+    setLatitude(route.params.latitude);
+    setLongitude(route.params.longitude);
+  }, []);
 
   const setPost = () => {
     /**
@@ -59,10 +68,22 @@ const MakePost = ({ navigation, position }) => {
   return (
     <Container>
       <TitleContainer>
-        <TitleInput placeholder={'제목'}></TitleInput>
+        <TitleInput
+          placeholder={'제목'}
+          value={title}
+          onChangeText={(text) => {
+            setTitle(text);
+          }}
+        ></TitleInput>
       </TitleContainer>
       <Body>
-        <BodyInput placeholder={'내용을 입력하세요.'}></BodyInput>
+        <BodyInput
+          placeholder={'내용을 입력하세요.'}
+          value={bodyText}
+          onChangeText={(text) => {
+            setBodyText(text);
+          }}
+        ></BodyInput>
       </Body>
       <Footer>
         <SelectPhotoButton>
@@ -70,7 +91,13 @@ const MakePost = ({ navigation, position }) => {
         </SelectPhotoButton>
         {/* TODO : Replace to navigation header button */}
         <PostButton>
-          <Text>완료</Text>
+          <Text
+            onPress={() => {
+              Alert.alert('TODO', `${title}, ${bodyText}, ${latitude}, ${longitude}`);
+            }}
+          >
+            완료
+          </Text>
         </PostButton>
       </Footer>
     </Container>
