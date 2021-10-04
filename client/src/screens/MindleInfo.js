@@ -42,7 +42,7 @@ const Tab = styled.View`
   justify-content: space-evenly;
 `;
 
-const MindleInfo = ({ mindleKey, name, overlap }) => {
+const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
@@ -167,6 +167,7 @@ const MindleInfo = ({ mindleKey, name, overlap }) => {
           likes={item.likes}
           commentsNum={item.commentsNum}
           setMenuOpen={setMenuOpen}
+          navigation={navigation}
         />
       </>
     ),
@@ -276,6 +277,9 @@ const MindleInfo = ({ mindleKey, name, overlap }) => {
                 borderRadius: 50,
                 justifyContent: 'center',
                 backgroundColor: '#dbdbdb',
+              }}
+              onPress={() => {
+                navigation.navigate('MakePost', { position: position });
               }}
             >
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>

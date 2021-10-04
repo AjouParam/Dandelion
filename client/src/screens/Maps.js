@@ -48,6 +48,7 @@ const Maps = ({ navigation }) => {
     description: [],
     visitCount: '',
     current: '',
+    position: { latitude: '', longitude: '' },
   });
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
@@ -86,12 +87,15 @@ const Maps = ({ navigation }) => {
             mindleKey={clickedMindleInfo.key}
             name={clickedMindleInfo.name}
             overlap={clickedMindleInfo.overlap}
+            navigation={navigation}
+            position={clickedMindleInfo.position}
           />
         ) : (
           <MindlePreview
             mindleKey={clickedMindleInfo.key}
             name={clickedMindleInfo.name}
             overlap={clickedMindleInfo.overlap}
+            navigation={navigation}
           />
         )}
       </View>
@@ -302,6 +306,7 @@ const Maps = ({ navigation }) => {
       visitCount: 18, //데이터 필요
       current: 1, //데이터 필요
       overlap: mindle.overlap,
+      position: { latitude: mindle.latitude, longitude: mindle.longitude },
     });
     console.log(mindle);
   };

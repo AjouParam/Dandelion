@@ -70,26 +70,76 @@ const MindlePostContent = ({
   likes,
   commentsNum,
   setMenuOpen = () => {},
+  navigation = null,
+  isPost = false,
 }) => {
-  return (
-    <>
-      <BoardContainer>
-        <BoardUserInfo>
-          <BoardUserImageContainer
-            onPress={() => {
-              setMenuOpen(true);
-            }}
-          >
-            <BoardUserImage source={{ uri: userPhoto }} />
-          </BoardUserImageContainer>
-          <View style={{ flex: 1, padding: 5 }}>
-            <BoardUserName
+  if (!isPost)
+    return (
+      <>
+        <BoardContainer>
+          <BoardUserInfo>
+            <BoardUserImageContainer
               onPress={() => {
                 setMenuOpen(true);
               }}
             >
-              {userName}
-            </BoardUserName>
+              <BoardUserImage source={{ uri: userPhoto }} />
+            </BoardUserImageContainer>
+            <View style={{ flex: 1, padding: 5 }}>
+              <BoardUserName
+                onPress={() => {
+                  setMenuOpen(true);
+                }}
+              >
+                {userName}
+              </BoardUserName>
+              <Text>{date}</Text>
+            </View>
+          </BoardUserInfo>
+          <BoardContents>
+            <BoardContentTextContainer>
+              <Text
+                onPress={() => {
+                  navigation.navigate('MindlePost', {
+                    userPhoto: userPhoto,
+                    userName: userName,
+                    date: date,
+                    content: content,
+                    photoContents: photoContents,
+                    likes: likes,
+                    commentsNum: commentsNum,
+                  });
+                }}
+              >
+                {content}
+              </Text>
+            </BoardContentTextContainer>
+            <BoardContentImageContainer>
+              <BoardContentImage />
+              <BoardContentImage />
+              <BoardContentImage />
+            </BoardContentImageContainer>
+            <BoardTipContainer>
+              <TouchableOpacity>
+                <Text>Like {likes}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text>Comments {commentsNum}</Text>
+              </TouchableOpacity>
+            </BoardTipContainer>
+          </BoardContents>
+        </BoardContainer>
+      </>
+    );
+  else {
+    return (
+      <BoardContainer>
+        <BoardUserInfo>
+          <BoardUserImageContainer>
+            <BoardUserImage source={{ uri: userPhoto }} />
+          </BoardUserImageContainer>
+          <View style={{ flex: 1, padding: 5 }}>
+            <BoardUserName>{userName}</BoardUserName>
             <Text>{date}</Text>
           </View>
         </BoardUserInfo>
@@ -97,22 +147,9 @@ const MindlePostContent = ({
           <BoardContentTextContainer>
             <Text>{content}</Text>
           </BoardContentTextContainer>
-          <BoardContentImageContainer>
-            <BoardContentImage />
-            <BoardContentImage />
-            <BoardContentImage />
-          </BoardContentImageContainer>
-          <BoardTipContainer>
-            <TouchableOpacity>
-              <Text>Like {likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text>Comments {commentsNum}</Text>
-            </TouchableOpacity>
-          </BoardTipContainer>
         </BoardContents>
       </BoardContainer>
-    </>
-  );
+    );
+  }
 };
 export default MindlePostContent;
