@@ -41,6 +41,7 @@ const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
+  const [researchMap, setResearchMap] = useState(false); //위치 변화시 현 위치에서 검색 버튼
   const [clickedMindleInfo, setClickedMindleInfo] = useState({
     key: '',
     name: '',
@@ -250,7 +251,7 @@ const Maps = ({ navigation }) => {
               });
             }
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            // getData(position.coords, position.coords); 사용자가 보는 위치에 따라 계산하므로 없어도 크게 다르지 않을 듯
+            getData(position.coords, position.coords); //초기 민들레 생성
           },
           (error) => {
             console.log(error);
@@ -268,32 +269,23 @@ const Maps = ({ navigation }) => {
   const updateMapStyle = () => {
     setMapWidth('100%');
   };
+  const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
   //지도의 좌표가 변경시 호출 되는 함수
   const onRegionChange = (pos) => {
     console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
     if (pos.latitude != 0 && pos.longitude != 0) {
+      if (!checkInitialRegion) {
+        setCheckInitalRegion(true);
+      }
+      if (checkInitialRegion) {
+        setResearchMap(true);
+      }
       setCurrentMapCoord({
         latitude: pos.latitude,
         longitude: pos.longitude,
         latitudeDelta: pos.latitudeDelta,
         longitudeDelta: pos.longitudeDelta,
       });
-      if (
-        Math.abs(mindleBaseCoord.latitude - pos.latitude) > mindleBaseCoord.latitudeDelta / 4 ||
-        Math.abs(mindleBaseCoord.longitude - pos.longitude) > mindleBaseCoord.longitudeDelta / 4
-      ) {
-        clearTimeout(API_TIMER); //기존에 실행이 남아있으면 API 취소
-        const timerID = setTimeout(() => {
-          getData(pos, location);
-          setMindleBaseCoord({
-            latitude: pos.latitude,
-            longitude: pos.longitude,
-            latitudeDelta: pos.latitudeDelta,
-            longitudeDelta: pos.longitudeDelta,
-          });
-        }, 1000);
-        setApiTimer(timerID);
-      }
     }
   };
 
@@ -423,6 +415,26 @@ const Maps = ({ navigation }) => {
           {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
           <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
         </View>
+        {researchMap && (
+          <View
+            style={{
+              position: 'absolute',
+              top: '5%',
+              alignSelf: 'center',
+            }}
+          >
+            <Button
+              title="현 지도에서 검색"
+              width="200px"
+              height="50px"
+              fontSize="20px"
+              onPress={() => {
+                setResearchMap(false);
+                getData(currentMapCoord, location);
+              }}
+            />
+          </View>
+        )}
       </Animated.View>
     </Container>
   );

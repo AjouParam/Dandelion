@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\AjouParam\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sv\\values-sv.xml",
+            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sv\\values-sv.xml",
             "map": [
                 {
                     "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\1afa04f7a9885f515e1caf924e287ee0\\transformed\\core-1.6.0\\res\\values-sv\\values-sv.xml",

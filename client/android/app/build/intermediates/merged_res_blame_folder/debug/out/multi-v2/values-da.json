@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\AjouParam\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-da\\values-da.xml",
+            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-da\\values-da.xml",
             "map": [
                 {
                     "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\59dbe87081ed6bae5b08aa4d30a5e022\\transformed\\jetified-play-services-basement-17.0.0\\res\\values-da\\values.xml",
