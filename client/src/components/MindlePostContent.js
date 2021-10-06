@@ -36,7 +36,8 @@ const BoardContents = styled.View`
   padding-left: 55px;
 `;
 const BoardContentTextContainer = styled.View`
-  height: 60px;
+  min-height: 60px;
+  max-height: 100px;
   justify-content: flex-start;
 `;
 const Title = styled.Text`
