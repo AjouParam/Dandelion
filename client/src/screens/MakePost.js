@@ -120,6 +120,7 @@ const MakePost = ({ navigation, route }) => {
       */
       if (res.data.status === 'SUCCESS') {
         console.log(res.data.message);
+        route.params.onGoBack(res.data.data);
         navigation.goBack();
       } else {
         console.log('Failed to post');

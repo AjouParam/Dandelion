@@ -246,6 +246,10 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
                     mindleId: mindleKey,
                     latitude: position.latitude,
                     longitude: position.longitude,
+                    onGoBack: (newPost) => {
+                      setDataList((prev) => [newPost, ...prev]);
+                      setData((prev) => [newPost, ...prev]);
+                    },
                   });
                 }}
               >
