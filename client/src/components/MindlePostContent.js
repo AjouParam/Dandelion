@@ -28,16 +28,21 @@ const BoardUserImage = styled.Image`
 `;
 const BoardUserName = styled.Text`
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 3px;
 `;
 const BoardContents = styled.View`
-  padding-top: 10px;
+  margin-top: 5px;
   padding-left: 55px;
 `;
 const BoardContentTextContainer = styled.View`
-  height: 50px;
+  height: 60px;
   justify-content: flex-start;
+`;
+const Title = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
 `;
 const BoardContentImageContainer = styled.View`
   margin-top: 5px;
@@ -63,93 +68,91 @@ const BoardTipContainer = styled.View`
 
 const MindlePostContent = ({
   userPhoto,
-  userName,
+  name,
   date,
-  content,
-  photoContents,
+  title,
+  text,
+  images,
   likes,
-  commentsNum,
+  comments,
   setMenuOpen = () => {},
   navigation = null,
   isPost = false,
+  isInPost = false,
 }) => {
-  if (!isPost)
-    return (
-      <>
-        <BoardContainer>
-          <BoardUserInfo>
-            <BoardUserImageContainer
-              onPress={() => {
-                setMenuOpen(true);
-              }}
-            >
-              <BoardUserImage source={{ uri: userPhoto }} />
-            </BoardUserImageContainer>
-            <View style={{ flex: 1, padding: 5 }}>
-              <BoardUserName
-                onPress={() => {
-                  setMenuOpen(true);
-                }}
-              >
-                {userName}
-              </BoardUserName>
-              <Text>{date}</Text>
-            </View>
-          </BoardUserInfo>
-          <BoardContents>
-            <BoardContentTextContainer>
-              <Text
-                onPress={() => {
-                  navigation.navigate('MindlePost', {
-                    userPhoto: userPhoto,
-                    userName: userName,
-                    date: date,
-                    content: content,
-                    photoContents: photoContents,
-                    likes: likes,
-                    commentsNum: commentsNum,
-                  });
-                }}
-              >
-                {content}
-              </Text>
-            </BoardContentTextContainer>
-            <BoardContentImageContainer>
-              <BoardContentImage />
-              <BoardContentImage />
-              <BoardContentImage />
-            </BoardContentImageContainer>
-            <BoardTipContainer>
-              <TouchableOpacity>
-                <Text>Like {likes}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text>Comments {commentsNum}</Text>
-              </TouchableOpacity>
-            </BoardTipContainer>
-          </BoardContents>
-        </BoardContainer>
-      </>
-    );
-  else {
-    return (
-      <BoardContainer>
-        <BoardUserInfo>
-          <BoardUserImageContainer>
-            <BoardUserImage source={{ uri: userPhoto }} />
-          </BoardUserImageContainer>
-          <View style={{ flex: 1, padding: 5 }}>
-            <BoardUserName>{userName}</BoardUserName>
-            <Text>{date}</Text>
-          </View>
-        </BoardUserInfo>
-        <BoardContents>
-          <BoardContentTextContainer>
-            <Text>{content}</Text>
-          </BoardContentTextContainer>
-        </BoardContents>
-      </BoardContainer>
-    );
-  }
+  return (
+    <BoardContainer>
+      <BoardUserInfo>
+        <BoardUserImageContainer
+          onPress={() => {
+            if (isPost) setMenuOpen(true);
+          }}
+        >
+          <BoardUserImage source={{ uri: userPhoto }} />
+        </BoardUserImageContainer>
+        <View style={{ flex: 1, padding: 5 }}>
+          <BoardUserName
+            onPress={() => {
+              if (isPost) setMenuOpen(true);
+            }}
+          >
+            {name}
+          </BoardUserName>
+          <Text>{date}</Text>
+        </View>
+      </BoardUserInfo>
+      <BoardContents>
+        <BoardContentTextContainer>
+          <Title
+            onPress={() => {
+              if (isPost && !isInPost)
+                navigation.navigate('MindlePost', {
+                  userPhoto: userPhoto,
+                  name: name,
+                  date: date,
+                  title: title,
+                  text: text,
+                  images: images,
+                  likes: likes,
+                  comments: comments,
+                });
+            }}
+          >
+            {title}
+          </Title>
+          <Text
+            onPress={() => {
+              if (isPost && !isInPost)
+                navigation.navigate('MindlePost', {
+                  userPhoto: userPhoto,
+                  name: name,
+                  date: date,
+                  title: title,
+                  text: text,
+                  images: images,
+                  likes: likes,
+                  comments: comments,
+                });
+            }}
+          >
+            {text}
+          </Text>
+        </BoardContentTextContainer>
+        <BoardContentImageContainer>
+          <BoardContentImage />
+          <BoardContentImage />
+          <BoardContentImage />
+        </BoardContentImageContainer>
+        <BoardTipContainer>
+          <TouchableOpacity>
+            <Text>Like {likes}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Comments {comments}</Text>
+          </TouchableOpacity>
+        </BoardTipContainer>
+      </BoardContents>
+    </BoardContainer>
+  );
 };
 export default MindlePostContent;

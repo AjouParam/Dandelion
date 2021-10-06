@@ -298,6 +298,8 @@ const Maps = ({ navigation }) => {
   };
 
   const getClickedMindleInfo = (mindle) => {
+    // console.log('mindle info');
+    // console.log(mindle);
     setClickedMindleInfo({
       key: mindle.key,
       name: mindle.title,

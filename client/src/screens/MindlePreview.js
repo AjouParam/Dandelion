@@ -50,12 +50,13 @@ const MindlePreview = ({ key, name, overlap }) => {
     setData({
       userPhoto:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      userName: '살찐 황소',
+      name: '살찐 황소',
       date: '2021-09-19',
-      content: '살찐 황소님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      photoContents: ['', ''],
+      title: '이거 되냐?',
+      text: '살찐 황소님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
+      images: ['', ''],
       likes: 11,
-      commentsNum: 9,
+      comments: 9,
     });
     return () => {
       setData(null);
@@ -113,12 +114,13 @@ const MindlePreview = ({ key, name, overlap }) => {
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
               <BoardContent
                 userPhoto={data.userPhoto}
-                userName={data.userName}
+                name={data.name}
                 date={data.date}
-                content={data.content}
-                photoContents={data.photoContents}
+                title={data.title}
+                text={data.text}
+                images={data.images}
                 likes={data.likes}
-                commentsNum={data.commentsNum}
+                comments={data.comments}
               />
               <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                 <Text>Locked</Text>
