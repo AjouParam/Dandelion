@@ -28,7 +28,9 @@ const Body = styled.View`
   padding: 15px 5px;
   border-bottom-width: 1px;
 `;
-const BodyInput = styled.TextInput``;
+const BodyInput = styled.TextInput`
+  flex-shrink: 1;
+`;
 
 const Footer = styled.View`
   padding: 15px 10px;
@@ -145,6 +147,7 @@ const MakePost = ({ navigation, route }) => {
           onChangeText={(text) => {
             setBodyText(text);
           }}
+          multiline={true}
         ></BodyInput>
       </Body>
       <Footer>
