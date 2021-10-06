@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Post from '@components/MindlePostContent';
-import { ActivityIndicator } from 'react-native';
+import ProfileModal from '@components/Modal';
 
 const Container = styled.View`
   flex: 1;
@@ -13,11 +14,17 @@ const Comment = styled.View`
   border: 1px solid #000000;
 `;
 const Text = styled.Text``;
+const Divider = styled.View`
+  margin-top: 10px;
+  height: 1px;
+  border: 0.3px solid #000000;
+`;
 
 const MindlePost = ({ route, navigation }) => {
   const [loaded, setLoaded] = useState(false);
   const [comments, setComments] = useState([]);
   const [data, setData] = useState({});
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setComments([
@@ -32,12 +39,13 @@ const MindlePost = ({ route, navigation }) => {
     ]);
     setData({
       userPhoto: route.params.userPhoto,
-      userName: route.params.userName,
+      name: route.params.name,
       date: route.params.date,
-      content: route.params.content,
-      photoContents: route.params.photoContents,
+      title: route.params.title,
+      text: route.params.text,
+      images: route.params.images,
       likes: route.params.likes,
-      commentsNum: route.params.commentsNum,
+      comments: route.params.comments,
     });
   }, []);
 
@@ -49,14 +57,20 @@ const MindlePost = ({ route, navigation }) => {
     return (
       <Container>
         <Post
-          userPhoto={data.userPhoto}
-          userName={data.userName}
+          userPhoto={
+            data.userPhoto ||
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'
+          }
+          name={data.name}
           date={data.date}
-          content={data.content}
-          photoContents={data.photoContents}
+          title={data.title}
+          text={data.text}
+          images={data.images}
           likes={data.likes}
-          commentsNum={data.commentsNum}
+          comments={data.comments}
           isPost={true}
+          isInPost={true}
+          setMenuOpen={setMenuOpen}
         />
         <Comments>
           {comments.map((item, idx) => (
@@ -67,6 +81,57 @@ const MindlePost = ({ route, navigation }) => {
             </Comment>
           ))}
         </Comments>
+        <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              justifyContent: 'space-evenly',
+              padding: 5,
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TouchableOpacity
+                style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
+                onPress={() => {
+                  Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
+              </TouchableOpacity>
+            </View>
+            <Divider />
+            <View
+              style={{
+                flex: 1,
+                borderBottomLeftRadius: 20,
+                borderBottomRightRadius: 20,
+                width: '100%',
+                marginTop: 5,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setMenuOpen(false);
+                }}
+                style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
+              >
+                <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ProfileModal>
       </Container>
     );
   else
