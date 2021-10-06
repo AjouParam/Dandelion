@@ -1,11 +1,7 @@
 const Dandelion = require('../../models/Dandelion');
 const { resultResponse, basicResponse } = require('../../config/response');
-<<<<<<< HEAD
-const { checkNameType, checkPositionType, checkDescriptionType } = require('./checkDetailValidation/Dandelion');
-=======
 const { checkNameType, checkPositionType, checkDescriptionType, checkAlreadyExist } = require('./Validation/Dandelion');
 const { getKoreanTime } = require('../provider/util');
->>>>>>> 8e1f791f9a91007a0ec6776be6a5ae07910fcacc
 
 const dandelion = {
   create: async (req, res) => {
@@ -21,17 +17,6 @@ const dandelion = {
     if (!name || !location.latitude || !location.longitude)
       return res.json(basicResponse('Request Body에 정보가 누락되었습니다.'));
     //description 없다면 description : ""로 보내줄 것.
-<<<<<<< HEAD
-    const nameMessage = checkNameType(name);
-    if (nameMessage) return res.json(basicResponse(nameMessage));
-
-    const positionMessage = checkPositionType(location.longitude, location.latitude);
-    if (positionMessage) return res.json(basicResponse(positionMessage));
-
-    const descriptionMessage = checkDescriptionType(description);
-    if (descriptionMessage) return res.json(basicResponse(descriptionMessage));
-
-=======
     const nameMessage = await checkNameType(name);
     if (nameMessage) return res.json(basicResponse(nameMessage));
 
@@ -45,7 +30,6 @@ const dandelion = {
     if (ExistPositionMessage) return res.json(basicResponse(ExistPositionMessage));
 
     //한국 시간 해결 안됨..
->>>>>>> 8e1f791f9a91007a0ec6776be6a5ae07910fcacc
     const newDandelion = new Dandelion({
       name,
       _creator: userId,
