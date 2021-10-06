@@ -88,7 +88,13 @@ const MindlePostContent = ({
             if (isPost) setMenuOpen(true);
           }}
         >
-          <BoardUserImage source={{ uri: userPhoto }} />
+          <BoardUserImage
+            source={{
+              uri:
+                userPhoto ||
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
+            }}
+          />
         </BoardUserImageContainer>
         <View style={{ flex: 1, padding: 5 }}>
           <BoardUserName
