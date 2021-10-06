@@ -19,7 +19,8 @@ const ImageContainer = styled.View`
   flex: 2;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 40px;
+  margin-top: 30px;
 `;
 const Logo = styled.Image`
   width: 240px;
@@ -44,7 +45,7 @@ const ErrorText = styled.Text`
 `;
 const LoginButtonContainer = styled.View`
   width: 100%;
-  margin-top: 10px;
+  margin-top: 20px;
   align-items: center;
 `;
 const ResetPasswordContainer = styled.View`
@@ -53,7 +54,7 @@ const ResetPasswordContainer = styled.View`
 
   flex-direction: row;
   justify-content: flex-end;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   margin-top: -20px;
 `;
 const JoinContainer = styled.View`
