@@ -69,7 +69,8 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             console.log('게시글 불러오기 성공');
-            return res.data.data;
+
+            return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           } else if (res.data.status === 'FAILED') {
             console.log('게시글 불러오기 실패');
             return 'FAILED';
