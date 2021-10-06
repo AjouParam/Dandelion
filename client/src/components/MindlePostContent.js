@@ -3,10 +3,9 @@ import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 const BoardContainer = styled.View`
-  height: 220px;
-
   width: 100%;
   padding: 10px 10px;
+  justify-content: flex-start;
   border-bottom-width: 1px;
   border-bottom-color: black;
 `;
