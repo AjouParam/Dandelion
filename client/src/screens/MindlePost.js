@@ -19,23 +19,41 @@ const Divider = styled.View`
   height: 1px;
   border: 0.3px solid #000000;
 `;
+const CommentSubmitForm = styled.View`
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
+`;
+
+const CommentInput = styled.TextInput`
+  height: 100%;
+  width: 70%;
+  padding: 5px;
+  flex: 1;
+  border-radius: 10px;
+`;
+const CommentSubmitButton = styled.TouchableOpacity`
+  width: 20%;
+  padding: 5px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+`;
 
 const MindlePost = ({ route, navigation }) => {
   const [loaded, setLoaded] = useState(false);
   const [comments, setComments] = useState([]);
   const [data, setData] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [commentInput, setCommentInput] = useState('');
 
   useEffect(() => {
     setComments([
       { writer: '익명1', comment: '익명1님이 작성하신 댓글입니다.', date: new Date().toISOString() },
       { writer: '익명2', comment: '익명2님이 작성하신 댓글입니다.', date: new Date().toISOString() },
       { writer: '익명3', comment: '익명3님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명4', comment: '익명4님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명5', comment: '익명5님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명6', comment: '익명6님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명7', comment: '익명7님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명8', comment: '익명8님이 작성하신 댓글입니다.', date: new Date().toISOString() },
     ]);
     setData({
       userPhoto: route.params.userPhoto,
@@ -72,6 +90,22 @@ const MindlePost = ({ route, navigation }) => {
           isInPost={true}
           setMenuOpen={setMenuOpen}
         />
+        <CommentSubmitForm>
+          <CommentInput
+            value={commentInput}
+            placeholder="댓글을 입력해주세요."
+            onChangeText={(text) => {
+              setCommentInput(text);
+            }}
+          />
+          <CommentSubmitButton
+            onPress={() => {
+              Alert.alert('댓글', '댓글 입력');
+            }}
+          >
+            <Text>확인</Text>
+          </CommentSubmitButton>
+        </CommentSubmitForm>
         <Comments>
           {comments.map((item, idx) => (
             <Comment key={String(idx)}>
