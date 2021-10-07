@@ -51,7 +51,6 @@ const LoginButtonContainer = styled.View`
 const ResetPasswordContainer = styled.View`
   width: 100%;
   display: flex;
-
   flex-direction: row;
   justify-content: flex-end;
   margin-bottom: 10px;
@@ -61,7 +60,7 @@ const JoinContainer = styled.View`
   flex: 1;
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   margin-bottom: 40px;
 `;
 

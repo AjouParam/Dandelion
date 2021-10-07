@@ -1,4 +1,9 @@
 {
   "name": "client",
-  "displayName": "client"
+  "displayName": "client",
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#FFE699"
+  }
 }

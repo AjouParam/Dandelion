@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
-import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
@@ -382,6 +382,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           ) : (
             <Button
@@ -394,6 +395,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           )}
         </View>
@@ -417,6 +419,7 @@ const Maps = ({ navigation }) => {
           {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
           <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
         </View>
+
         {researchMap && (
           <View
             style={{
@@ -427,13 +430,14 @@ const Maps = ({ navigation }) => {
           >
             <Button
               title="현 지도에서 검색"
-              width="200px"
-              height="50px"
-              fontSize="20px"
               onPress={() => {
                 setResearchMap(false);
                 getData(currentMapCoord, location);
               }}
+              width="150px"
+              height="40px"
+              fontSize="17px"
+              backgroundcolor="#431F0E"
             />
           </View>
         )}

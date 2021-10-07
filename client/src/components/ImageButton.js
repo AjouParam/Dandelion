@@ -16,7 +16,7 @@ const Container = styled.TouchableOpacity`
 `;
 //흰색 바탕 이미지
 const StyledImage = styled.Image`
-  background-color: #ffffff; 
+  background-color: #ffffff;
   width: 60px;
   height: 60px;
   border-radius: ${({ rounded }) => (rounded ? 50 : 0)}px;
@@ -30,7 +30,7 @@ const Title = styled.Text`
     fontColor !== null ? fontColor : isFilled ? theme.buttonTitle : theme.buttonUnfilledTitle};
 `;
 
-const ImageButton = ({ containerStyle, src, onPress, isFilled, disabled, width, height,rounded}) => {
+const ImageButton = ({ containerStyle, src, onPress, isFilled, disabled, width, height, rounded }) => {
   return (
     <Container
       style={containerStyle}
@@ -40,9 +40,7 @@ const ImageButton = ({ containerStyle, src, onPress, isFilled, disabled, width, 
       width={width ? width : '100%'}
       height={height ? height : '50px'}
     >
-      
-    <StyledImage source={src} rounded={rounded} />
-
+      <StyledImage source={src} rounded={rounded} />
     </Container>
   );
 };
