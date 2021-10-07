@@ -46,7 +46,7 @@ const Tab = styled.View`
 
 const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
   const [tabIndex, setTabIndex] = useState(0);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const jwtToken = useRecoilValue(userState.uidState);
 
@@ -74,6 +74,7 @@ const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
 
       if (dataList !== 'FAILED') {
         setData(dataList[0]);
+        if (dataList.length === 0) setLoading(false);
       }
     };
 
@@ -95,16 +96,18 @@ const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
     <>
       <Container>
         {/* <Header /> */}
-        <ImageContainer>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-          <Image></Image>
-        </ImageContainer>
+        {data && (
+          <ImageContainer>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+            <Image></Image>
+          </ImageContainer>
+        )}
         <Tab>
           <TouchableOpacity
             onPress={() => {
@@ -133,33 +136,31 @@ const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
         </Tab>
 
         <Divider />
-        {!loading && (
+        {!loading && !data && (
+          <>
+            <View style={{}}>
+              <Text>게시글이 없습니다.</Text>
+            </View>
+          </>
+        )}
+        {!loading && data && (
           <>
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              {data && (
-                <ScrollView>
-                  <BoardContent
-                    userPhoto={data.userPhoto}
-                    name={data._user.name}
-                    date={data.createdAt}
-                    title={data.title}
-                    text={data.text}
-                    images={data.images}
-                    likes={data.likes}
-                    comments={data.comments}
-                  />
-                  <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>Locked</Text>
-                  </View>
-                </ScrollView>
-              )}
-              {!data && (
-                <>
-                  <View style={{}}>
-                    <Text>게시글이 없습니다.</Text>
-                  </View>
-                </>
-              )}
+              <ScrollView>
+                <BoardContent
+                  userPhoto={data.userPhoto}
+                  name={data._user.name}
+                  date={data.createdAt}
+                  title={data.title}
+                  text={data.text}
+                  images={data.images}
+                  likes={data.likes}
+                  comments={data.comments}
+                />
+                <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <Text>Locked</Text>
+                </View>
+              </ScrollView>
             </View>
           </>
         )}
