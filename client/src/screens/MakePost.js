@@ -55,30 +55,18 @@ const MakePost = ({ navigation, route }) => {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const jwtToken = useRecoilValue(userState.uidState);
-
+  const name = useRecoilValue(userState.nameState);
   useEffect(() => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-    console.log(route);
     setMindleId(route.params.mindleId);
     setLatitude(route.params.latitude);
     setLongitude(route.params.longitude);
   }, []);
 
   const setPost = async () => {
-    /**
-     * {
-        "title":"test2에 첫게시글",
-        "text":"블라블라",
-        "location":{
-            "longitude":127.04275784194242,
-            "latitude":37.28335975273373
-        },
-        "images":["test1.jpg","test2.jpg"]
-        }
-     */
     const data = {
       title: title,
       text: bodyText,
@@ -120,6 +108,8 @@ const MakePost = ({ navigation, route }) => {
       */
       if (res.data.status === 'SUCCESS') {
         console.log(res.data.message);
+        const userId = res.data.data._user;
+        res.data.data._user = { _id: userId, name: name };
         route.params.onGoBack(res.data.data);
         navigation.goBack();
       } else {
