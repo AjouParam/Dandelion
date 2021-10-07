@@ -52,8 +52,7 @@ const BoardContentImageContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;
-const BoardContentImage = styled.View`
-  border: 1px solid black;
+const BoardContentImage = styled.Image`
   width: 70px;
   height: 55px;
   margin-right: 10px;
@@ -144,11 +143,13 @@ const MindlePostContent = ({
             {text}
           </Text>
         </BoardContentTextContainer>
-        <BoardContentImageContainer>
-          <BoardContentImage />
-          <BoardContentImage />
-          <BoardContentImage />
-        </BoardContentImageContainer>
+        {images.length > 0 && (
+          <BoardContentImageContainer>
+            {images.map((item) => (
+              <BoardContentImage source={item} />
+            ))}
+          </BoardContentImageContainer>
+        )}
         <BoardTipContainer>
           <TouchableOpacity>
             <Text>Like {likes}</Text>
