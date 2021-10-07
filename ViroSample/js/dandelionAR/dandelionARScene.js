@@ -18,8 +18,8 @@ import {
   ViroQuad,
   ViroSpotLight,
   Viro3DObject,
-  ViroAnimations,
-  ViroPolyline,
+  ViroText,
+  ViroImage,
 } from 'react-viro';
 
 import TimerMixin from 'react-timer-mixin';
@@ -36,6 +36,9 @@ var dandelionARScene = createReactClass({
       scale: [0.2, 0.2, 0.2],
       rotation: [0, 0, 0],
       shouldBillboard: true,
+      arpost: [],
+      position: [0, 0, 0],
+      title: 'testPost',
     };
   },
 
@@ -43,7 +46,7 @@ var dandelionARScene = createReactClass({
     return (
       <ViroARScene ref="arscene" onTrackingInitialized={this._onTrackInit}>
         <ViroAmbientLight color="#ffffff" intensity={200} />
-        {this._getModel()}
+        {this._getARPost()}
       </ViroARScene>
     );
   },
@@ -75,28 +78,6 @@ var dandelionARScene = createReactClass({
         dragType="FixedToWorld"
         key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
       >
-        <ViroSpotLight
-          innerAngle={5}
-          outerAngle={20}
-          direction={[0, -1, 0]}
-          position={[0, 4, 0]}
-          color="#ffffff"
-          castsShadow={true}
-          shadowNearZ={0.1}
-          shadowFarZ={6}
-          shadowOpacity={0.9}
-          ref={this._setSpotLightRef}
-        />
-
-        <Viro3DObject
-          position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
-          source={this.props.arSceneNavigator.viroAppProps.objectSource}
-          type="VRX"
-          onLoadEnd={this._onLoadEnd}
-          onLoadStart={this._onLoadStart}
-          onRotate={this._onRotate}
-          onPinch={this._onPinch}
-        />
         <ViroQuad
           rotation={[-90, 0, 0]}
           position={[0, -0.001, 0]}
@@ -109,6 +90,30 @@ var dandelionARScene = createReactClass({
     );
     return modelArray;
   },
+  _getARPost(id, position, title) {
+    this.state.arpost.push(
+      <ViroImage
+        position={this.state.position}
+        transformBehaviors={'billboard'}
+        source={require('./res/ARpost.png')}
+        width={1}
+        height={1}
+        onClick={this._onClick}
+        onLoadEnd={this._onLoadEnd}
+        onLoadStart={this._onLoadStart}
+      >
+        <ViroText
+          position={this.state.position}
+          transformBehaviors={'billboard'}
+          text={this.state.title}
+          renderingOrder={-1}
+          textAlign={'center'}
+        />
+      </ViroImage>,
+    );
+    return this.state.arpost;
+  },
+  _onClick() {},
 
   _setARNodeRef(component) {
     this.arNodeRef = component;
@@ -120,45 +125,6 @@ var dandelionARScene = createReactClass({
 
   _onTrackInit() {
     this.props.arSceneNavigator.viroAppProps._onTrackingInit();
-  },
-
-  /*
-    Rotation should be relative to its current rotation *not* set to the absolute
-    value of the given rotationFactor.
-    */
-  _onRotate(rotateState, rotationFactor, source) {
-    if (rotateState == 3) {
-      this.setState({
-        rotation: [this.state.rotation[0], this.state.rotation[1] + rotationFactor, this.state.rotation[2]],
-      });
-      return;
-    }
-
-    this.arNodeRef.setNativeProps({
-      rotation: [this.state.rotation[0], this.state.rotation[1] + rotationFactor, this.state.rotation[2]],
-    });
-  },
-
-  /*
-    Pinch scaling should be relative to its last value *not* the absolute value of the
-    scale factor. So while the pinching is ongoing set scale through setNativeProps
-    and multiply the state by that factor. At the end of a pinch event, set the state
-    to the final value and store it in state.
-    */
-  _onPinch(pinchState, scaleFactor, source) {
-    var newScale = this.state.scale.map((x) => {
-      return x * scaleFactor;
-    });
-
-    if (pinchState == 3) {
-      this.setState({
-        scale: newScale,
-      });
-      return;
-    }
-
-    this.arNodeRef.setNativeProps({ scale: newScale });
-    this.spotLight.setNativeProps({ shadowFarZ: 6 * newScale[0] });
   },
 
   _onLoadStart() {
