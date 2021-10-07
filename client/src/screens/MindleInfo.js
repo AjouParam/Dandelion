@@ -197,6 +197,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
           {!loading && overlap && (
             <TouchableOpacity
               style={{
+                zIndex: 1,
                 width: 60,
                 height: 60,
                 position: 'absolute',
