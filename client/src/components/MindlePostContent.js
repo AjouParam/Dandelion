@@ -146,7 +146,7 @@ const MindlePostContent = ({
         {images.length > 0 && (
           <BoardContentImageContainer>
             {images.map((item) => (
-              <BoardContentImage source={item} />
+              <BoardContentImage source={{ uri: item }} />
             ))}
           </BoardContentImageContainer>
         )}

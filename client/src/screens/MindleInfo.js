@@ -215,7 +215,8 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
                   latitude: position.latitude,
                   longitude: position.longitude,
                   onGoBack: (newPost) => {
-                    setDataList((prev) => [newPost, ...prev]);
+                    setLoading(true);
+                    //setDataList((prev) => [newPost, ...prev]);
                     setData((prev) => [newPost, ...prev]);
                   },
                 });
@@ -244,6 +245,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
                   <>
                     {tabIndex === 0 && (
                       <ImageContainer>
+                        {/* TODO : 데이터리스트에서 랜덤 이미지 7개 가져오기 */}
                         <Image></Image>
                         <Image></Image>
                         <Image></Image>
