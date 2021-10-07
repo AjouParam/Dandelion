@@ -45,7 +45,7 @@ const Tab = styled.View`
   justify-content: space-evenly;
 `;
 
-const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
+const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
@@ -76,7 +76,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
         .catch((err) => console.log(err));
 
       if (dataList !== 'FAILED') {
-        if (dataList.length === setNoData(true));
+        if (dataList.length === 0) setNoData(true);
         setDataList(dataList);
       }
     };
@@ -104,6 +104,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
   useEffect(() => {
     if (data.length > 0) {
       console.log(data);
+      setNoData(false);
       setLoading(false);
     }
   }, [data]);
@@ -193,6 +194,35 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
           </Tab>
 
           <Divider />
+          {!loading && overlap && (
+            <TouchableOpacity
+              style={{
+                width: 60,
+                height: 60,
+                position: 'absolute',
+                top: '90%',
+                right: '5%',
+                alignSelf: 'flex-end',
+                borderWidth: 1,
+                borderRadius: 50,
+                justifyContent: 'center',
+                backgroundColor: '#dbdbdb',
+              }}
+              onPress={() => {
+                navigation.navigate('MakePost', {
+                  mindleId: mindleKey,
+                  latitude: position.latitude,
+                  longitude: position.longitude,
+                  onGoBack: (newPost) => {
+                    setDataList((prev) => [newPost, ...prev]);
+                    setData((prev) => [newPost, ...prev]);
+                  },
+                });
+              }}
+            >
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
+            </TouchableOpacity>
+          )}
           {!loading && overlap && !noData && (
             <>
               <FlatList
@@ -226,33 +256,6 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
                   </>
                 )}
               />
-              <TouchableOpacity
-                style={{
-                  width: 60,
-                  height: 60,
-                  position: 'absolute',
-                  top: '90%',
-                  right: '5%',
-                  alignSelf: 'flex-end',
-                  borderWidth: 1,
-                  borderRadius: 50,
-                  justifyContent: 'center',
-                  backgroundColor: '#dbdbdb',
-                }}
-                onPress={() => {
-                  navigation.navigate('MakePost', {
-                    mindleId: mindleKey,
-                    latitude: position.latitude,
-                    longitude: position.longitude,
-                    onGoBack: (newPost) => {
-                      setDataList((prev) => [newPost, ...prev]);
-                      setData((prev) => [newPost, ...prev]);
-                    },
-                  });
-                }}
-              >
-                <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
-              </TouchableOpacity>
             </>
           )}
           {!loading && overlap && noData && (
@@ -260,6 +263,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
               <Text>게시글이 없습니다.</Text>
             </View>
           )}
+
           {loading && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <ActivityIndicator size="large" color="0000ff" />
