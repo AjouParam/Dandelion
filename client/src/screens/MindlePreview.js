@@ -1,7 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import BoardContent from '@components/MindlePostContent';
+import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -40,31 +44,51 @@ const Tab = styled.View`
   justify-content: space-evenly;
 `;
 
-const MindlePreview = ({ key, name, overlap }) => {
+const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const jwtToken = useRecoilValue(userState.uidState);
 
   useEffect(() => {
+    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.headers.common['x-access-token'] = jwtToken;
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
     setLoading(true);
-    setData({
-      userPhoto:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-      name: '살찐 황소',
-      date: '2021-09-19',
-      title: '이거 되냐?',
-      text: '살찐 황소님이 작성한 글이에요~ 이건 예시 글이랍니다. 어떻게 나올지 궁금하네요~',
-      images: ['', ''],
-      likes: 11,
-      comments: 9,
-    });
+
+    const fetchData = async (mindleId) => {
+      const dataList = await axios
+        .get(`/${mindleId}/post/`)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log('게시글 불러오기 성공');
+
+            return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          } else if (res.data.status === 'FAILED') {
+            console.log('게시글 불러오기 실패');
+            return 'FAILED';
+          }
+        })
+        .catch((err) => console.log(err));
+
+      if (dataList !== 'FAILED') {
+        setData(dataList[0]);
+      }
+    };
+
+    fetchData(mindleKey);
+
     return () => {
       setData(null);
     };
-  }, [key]);
+  }, [mindleKey]);
 
   useEffect(() => {
-    if (data) setLoading(false);
+    if (data) {
+      console.log(data);
+      setLoading(false);
+    }
   }, [data]);
 
   return (
@@ -112,19 +136,30 @@ const MindlePreview = ({ key, name, overlap }) => {
         {!loading && (
           <>
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <BoardContent
-                userPhoto={data.userPhoto}
-                name={data.name}
-                date={data.date}
-                title={data.title}
-                text={data.text}
-                images={data.images}
-                likes={data.likes}
-                comments={data.comments}
-              />
-              <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Locked</Text>
-              </View>
+              {data && (
+                <ScrollView>
+                  <BoardContent
+                    userPhoto={data.userPhoto}
+                    name={data._user.name}
+                    date={data.createdAt}
+                    title={data.title}
+                    text={data.text}
+                    images={data.images}
+                    likes={data.likes}
+                    comments={data.comments}
+                  />
+                  <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text>Locked</Text>
+                  </View>
+                </ScrollView>
+              )}
+              {!data && (
+                <>
+                  <View style={{}}>
+                    <Text>게시글이 없습니다.</Text>
+                  </View>
+                </>
+              )}
             </View>
           </>
         )}
