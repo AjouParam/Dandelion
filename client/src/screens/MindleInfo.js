@@ -49,15 +49,13 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
-  const [dataList, setDataList] = useState([]);
+  const [dataList, setDataList] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const jwtToken = useRecoilValue(userState.uidState);
+  const [noData, setNoData] = useState(false);
 
   useEffect(() => {
-    // console.log(overlap);
-    // console.log('민들레 정보 포지션');
-    // console.log(position);
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -69,7 +67,6 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             console.log('게시글 불러오기 성공');
-
             return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           } else if (res.data.status === 'FAILED') {
             console.log('게시글 불러오기 실패');
@@ -79,6 +76,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
         .catch((err) => console.log(err));
 
       if (dataList !== 'FAILED') {
+        if (dataList.length === setNoData(true));
         setDataList(dataList);
       }
     };
@@ -92,9 +90,14 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
   }, [mindleKey]);
 
   useEffect(() => {
-    if (dataList.length >= 4) setData(dataList.splice(0, 4));
-    else {
-      setData(dataList.splice(0, dataList.length));
+    if (dataList) {
+      if (dataList.length === 0) {
+        setLoading(false);
+      }
+      if (dataList.length >= 4) setData(dataList.splice(0, 4));
+      else {
+        setData(dataList.splice(0, dataList.length));
+      }
     }
   }, [dataList]);
 
@@ -190,19 +193,13 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
           </Tab>
 
           <Divider />
-          {!loading && overlap && (
+          {!loading && overlap && !noData && (
             <>
               <FlatList
                 data={tabIndex === 0 ? data : [0]}
                 renderItem={
                   tabIndex === 0
-                    ? data.length === 0
-                      ? () => (
-                          <View>
-                            <Text>게시글이 없습니다.</Text>
-                          </View>
-                        )
-                      : renderItem
+                    ? renderItem
                     : () => (
                         <View>
                           <Text>이벤트 목록</Text>
@@ -257,6 +254,11 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation }) => {
                 <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
               </TouchableOpacity>
             </>
+          )}
+          {!loading && overlap && noData && (
+            <View style={{ alignItems: 'center' }}>
+              <Text>게시글이 없습니다.</Text>
+            </View>
           )}
           {loading && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
