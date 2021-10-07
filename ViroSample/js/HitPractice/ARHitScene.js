@@ -19,6 +19,7 @@ import {
   ViroSpotLight,
   Viro3DObject,
   ViroAnimations,
+  ViroPolyline,
 } from 'react-viro';
 
 import TimerMixin from 'react-timer-mixin';
@@ -35,6 +36,7 @@ var ARHitTestSample = createReactClass({
       scale: [0.2, 0.2, 0.2],
       rotation: [0, 0, 0],
       shouldBillboard: true,
+      points: [[0, 0, 0]],
     };
   },
 
@@ -65,16 +67,17 @@ var ARHitTestSample = createReactClass({
     modelArray.push(
       <ViroNode
         {...transformBehaviors}
-        visible={this.props.arSceneNavigator.viroAppProps.displayObject}
+        visible={this.props.arSceneNavigator}
+        //visible={this.props.arSceneNavigator.viroAppProps.displayObject}
         position={this.state.objPosition}
         onDrag={() => {}}
         ref={this._setARNodeRef}
-        scale={this.state.scale}
-        rotation={this.state.rotation}
-        dragType="FixedToWorld"
-        key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
+        // scale={this.state.scale}
+        // rotation={this.state.rotation}
+        // dragType="FixedToWorld"
+        // key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
       >
-        <ViroSpotLight
+        {/* <ViroSpotLight
           innerAngle={5}
           outerAngle={20}
           direction={[0, -1, 0]}
@@ -95,6 +98,13 @@ var ARHitTestSample = createReactClass({
           onLoadStart={this._onLoadStart}
           onRotate={this._onRotate}
           onPinch={this._onPinch}
+        /> */}
+
+        <ViroPolyline
+          position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
+          thickness={0.01}
+          materials={'white'}
+          points={this.state.points}
         />
 
         <ViroQuad
@@ -181,7 +191,7 @@ var ARHitTestSample = createReactClass({
     // Default position is just 1.5 meters in front of the user.
     let newPosition = [forward[0] * 1.5, forward[1] * 1.5, forward[2] * 1.5];
     let hitResultPosition = undefined;
-
+    let newpoints = this.state.points;
     // Filter the hit test results based on the position.
     if (results.length > 0) {
       for (var i = 0; i < results.length; i++) {
@@ -210,6 +220,10 @@ var ARHitTestSample = createReactClass({
 
     if (hitResultPosition) {
       newPosition = hitResultPosition;
+      newpoints.push(newPosition);
+      this.setState({
+        points: newpoints,
+      });
     }
 
     // Set the initial placement of the object using new position from the hit test.
@@ -254,6 +268,12 @@ var ARHitTestSample = createReactClass({
         (vectorTwo[2] - vectorOne[2]) * (vectorTwo[2] - vectorOne[2]),
     );
     return distance;
+  },
+});
+
+ViroMaterials.createMaterials({
+  white: {
+    diffuseColor: '#ffffff',
   },
 });
 

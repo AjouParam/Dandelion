@@ -8,7 +8,7 @@ var InitialARScene = require('./dandelionARScene');
 
 // Array of 3d models that we use in this sample. This app switches between this these models.
 //var objArray = [require('./res/object_flowers/object_flowers.vrx'), require('./res/emoji_smile/emoji_smile.vrx')];
-
+var objpost = require('./res/ARpost.png');
 export default class dandelionAR extends Component {
   constructor() {
     super();
@@ -16,7 +16,7 @@ export default class dandelionAR extends Component {
     this.state = {
       viroAppProps: {
         displayObject: false,
-        objectSource: objArray[0],
+        objectSource: objpost,
         yOffset: 0,
         _onLoadEnd: this._onLoadEnd,
         _onLoadStart: this._onLoadStart,
@@ -55,12 +55,6 @@ export default class dandelionAR extends Component {
             <ActivityIndicator size="large" animating={this.state.isLoading} color="#ffffff" />
           </View>,
         )}
-
-        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
-          <TouchableHighlight style={localStyles.buttons} onPress={this._onDisplayDialog} underlayColor={'#00000000'}>
-            <Image source={require('./res/btn_mode_objects.png')} />
-          </TouchableHighlight>
-        </View>
       </View>
     );
   }
@@ -82,18 +76,6 @@ export default class dandelionAR extends Component {
   _renderTrackingText() {
     if (this.state.trackingInitialized) {
       return;
-      // <View
-      //   style={{
-      //     position: 'absolute',
-      //     backgroundColor: '#ffffff22',
-      //     left: 30,
-      //     right: 30,
-      //     top: 30,
-      //     alignItems: 'center',
-      //   }}
-      // >
-      //   <Text style={{ fontSize: 12, color: '#ffffff' }}>Tracking initialized.</Text>
-      // </View>
     } else {
       return (
         <View
@@ -106,7 +88,7 @@ export default class dandelionAR extends Component {
             alignItems: 'center',
           }}
         >
-          <Text style={{ fontSize: 12, color: '#ffffff' }}>Waiting for tracking to initialize.</Text>
+          <Text style={{ fontSize: 12, color: '#ff0000' }}>Waiting for tracking</Text>
         </View>
       );
     }
@@ -117,25 +99,6 @@ export default class dandelionAR extends Component {
       trackingInitialized: true,
     });
   }
-
-  _onDisplayDialog() {
-    Alert.alert('Choose an object', 'Select an object to place in the world!', [
-      { text: 'Flowers', onPress: () => this._onShowObject(0, 'flowers', 0.29076) },
-      { text: 'Smile Emoji', onPress: () => this._onShowObject(1, 'smile_emoji', 0.497823) },
-    ]);
-  }
-
-  // _onShowObject(objIndex, objUniqueName, yOffset) {
-  //   this.setState({
-  //     viroAppProps: {
-  //       ...this.state.viroAppProps,
-  //       displayObject: true,
-  //       yOffset: yOffset,
-  //       displayObjectName: objUniqueName,
-  //       objectSource: objArray[objIndex],
-  //     },
-  //   });
-  // }
 }
 
 var localStyles = StyleSheet.create({

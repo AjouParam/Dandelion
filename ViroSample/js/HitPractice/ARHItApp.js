@@ -64,7 +64,7 @@ export default class ARHitApp extends Component {
         )}
 
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
-          <TouchableHighlight style={localStyles.buttons} onPress={this._onDisplayDialog} underlayColor={'#00000000'}>
+          <TouchableHighlight style={localStyles.buttons} onPress={this._onDrawing} underlayColor={'#00000000'}>
             <Image source={require('./res/btn_mode_objects.png')} />
           </TouchableHighlight>
         </View>
@@ -130,6 +130,21 @@ export default class ARHitApp extends Component {
       { text: 'Flowers', onPress: () => this._onShowObject(0, 'flowers', 0.29076) },
       { text: 'Smile Emoji', onPress: () => this._onShowObject(1, 'smile_emoji', 0.497823) },
     ]);
+  }
+  _onDrawing() {
+    if (this.state.viroAppProps.displayObject) {
+      this.setState({
+        viroAppProps: {
+          displayObject: false,
+        },
+      });
+    } else {
+      this.setState({
+        viroAppProps: {
+          displayObject: true,
+        },
+      });
+    }
   }
 
   _onShowObject(objIndex, objUniqueName, yOffset) {

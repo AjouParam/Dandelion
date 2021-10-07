@@ -19,6 +19,7 @@ import {
   ViroSpotLight,
   Viro3DObject,
   ViroAnimations,
+  ViroPolyline,
 } from 'react-viro';
 
 import TimerMixin from 'react-timer-mixin';
@@ -49,12 +50,12 @@ var dandelionARScene = createReactClass({
 
   _getModel() {
     var modelArray = [];
-    if (
-      !this.props.arSceneNavigator.viroAppProps.displayObject ||
-      this.props.arSceneNavigator.viroAppProps.displayObjectName === undefined
-    ) {
-      return;
-    }
+    // if (
+    //   !this.props.arSceneNavigator.viroAppProps.displayObject ||
+    //   this.props.arSceneNavigator.viroAppProps.displayObjectName === undefined
+    // ) {
+    //   return;
+    // }
 
     let transformBehaviors = {};
     if (this.state.shouldBillboard) {
@@ -96,7 +97,6 @@ var dandelionARScene = createReactClass({
           onRotate={this._onRotate}
           onPinch={this._onPinch}
         />
-
         <ViroQuad
           rotation={[-90, 0, 0]}
           position={[0, -0.001, 0]}
@@ -254,6 +254,12 @@ var dandelionARScene = createReactClass({
         (vectorTwo[2] - vectorOne[2]) * (vectorTwo[2] - vectorOne[2]),
     );
     return distance;
+  },
+});
+
+ViroMaterials.createMaterials({
+  white: {
+    diffuseColor: '#ffffff',
   },
 });
 

@@ -21,6 +21,7 @@ export default class HelloWorldSceneAR extends Component {
     // Set initial state here
     this.state = {
       text: 'Initializing AR...',
+      points: [[0, 0, 0]],
     };
 
     // bind 'this' to functions
@@ -49,13 +50,13 @@ export default class HelloWorldSceneAR extends Component {
         />
 
         <ViroPolyline
-          position={[0, 2, -5]}
+          position={[0, 0, 0]}
           points={[
-            [0, 0, 0],
-            [0.5, 0.5, 0.5],
-            [1, 0, 0],
+            [-2, 0, -5],
+            [0, 2, -5],
+            [2, 1, -3],
           ]}
-          thickness={0.2}
+          thickness={0.1}
           materials={'white'}
         />
       </ViroARScene>
