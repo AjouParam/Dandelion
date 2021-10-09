@@ -12,6 +12,7 @@ import { AppRegistry, Text, View, StyleSheet, PixelRatio, TouchableHighlight } f
 import { ViroARSceneNavigator } from 'react-viro';
 import ARDrivingCar from './js/RCcar/ARDrivingCar';
 import ARHitApp from './js/HitPractice/ARHItApp';
+import dandelionAR from './js/dandelionAR/dandelionAR.js';
 /*
  TODO: Insert your API key below
  */
@@ -98,7 +99,7 @@ export default class ViroSample extends Component {
     return <ARDrivingCar></ARDrivingCar>;
   }
   _getARHitNavigator() {
-    return <ARHitApp></ARHitApp>;
+    return <dandelionAR></dandelionAR>;
   }
 
   _getButtonOnPress(navigatorType) {

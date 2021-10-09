@@ -12,6 +12,8 @@ import {
   ViroAnimations,
   ViroPolyline,
   ViroMaterials,
+  ViroImage,
+  ViroNode,
 } from 'react-viro';
 
 export default class HelloWorldSceneAR extends Component {
@@ -27,6 +29,7 @@ export default class HelloWorldSceneAR extends Component {
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
     this._onEmailTap = this._onEmailTap.bind(this);
+    this._onCreatePost = this._onCreatePost.bind(this);
   }
 
   render() {
@@ -49,16 +52,10 @@ export default class HelloWorldSceneAR extends Component {
           onClick={this._onEmailTap}
         />
 
-        <ViroPolyline
-          position={[0, 0, 0]}
-          points={[
-            [-2, 0, -5],
-            [0, 2, -5],
-            [2, 1, -3],
-          ]}
-          thickness={0.1}
-          materials={'white'}
-        />
+        {this._onCreatePost([5, 0, -2], [5, -1, -2])}
+        {this._onCreatePost([3, 0, -5], [3, -1, -5])}
+        {this._onCreatePost([-3, 0, -2], [-3, -1, -2])}
+        {this._onCreatePost([-2, 0, -1], [-2, -1, -1])}
       </ViroARScene>
     );
   }
@@ -73,6 +70,30 @@ export default class HelloWorldSceneAR extends Component {
     this.setState({
       text: '이벤트 확인',
     });
+  }
+
+  _onCreatePost(position, positionT) {
+    var model = [];
+    model.push(
+      <ViroNode>
+        <ViroImage
+          position={position}
+          transformBehaviors={'billboard'}
+          source={require('./res/ARpost.png')}
+          width={1}
+          height={1}
+          renderingOrder={0}
+        />
+        <ViroText
+          position={positionT}
+          transformBehaviors={'billboard'}
+          text={'ARPost'}
+          style={styles.arpost}
+          renderingOrder={-1}
+        />
+      </ViroNode>,
+    );
+    return model;
   }
 }
 ViroAnimations.registerAnimations({
@@ -92,6 +113,13 @@ var styles = StyleSheet.create({
     fontFamily: 'NotoSansCJK',
     fontSize: 30,
     color: '#ffffff',
+    textAlignVertical: 'center',
+    textAlign: 'center',
+  },
+  arpost: {
+    fontFamily: 'NotoSansCJK',
+    fontSize: 20,
+    color: '#000000',
     textAlignVertical: 'center',
     textAlign: 'center',
   },

@@ -51,46 +51,7 @@ var dandelionARScene = createReactClass({
     );
   },
 
-  _getModel() {
-    var modelArray = [];
-    // if (
-    //   !this.props.arSceneNavigator.viroAppProps.displayObject ||
-    //   this.props.arSceneNavigator.viroAppProps.displayObjectName === undefined
-    // ) {
-    //   return;
-    // }
-
-    let transformBehaviors = {};
-    if (this.state.shouldBillboard) {
-      transformBehaviors.transformBehaviors = this.state.shouldBillboard ? 'billboardY' : [];
-    }
-
-    var bitMask = 4;
-    modelArray.push(
-      <ViroNode
-        {...transformBehaviors}
-        visible={this.props.arSceneNavigator.viroAppProps.displayObject}
-        position={this.state.objPosition}
-        onDrag={() => {}}
-        ref={this._setARNodeRef}
-        scale={this.state.scale}
-        rotation={this.state.rotation}
-        dragType="FixedToWorld"
-        key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
-      >
-        <ViroQuad
-          rotation={[-90, 0, 0]}
-          position={[0, -0.001, 0]}
-          width={2.5}
-          height={2.5}
-          arShadowReceiver={true}
-          ignoreEventHandling={true}
-        />
-      </ViroNode>,
-    );
-    return modelArray;
-  },
-  _getARPost(id, position, title) {
+  _getARPost() {
     this.state.arpost.push(
       <ViroImage
         position={this.state.position}
@@ -107,7 +68,7 @@ var dandelionARScene = createReactClass({
           transformBehaviors={'billboard'}
           text={this.state.title}
           renderingOrder={-1}
-          textAlign={'center'}
+          style={this._getStyle()}
         />
       </ViroImage>,
     );
@@ -221,11 +182,18 @@ var dandelionARScene = createReactClass({
     );
     return distance;
   },
-});
 
-ViroMaterials.createMaterials({
-  white: {
-    diffuseColor: '#ffffff',
+  _getStyle() {
+    var styles = StyleSheet.create({
+      helloWorldTextStyle: {
+        fontFamily: 'NotoSansCJK',
+        fontSize: 10,
+        color: '#ffffff',
+        textAlignVertical: 'center',
+        textAlign: 'center',
+      },
+    });
+    return styles.helloWorldTextStyle;
   },
 });
 

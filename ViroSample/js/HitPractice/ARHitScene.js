@@ -68,16 +68,16 @@ var ARHitTestSample = createReactClass({
       <ViroNode
         {...transformBehaviors}
         visible={this.props.arSceneNavigator}
-        //visible={this.props.arSceneNavigator.viroAppProps.displayObject}
+        visible={this.props.arSceneNavigator.viroAppProps.displayObject}
         position={this.state.objPosition}
         onDrag={() => {}}
         ref={this._setARNodeRef}
-        // scale={this.state.scale}
-        // rotation={this.state.rotation}
-        // dragType="FixedToWorld"
-        // key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
+        scale={this.state.scale}
+        rotation={this.state.rotation}
+        dragType="FixedToWorld"
+        key={this.props.arSceneNavigator.viroAppProps.displayObjectName}
       >
-        {/* <ViroSpotLight
+        <ViroSpotLight
           innerAngle={5}
           outerAngle={20}
           direction={[0, -1, 0]}
@@ -98,13 +98,6 @@ var ARHitTestSample = createReactClass({
           onLoadStart={this._onLoadStart}
           onRotate={this._onRotate}
           onPinch={this._onPinch}
-        /> */}
-
-        <ViroPolyline
-          position={[0, this.props.arSceneNavigator.viroAppProps.yOffset, 0]}
-          thickness={0.01}
-          materials={'white'}
-          points={this.state.points}
         />
 
         <ViroQuad
@@ -220,10 +213,6 @@ var ARHitTestSample = createReactClass({
 
     if (hitResultPosition) {
       newPosition = hitResultPosition;
-      newpoints.push(newPosition);
-      this.setState({
-        points: newpoints,
-      });
     }
 
     // Set the initial placement of the object using new position from the hit test.
