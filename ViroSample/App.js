@@ -42,6 +42,7 @@ export default class ViroSample extends Component {
     this._getNormalNavigator = this._getNormalNavigator.bind(this);
     this._getRCcarNavigator = this._getRCcarNavigator.bind(this);
     this._getARHitNavigator = this._getARHitNavigator.bind(this);
+    this._getFigmentNavigator = this._getFigmentNavigator.bind(this);
     this._getButtonOnPress = this._getButtonOnPress.bind(this);
   }
 
@@ -99,6 +100,9 @@ export default class ViroSample extends Component {
   }
   _getARHitNavigator() {
     return <ARHitApp></ARHitApp>;
+  }
+  _getFigmentNavigator() {
+    return <ARFigment></ARFigment>;
   }
 
   _getButtonOnPress(navigatorType) {
