@@ -199,20 +199,11 @@ const Maps = ({ navigation }) => {
   const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
   //지도의 좌표가 변경시 호출 되는 함수
   const onRegionChange = (pos) => {
-    console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
-    if (pos.latitude != 0 && pos.longitude != 0) {
-      if (!checkInitialRegion) {
-        setCheckInitalRegion(true);
-      }
-      if (checkInitialRegion) {
-        setResearchMap(true);
-      }
-      setCurrentMapCoord({
-        latitude: pos.latitude,
-        longitude: pos.longitude,
-        latitudeDelta: pos.latitudeDelta,
-        longitudeDelta: pos.longitudeDelta,
-      });
+    const temp = ({ latitude, longitude, latitudeDelta, longitudeDelta } = pos);
+    console.log('current: latitude', latitude, 'longitude', longitude);
+    if (latitude != 0 && longitude != 0) {
+      !checkInitialRegion ? setCheckInitalRegion(true) : setResearchMap(true);
+      setCurrentMapCoord(temp);
     }
   };
 
