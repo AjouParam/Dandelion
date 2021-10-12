@@ -28,7 +28,7 @@ const getData = async (TargetPOS) => {
         latitude: TargetPOS.latitude,
         longitude: TargetPOS.longitude,
       },
-      maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
+      maxDistance: 800, //maxDistance는 최대 몇 m까지 불러올 것인가
     })
     .then((res) => {
       if (res.data.status === 'SUCCESS') {

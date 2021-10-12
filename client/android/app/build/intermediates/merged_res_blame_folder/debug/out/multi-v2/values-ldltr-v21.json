@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/maxcha/Dandelion/client/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-ldltr-v21/values-ldltr-v21.xml",
+            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\AjouParam\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ldltr-v21\\values-ldltr-v21.xml",
             "map": [
                 {
-                    "source": "/Users/maxcha/.gradle/caches/transforms-3/c646b570175b32a0ca61a5b0cc844154/transformed/appcompat-1.1.0/res/values-ldltr-v21/values-ldltr-v21.xml",
+                    "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\c646b570175b32a0ca61a5b0cc844154\\transformed\\appcompat-1.1.0\\res\\values-ldltr-v21\\values-ldltr-v21.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

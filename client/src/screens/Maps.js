@@ -56,6 +56,10 @@ const Maps = ({ navigation }) => {
   const [currentMapCoord, setCurrentMapCoord] = useState(MapData.currentMapCoord);
   const [currentMindle, setCurrentMindle] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
+  const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
+  //API 기준 좌표
+  const [mindleBaseCoord, setMindleBaseCoord] = useState(MapData.currentMapCoord);
+
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
   const renderInner = () =>
@@ -79,12 +83,10 @@ const Maps = ({ navigation }) => {
         )}
       </View>
     );
-
-  //API 기준 좌표
-  const [mindleBaseCoord, setMindleBaseCoord] = useState(MapData.currentMapCoord);
-
-  const [API_TIMER, setApiTimer] = useState();
-
+  //지도가 준비 될 경우 실행되는 함수
+  const updateMapStyle = () => {
+    setMapWidth('100%');
+  };
   const renderHeader = () => {
     if (clickedMindleInfo)
       return (
@@ -119,7 +121,6 @@ const Maps = ({ navigation }) => {
   };
 
   //level별 반경 크기
-
   const getData = async (x, currentPOS) => {
     const data = await dandelionCtrl.getData(x); //초기 민들레 생성
     if (data.length > 0) {
@@ -156,7 +157,6 @@ const Maps = ({ navigation }) => {
     }
   };
   //API로 데이터 가져오는 함수
-
   useEffect(() => {
     //GPS 이용 승인
     requestPermission().then((result) => {
@@ -192,20 +192,6 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-  //지도가 준비 될 경우 실행되는 함수
-  const updateMapStyle = () => {
-    setMapWidth('100%');
-  };
-  const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
-  //지도의 좌표가 변경시 호출 되는 함수
-  const onRegionChange = (pos) => {
-    const temp = ({ latitude, longitude, latitudeDelta, longitudeDelta } = pos);
-    console.log('current: latitude', latitude, 'longitude', longitude);
-    if (latitude != 0 && longitude != 0) {
-      !checkInitialRegion ? setCheckInitalRegion(true) : setResearchMap(true);
-      setCurrentMapCoord(temp);
-    }
-  };
 
   const getClickedMindleInfo = (mindle) => {
     // console.log('mindle info');
@@ -261,7 +247,16 @@ const Maps = ({ navigation }) => {
             updateMapStyle();
           }}
           onRegionChangeComplete={(currnet) => {
-            onRegionChange(currnet);
+            // onRegionChange(currnet);
+            mapCtrl.onRegionChange(
+              currnet,
+              mindleBaseCoord,
+              checkInitialRegion,
+              setCheckInitalRegion,
+              setResearchMap,
+              setCurrentMapCoord,
+              setMindleBaseCoord,
+            );
           }}
         >
           {mindles.map((props, index) => {
@@ -304,6 +299,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           ) : (
             <Button
@@ -316,6 +312,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           )}
         </View>
@@ -352,6 +349,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="50px"
               fontSize="20px"
+              backgroundcolor="#431F0E"
               onPress={() => {
                 setResearchMap(false);
                 getData(currentMapCoord, location);

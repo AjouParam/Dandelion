@@ -15,5 +15,45 @@ const distance = (mindlePOS, currnetPOS) => {
     0.00001 * levelToRadius(mindlePOS.level)
   );
 };
+const rad = (x) => {
+  return (x * Math.PI) / 180;
+};
 
-export default { distance, levelToIMG, levelToRadius };
+const getDistance = (p1, p2) => {
+  const R = 6378137; // Earth’s mean radius in meter
+  const dLat = rad(p2.latitude - p1.latitude);
+  const dLong = rad(p2.longitude - p1.longitude);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(p1.latitude)) * Math.cos(rad(p2.latitude)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c;
+  return d; // returns the distance in meter
+};
+
+const onRegionChange = (
+  pos,
+  mindleBaseCoord,
+  checkInitialRegion,
+  setCheckInitalRegion,
+  setResearchMap,
+  setCurrentMapCoord,
+  setMindleBaseCoord,
+) => {
+  const temp = ({ latitude, longitude, latitudeDelta, longitudeDelta } = pos);
+  console.log('current: latitude', latitude, 'longitude', longitude);
+  if (latitude != 0 && longitude != 0) {
+    if (!checkInitialRegion) {
+      setCheckInitalRegion(true);
+      setMindleBaseCoord(pos);
+    } else {
+      if (getDistance(pos, mindleBaseCoord) > 800) {
+        setResearchMap(true);
+        setMindleBaseCoord(pos);
+      }
+    }
+    setCurrentMapCoord(temp);
+  }
+};
+
+export default { distance, levelToIMG, levelToRadius, onRegionChange };
