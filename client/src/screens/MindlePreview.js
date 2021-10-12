@@ -59,7 +59,7 @@ const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
 
     const fetchData = async (mindleId) => {
       const dataList = await axios
-        .get(`/${mindleId}/post/`)
+        .get(`/${mindleId}/post/`, { params: { page: 1, maxPost: 1 } })
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             console.log('게시글 불러오기 성공');

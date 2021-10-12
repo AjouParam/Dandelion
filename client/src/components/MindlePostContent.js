@@ -143,13 +143,16 @@ const MindlePostContent = ({
             {text}
           </Text>
         </BoardContentTextContainer>
-        {images.length > 0 && (
-          <BoardContentImageContainer>
-            {images.map((item) => (
-              <BoardContentImage source={{ uri: item }} />
-            ))}
-          </BoardContentImageContainer>
-        )}
+        {images
+          ? images.length > 0 && (
+              <BoardContentImageContainer>
+                {images.map((item) => (
+                  //<BoardContentImage source={{ uri: item }} />
+                  <Text>{item}</Text>
+                ))}
+              </BoardContentImageContainer>
+            )
+          : null}
         <BoardTipContainer>
           <TouchableOpacity>
             <Text>Like {likes}</Text>
