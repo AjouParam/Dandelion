@@ -23,5 +23,13 @@ const currentMapCoord = {
   latitudeDelta: 0.0001,
   longitudeDelta: 0.003,
 };
-
+const distance = (mindlePOS, currnetPOS) => {
+  return (
+    Math.sqrt(
+      Math.pow(mindlePOS.location.latitude - currnetPOS.latitude, 2) +
+        Math.pow(mindlePOS.location.longitude - currnetPOS.longitude, 2),
+    ) <
+    0.00001 * levelToRadius(mindlePOS.level)
+  );
+};
 export default { clickedMindleInfo, location, currentMapCoord };

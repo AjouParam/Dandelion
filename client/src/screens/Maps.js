@@ -5,15 +5,13 @@ import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import { profile, button, level1, level2, level3, level4 } from '../assets/index';
-import axios from 'axios';
+import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
 import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
-import { useRecoilValue } from 'recoil';
-import userState from '@contexts/userState';
+import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 const Container = styled.View`
   flex: 1;
@@ -121,79 +119,43 @@ const Maps = ({ navigation }) => {
   };
 
   //level별 반경 크기
-  const levelToRadius = (num) => (num == 1 || num == 2 ? 30 : num == 3 ? 40 : 50);
 
-  //level별 민들레 이미지
-  const levelList = [level1, level2, level3, level4];
-  const levelToIMG = (num) => levelList[1 <= num && num <= 3 ? num - 1 : 3];
-
-  //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
-  const distance = (mindlePOS, currnetPOS) => {
-    return (
-      Math.sqrt(
-        Math.pow(mindlePOS.location.latitude - currnetPOS.latitude, 2) +
-          Math.pow(mindlePOS.location.longitude - currnetPOS.longitude, 2),
-      ) <
-      0.00001 * levelToRadius(mindlePOS.level)
-    );
-  };
-
-  const jwtToken = useRecoilValue(userState.uidState);
-  //API로 데이터 가져오는 함수
-  const getData = async (TargetPOS, currentPOS) => {
-    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-    axios.defaults.headers.common['x-access-token'] = jwtToken;
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    //초기 메인 버튼을 민들레 심기로 설정
-    setBtnToggle(false);
-    await axios
-      .post('/dandelion/get', {
-        centerPosition: {
-          latitude: TargetPOS.latitude,
-          longitude: TargetPOS.longitude,
-        },
-        maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          const list = res.data.data.reduce((result, props) => {
-            //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-            const visible = dandelionCtrl.isCollision(props, result) ? false : true;
-            if (distance(props, currentPOS)) {
-              setCurrentMindle({
-                latitude: props.location.latitude,
-                longitude: props.location.longitude,
-                title: props.name,
-                src: levelToIMG(props.level),
-                radius: levelToRadius(props.level),
-                overlap: distance(props, currentPOS),
-                key: props._id,
-                visible: visible,
-              });
-              setBtnToggle(true);
-            }
-            result.push({
-              latitude: props.location.latitude,
-              longitude: props.location.longitude,
-              title: props.name,
-              src: levelToIMG(props.level),
-              radius: levelToRadius(props.level),
-              overlap: distance(props, currentPOS),
-              key: props._id,
-              visible: visible,
-            });
-            return result;
-          }, Array());
-
-          setMindles(list);
-        } else if (res.data.status === 'FAILED') {
-          Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
+  const getData = async (x, currentPOS) => {
+    const data = await dandelionCtrl.getData(x); //초기 민들레 생성
+    if (data.length > 0) {
+      console.log('데이터는 이거지', typeof data, toString.call(data), data);
+      const list = data.reduce((result, props) => {
+        //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+        const visible = dandelionCtrl.isCollision(props, result) ? false : true;
+        if (mapCtrl.distance(props, currentPOS)) {
+          setCurrentMindle({
+            latitude: props.location.latitude,
+            longitude: props.location.longitude,
+            title: props.name,
+            src: mapCtrl.levelToIMG(props.level),
+            radius: mapCtrl.levelToRadius(props.level),
+            overlap: mapCtrl.distance(props, currentPOS),
+            key: props._id,
+            visible: visible,
+          });
+          setBtnToggle(true);
         }
-      })
-      .catch((err) => {
-        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      });
+        result.push({
+          latitude: props.location.latitude,
+          longitude: props.location.longitude,
+          title: props.name,
+          src: mapCtrl.levelToIMG(props.level),
+          radius: mapCtrl.levelToRadius(props.level),
+          overlap: mapCtrl.distance(props, currentPOS),
+          key: props._id,
+          visible: visible,
+        });
+        return result;
+      }, Array());
+      setMindles(list);
+    }
   };
+  //API로 데이터 가져오는 함수
 
   useEffect(() => {
     //GPS 이용 승인
@@ -215,7 +177,8 @@ const Maps = ({ navigation }) => {
               });
             }
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            getData(position.coords, position.coords); //초기 민들레 생성
+            setBtnToggle(false);
+            getData(position.coords, position.coords);
           },
           (error) => {
             console.log(error);
