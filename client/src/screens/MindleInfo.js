@@ -148,7 +148,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
         <>
           <BoardContent
             userPhoto={null}
-            name={'undefined' || item._user.name}
+            name={item._user.name}
             date={item.createdAt}
             title={item.title}
             text={item.text}
