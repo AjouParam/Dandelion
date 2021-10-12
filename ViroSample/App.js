@@ -8,7 +8,7 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, Text, View, StyleSheet, PixelRatio, TouchableHighlight } from 'react-native';
+import { AppRegistry, Text, View, StyleSheet, PixelRatio, Image, TouchableHighlight } from 'react-native';
 import { ViroARSceneNavigator } from 'react-viro';
 import ARDrivingCar from './js/RCcar/ARDrivingCar';
 import ARHitApp from './js/HitPractice/ARHItApp';
@@ -42,20 +42,38 @@ export default class ViroSample extends Component {
     this._getNormalNavigator = this._getNormalNavigator.bind(this);
     this._getRCcarNavigator = this._getRCcarNavigator.bind(this);
     this._getARHitNavigator = this._getARHitNavigator.bind(this);
-    this._getFigmentNavigator = this._getFigmentNavigator.bind(this);
     this._getButtonOnPress = this._getButtonOnPress.bind(this);
   }
 
   render() {
-    if (this.state.navigatorType == UNSET) {
-      return this._getExperienceSelector();
-    } else if (this.state.navigatorType == Normal_NAVIGATOR_TYPE) {
-      return this._getNormalNavigator();
-    } else if (this.state.navigatorType == RCcar_NAVIGATOR_TYPE) {
-      return this._getRCcarNavigator();
-    } else if (this.state.navigatorType == ARHit_NaviGator_TYPE) {
-      return this._getARHitNavigator();
-    }
+    // if (this.state.navigatorType == UNSET) {
+    //   return this._getExperienceSelector();
+    // } else if (this.state.navigatorType == Normal_NAVIGATOR_TYPE) {
+    //   return this._getNormalNavigator();
+    // } else if (this.state.navigatorType == RCcar_NAVIGATOR_TYPE) {
+    //   return this._getRCcarNavigator();
+    // } else if (this.state.navigatorType == ARHit_NaviGator_TYPE) {
+    //   return this._getARHitNavigator();
+    // }
+    return (
+      <View style={localStyles.normal}>
+        <ViroARSceneNavigator
+          {...this.state.sharedProps}
+          style={localStyles.normal}
+          initialScene={{ scene: InitialNormalScene }}
+        />
+
+        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
+          <TouchableHighlight
+            style={localStyles.writebuttons}
+            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
+            underlayColor={'#00000000'}
+          >
+            <Image source={require('./js/res/btn_mode_objects.png')} />
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
   }
 
   _getExperienceSelector() {
@@ -93,16 +111,31 @@ export default class ViroSample extends Component {
   }
 
   _getNormalNavigator() {
-    return <ViroARSceneNavigator {...this.state.sharedProps} initialScene={{ scene: InitialNormalScene }} />;
+    return (
+      <View style={localStyles.normal}>
+        <ViroARSceneNavigator
+          {...this.state.sharedProps}
+          style={localStyles.normal}
+          initialScene={{ scene: InitialNormalScene }}
+        />
+
+        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
+          <TouchableHighlight
+            style={localStyles.writebuttons}
+            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
+            underlayColor={'#00000000'}
+          >
+            <Image source={require('./js/res/btn_mode_objects.png')} />
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
   }
   _getRCcarNavigator() {
     return <ARDrivingCar></ARDrivingCar>;
   }
   _getARHitNavigator() {
     return <ARHitApp></ARHitApp>;
-  }
-  _getFigmentNavigator() {
-    return <ARFigment></ARFigment>;
   }
 
   _getButtonOnPress(navigatorType) {
@@ -124,6 +157,9 @@ var localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'black',
+  },
+  normal: {
+    flex: 1,
   },
   inner: {
     flex: 1,
@@ -166,6 +202,18 @@ var localStyles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
+  },
+  writebuttons: {
+    height: 80,
+    width: 80,
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: '#00000000',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ffffff00',
   },
 });
 module.exports = ViroSample;

@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-import { StyleSheet } from 'react-native';
+import { AppRegistry, StyleSheet } from 'react-native';
 
 import {
   ViroARScene,
@@ -10,7 +10,6 @@ import {
   ViroConstants,
   ViroButton,
   ViroAnimations,
-  ViroPolyline,
   ViroMaterials,
   ViroImage,
   ViroNode,
@@ -29,6 +28,7 @@ export default class HelloWorldSceneAR extends Component {
     // bind 'this' to functions
     this._onInitialized = this._onInitialized.bind(this);
     this._onEmailTap = this._onEmailTap.bind(this);
+    this._onClickARPost = this._onClickARPost.bind(this);
     this._onCreatePost = this._onCreatePost.bind(this);
   }
 
@@ -42,7 +42,7 @@ export default class HelloWorldSceneAR extends Component {
           style={styles.helloWorldTextStyle}
         />
 
-        <ViroButton
+        {/* <ViroButton
           source={require('./res/emailenclose.png')}
           clickSource={require('./res/emailopen.png')}
           position={[0, -1, -5]}
@@ -50,12 +50,11 @@ export default class HelloWorldSceneAR extends Component {
           width={0.5}
           animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
-        />
-
+        /> */}
         {this._onCreatePost([5, 0, -2], [5, -1, -2])}
         {this._onCreatePost([3, 0, -5], [3, -1, -5])}
         {this._onCreatePost([-3, 0, -2], [-3, -1, -2])}
-        {this._onCreatePost([-2, 0, -1], [-2, -1, -1])}
+        {this._onCreatePost([-2, 0, -7], [-2, -1, -7])}
       </ViroARScene>
     );
   }
@@ -63,6 +62,11 @@ export default class HelloWorldSceneAR extends Component {
   _onInitialized(state, reason) {
     this.setState({
       text: '팀 파람 AR',
+    });
+  }
+  _onClickARPost(state, reason) {
+    this.setState({
+      text: '게시글 열람',
     });
   }
 
@@ -82,6 +86,7 @@ export default class HelloWorldSceneAR extends Component {
           source={require('./res/ARpost.png')}
           width={1}
           height={1}
+          onClick={this._onClickARPost}
           renderingOrder={0}
         />
         <ViroText
