@@ -47,13 +47,14 @@ const Tab = styled.View`
 
 const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [tabIndex, setTabIndex] = useState(0);
-  const [dataList, setDataList] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const jwtToken = useRecoilValue(userState.uidState);
   const [noData, setNoData] = useState(false);
+  const CONTENT_NUM = 5;
 
   useEffect(() => {
     axios.defaults.baseURL = 'http://10.0.2.2:3000/';
@@ -61,95 +62,113 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
     setLoading(true);
-    const fetchData = async (mindleId) => {
-      const dataList = await axios
-        .get(`/${mindleId}/post/`)
-        .then((res) => {
-          if (res.data.status === 'SUCCESS') {
-            console.log('게시글 불러오기 성공');
-            return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          } else if (res.data.status === 'FAILED') {
-            console.log('게시글 불러오기 실패');
-            return 'FAILED';
-          }
-        })
-        .catch((err) => console.log(err));
-
-      if (dataList !== 'FAILED') {
-        if (dataList.length === 0) setNoData(true);
-        setDataList(dataList);
-      }
-    };
-
+    setListLoading(true);
     fetchData(mindleKey);
 
     return () => {
       setData(null);
-      setDataList(null);
     };
   }, [mindleKey]);
 
   useEffect(() => {
-    if (dataList) {
-      if (dataList.length === 0) {
-        setLoading(false);
-      }
-      if (dataList.length >= 4) setData(dataList.splice(0, 4));
-      else {
-        setData(dataList.splice(0, dataList.length));
-      }
-    }
-  }, [dataList]);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      console.log(data);
+    if (page === 1 && data.length > 0) {
       setNoData(false);
       setLoading(false);
+      setListLoading(false);
+      setPage((prev) => prev + 1);
+    }
+    if (page > 1) {
+      setListLoading(false);
+      setPage((prev) => prev + 1);
     }
   }, [data]);
 
-  const renderItem = ({ item }) =>
-    !loading && (
-      <>
-        <BoardContent
-          userPhoto={item.userPhoto}
-          name={item._user.name}
-          date={item.createdAt}
-          title={item.title}
-          text={item.text}
-          images={item.images}
-          likes={item.likes}
-          comments={item.comments}
-          setMenuOpen={setMenuOpen}
-          navigation={navigation}
-          isPost={true}
-        />
-      </>
-    );
+  const fetchData = async (mindleId) => {
+    const dataList = await axios
+      .get(`/${mindleId}/post/`, {
+        params: {
+          page: page,
+          maxPost: CONTENT_NUM,
+        },
+      })
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          console.log(res.data.message);
+          return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else if (res.data.status === 'FAILED') {
+          console.log(res.data.message);
+          return 'FAILED';
+        }
+      })
+      .catch((err) => console.log(err));
 
-  const getData = (callback) => {
-    //TODO : get contents API
-    try {
-      const newData = dataList.spice(0, 3);
-      setData((prev) => [...prev, ...newData]);
-      setPage((prev) => prev + 1);
-      callback(newData);
-    } catch (e) {
-      const newData = dataList.splice(0, dataList.length);
-      setData((prev) => [...prev, ...newData]);
-      setPage((prev) => prev + 1);
-      callback(newData);
+    if (dataList !== 'FAILED') {
+      if (dataList.length === 0 && page === 0) setNoData(true);
+      // setDataList(dataList);
+
+      setData((prev) => [...prev, ...dataList]);
     }
   };
 
+  /**
+   * {
+          "status": "SUCCESS",
+          "message": "민들레에 해당하는 게시글입니다.",
+          "data": [
+              {
+                  "_id": "615ac06b37a3bd4cc0c2f91c",
+                  "location": {
+                      "longitude": 127.04275784194242,
+                      "latitude": 37.28335975273373
+                  },
+                  "createdAt": "2021-10-04T08:50:51.405Z",
+                  "updatedAt": "2021-10-04T09:29:20.810Z",
+                  "_dandelion": "614c4ae99aa99a08e0d57c30",
+                  "_user": {
+                      "_id": "61365d8cd4e22a2dd4df2a6f",
+                      "name": "testUser0907",
+                      "thumbnail":(유저 프사 s3 링크)
+                  },
+                  "title": "test2 게시글 수정",
+                  "text": "blahblah",
+                  "images": [
+                      "one",
+                      "two"
+                  ],
+                  "likes": 0,
+                  "comments": 0
+              }
+          ]
+      } 
+   */
+
+  const renderItem = useCallback(({ item }) => {
+    if (data)
+      return (
+        <>
+          <BoardContent
+            userPhoto={null}
+            name={'undefined' || item._user.name}
+            date={item.createdAt}
+            title={item.title}
+            text={item.text}
+            images={item.images}
+            likes={item.likes}
+            comments={item.comments}
+            setMenuOpen={setMenuOpen}
+            navigation={navigation}
+            isPost={true}
+          />
+        </>
+      );
+  });
+
   const handleLoadMore = () => {
-    console.log('load more!');
-    setLoading(true);
-    getData((newData) => {
-      if (newData) setLoading(false);
-    });
+    console.log('load more');
+    setListLoading(true);
+    fetchData(mindleKey);
   };
+
   if (loading)
     return (
       <Container>
@@ -194,7 +213,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
           </Tab>
 
           <Divider />
-          {!loading && overlap && (
+          {overlap && (
             <TouchableOpacity
               style={{
                 zIndex: 1,
@@ -215,8 +234,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
                   latitude: position.latitude,
                   longitude: position.longitude,
                   onGoBack: (newPost) => {
-                    setLoading(true);
-                    //setDataList((prev) => [newPost, ...prev]);
+                    setListLoading(true);
                     setData((prev) => [newPost, ...prev]);
                   },
                 });
@@ -225,7 +243,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
             </TouchableOpacity>
           )}
-          {!loading && overlap && !noData && (
+          {overlap && !noData && (
             <>
               <FlatList
                 data={tabIndex === 0 ? data : [0]}
@@ -240,7 +258,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
                 }
                 keyExtractor={(item, idx) => String(idx)}
                 onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.2}
+                onEndReachedThreshold={0.1}
                 ListHeaderComponent={() => (
                   <>
                     {tabIndex === 0 && (
@@ -261,14 +279,14 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
               />
             </>
           )}
-          {!loading && overlap && noData && (
+          {overlap && noData && (
             <View style={{ alignItems: 'center' }}>
               <Text>게시글이 없습니다.</Text>
             </View>
           )}
 
-          {loading && (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {listLoading && (
+            <View style={{ justifySelf: 'flex-end', justifyContent: 'center', alignItems: 'center' }}>
               <ActivityIndicator size="large" color="0000ff" />
             </View>
           )}
