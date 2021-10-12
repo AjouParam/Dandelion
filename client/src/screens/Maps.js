@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
+import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
@@ -13,7 +14,7 @@ import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
-
+import dandelionCtrl from '@controller/dandelionCtrl';
 const Container = styled.View`
   flex: 1;
 `;
@@ -42,15 +43,7 @@ const Maps = ({ navigation }) => {
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
   const [researchMap, setResearchMap] = useState(false); //위치 변화시 현 위치에서 검색 버튼
-  const [clickedMindleInfo, setClickedMindleInfo] = useState({
-    key: '',
-    name: '',
-    madeby: '',
-    description: [],
-    visitCount: '',
-    current: '',
-    position: { latitude: '', longitude: '' },
-  });
+  const [clickedMindleInfo, setClickedMindleInfo] = useState(MapData.clickedMindleInfo);
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
   const [mapWidth, setMapWidth] = useState('99%');
@@ -59,23 +52,10 @@ const Maps = ({ navigation }) => {
   const [btnToggle, setBtnToggle] = useState();
 
   //현재 사용자 위치
-  const [location, setLocation] = useState({
-    accuracy: 20,
-    altitude: 0,
-    altitudeAccuracy: 40,
-    heading: 0,
-    latitude: 37.5,
-    longitude: 127.043705,
-    speed: 0,
-  });
+  const [location, setLocation] = useState(MapData.location);
 
   //지도에서 현재 기준으로 삼고 있는 위치
-  const [currentMapCoord, setCurrentMapCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
+  const [currentMapCoord, setCurrentMapCoord] = useState(MapData.currentMapCoord);
   const [currentMindle, setCurrentMindle] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
   //TODO : useMemo
@@ -103,12 +83,7 @@ const Maps = ({ navigation }) => {
     );
 
   //API 기준 좌표
-  const [mindleBaseCoord, setMindleBaseCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
+  const [mindleBaseCoord, setMindleBaseCoord] = useState(MapData.currentMapCoord);
 
   const [API_TIMER, setApiTimer] = useState();
 
@@ -146,27 +121,12 @@ const Maps = ({ navigation }) => {
   };
 
   //level별 반경 크기
-  const levelToRadius = (num) => {
-    if (num == 1 || num == 2) {
-      return 30;
-    } else if (num == 3) {
-      return 40;
-    } else {
-      return 50;
-    }
-  };
+  const levelToRadius = (num) => (num == 1 || num == 2 ? 30 : num == 3 ? 40 : 50);
+
   //level별 민들레 이미지
-  const levelToIMG = (num) => {
-    if (num == 1) {
-      return level1;
-    } else if (num == 2) {
-      return level2;
-    } else if (num == 3) {
-      return level3;
-    } else {
-      return level4;
-    }
-  };
+  const levelList = [level1, level2, level3, level4];
+  const levelToIMG = (num) => levelList[1 <= num && num <= 3 ? num - 1 : 3];
+
   //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
   const distance = (mindlePOS, currnetPOS) => {
     return (
@@ -196,8 +156,9 @@ const Maps = ({ navigation }) => {
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          const list = res.data.data.map((props) => {
+          const list = res.data.data.reduce((result, props) => {
             //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+            const visible = dandelionCtrl.isCollision(props, result) ? false : true;
             if (distance(props, currentPOS)) {
               setCurrentMindle({
                 latitude: props.location.latitude,
@@ -207,11 +168,11 @@ const Maps = ({ navigation }) => {
                 radius: levelToRadius(props.level),
                 overlap: distance(props, currentPOS),
                 key: props._id,
+                visible: visible,
               });
               setBtnToggle(true);
             }
-
-            return {
+            result.push({
               latitude: props.location.latitude,
               longitude: props.location.longitude,
               title: props.name,
@@ -219,8 +180,11 @@ const Maps = ({ navigation }) => {
               radius: levelToRadius(props.level),
               overlap: distance(props, currentPOS),
               key: props._id,
-            };
-          });
+              visible: visible,
+            });
+            return result;
+          }, Array());
+
           setMindles(list);
         } else if (res.data.status === 'FAILED') {
           Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
@@ -347,21 +311,25 @@ const Maps = ({ navigation }) => {
           }}
         >
           {mindles.map((props, index) => {
-            return (
-              <Mindle
-                key={props.key}
-                latitude={props.latitude}
-                longitude={props.longitude}
-                title={props.title}
-                src={props.src}
-                radius={props.radius}
-                overlap={props.overlap}
-                onPress={() => {
-                  getClickedMindleInfo(props);
-                  bottomSheet.current.snapTo(1);
-                }}
-              />
-            );
+            if (props.visible === false) {
+              console.log('무야호');
+            } else {
+              return (
+                <Mindle
+                  key={props.key}
+                  latitude={props.latitude}
+                  longitude={props.longitude}
+                  title={props.title}
+                  src={props.src}
+                  radius={props.radius}
+                  overlap={props.overlap}
+                  onPress={() => {
+                    getClickedMindleInfo(props);
+                    bottomSheet.current.snapTo(1);
+                  }}
+                />
+              );
+            }
           })}
         </MapView>
         <View

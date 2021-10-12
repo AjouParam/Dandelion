@@ -86,6 +86,7 @@ const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) =
                 }
               />
            */
+
           setMindles((prev) =>
             prev.push({
               latitude: res.data.data.location.coordinates[1],
