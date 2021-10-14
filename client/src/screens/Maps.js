@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
+import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
 import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import { profile, button, level1, level2, level3, level4 } from '../assets/index';
-import axios from 'axios';
+import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
 import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
-import { useRecoilValue } from 'recoil';
-import userState from '@contexts/userState';
-
+import mapCtrl from '@controller/mapCtrl';
+import dandelionCtrl from '@controller/dandelionCtrl';
 const Container = styled.View`
   flex: 1;
 `;
@@ -42,15 +41,7 @@ const Maps = ({ navigation }) => {
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
   const [researchMap, setResearchMap] = useState(false); //위치 변화시 현 위치에서 검색 버튼
-  const [clickedMindleInfo, setClickedMindleInfo] = useState({
-    key: '',
-    name: '',
-    madeby: '',
-    description: [],
-    visitCount: '',
-    current: '',
-    position: { latitude: '', longitude: '' },
-  });
+  const [clickedMindleInfo, setClickedMindleInfo] = useState(MapData.clickedMindleInfo);
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
   const [mapWidth, setMapWidth] = useState('99%');
@@ -59,25 +50,16 @@ const Maps = ({ navigation }) => {
   const [btnToggle, setBtnToggle] = useState();
 
   //현재 사용자 위치
-  const [location, setLocation] = useState({
-    accuracy: 20,
-    altitude: 0,
-    altitudeAccuracy: 40,
-    heading: 0,
-    latitude: 37.5,
-    longitude: 127.043705,
-    speed: 0,
-  });
+  const [location, setLocation] = useState(MapData.location);
 
   //지도에서 현재 기준으로 삼고 있는 위치
-  const [currentMapCoord, setCurrentMapCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
+  const [currentMapCoord, setCurrentMapCoord] = useState(MapData.currentMapCoord);
   const [currentMindle, setCurrentMindle] = useState({});
   //지도에 표시하기 위한 민들레 값들을 저장하는 변수
+  const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
+  //API 기준 좌표
+  const [mindleBaseCoord, setMindleBaseCoord] = useState(MapData.currentMapCoord);
+
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
   const renderInner = () =>
@@ -101,17 +83,10 @@ const Maps = ({ navigation }) => {
         )}
       </View>
     );
-
-  //API 기준 좌표
-  const [mindleBaseCoord, setMindleBaseCoord] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.0001,
-    longitudeDelta: 0.003,
-  });
-
-  const [API_TIMER, setApiTimer] = useState();
-
+  //지도가 준비 될 경우 실행되는 함수
+  const updateMapStyle = () => {
+    setMapWidth('100%');
+  };
   const renderHeader = () => {
     if (clickedMindleInfo)
       return (
@@ -146,91 +121,42 @@ const Maps = ({ navigation }) => {
   };
 
   //level별 반경 크기
-  const levelToRadius = (num) => {
-    if (num == 1 || num == 2) {
-      return 30;
-    } else if (num == 3) {
-      return 40;
-    } else {
-      return 50;
-    }
-  };
-  //level별 민들레 이미지
-  const levelToIMG = (num) => {
-    if (num == 1) {
-      return level1;
-    } else if (num == 2) {
-      return level2;
-    } else if (num == 3) {
-      return level3;
-    } else {
-      return level4;
-    }
-  };
-  //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
-  const distance = (mindlePOS, currnetPOS) => {
-    return (
-      Math.sqrt(
-        Math.pow(mindlePOS.location.latitude - currnetPOS.latitude, 2) +
-          Math.pow(mindlePOS.location.longitude - currnetPOS.longitude, 2),
-      ) <
-      0.00001 * levelToRadius(mindlePOS.level)
-    );
-  };
-
-  const jwtToken = useRecoilValue(userState.uidState);
-  //API로 데이터 가져오는 함수
-  const getData = async (TargetPOS, currentPOS) => {
-    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
-    axios.defaults.headers.common['x-access-token'] = jwtToken;
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    //초기 메인 버튼을 민들레 심기로 설정
-    setBtnToggle(false);
-    await axios
-      .post('/dandelion/get', {
-        centerPosition: {
-          latitude: TargetPOS.latitude,
-          longitude: TargetPOS.longitude,
-        },
-        maxDistance: 200, //maxDistance는 최대 몇 m까지 불러올 것인가
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          const list = res.data.data.map((props) => {
-            //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-            if (distance(props, currentPOS)) {
-              setCurrentMindle({
-                latitude: props.location.latitude,
-                longitude: props.location.longitude,
-                title: props.name,
-                src: levelToIMG(props.level),
-                radius: levelToRadius(props.level),
-                overlap: distance(props, currentPOS),
-                key: props._id,
-              });
-              setBtnToggle(true);
-            }
-
-            return {
-              latitude: props.location.latitude,
-              longitude: props.location.longitude,
-              title: props.name,
-              src: levelToIMG(props.level),
-              radius: levelToRadius(props.level),
-              overlap: distance(props, currentPOS),
-              key: props._id,
-            };
+  const getData = async (x, currentPOS) => {
+    const data = await dandelionCtrl.getData(x); //초기 민들레 생성
+    if (data.length > 0) {
+      console.log('데이터는 이거지', typeof data, toString.call(data), data);
+      const list = data.reduce((result, props) => {
+        //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+        const visible = dandelionCtrl.isCollision(props, result) ? false : true;
+        if (mapCtrl.distance(props, currentPOS)) {
+          setCurrentMindle({
+            latitude: props.location.latitude,
+            longitude: props.location.longitude,
+            title: props.name,
+            src: mapCtrl.levelToIMG(props.level),
+            radius: mapCtrl.levelToRadius(props.level),
+            overlap: mapCtrl.distance(props, currentPOS),
+            key: props._id,
+            visible: visible,
           });
-          setMindles(list);
-        } else if (res.data.status === 'FAILED') {
-          Alert.alert('에러', '현재 민들레를 가져올 수 없습니다.');
+          setBtnToggle(true);
         }
-      })
-      .catch((err) => {
-        Alert.alert('오류', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-      });
+        result.push({
+          latitude: props.location.latitude,
+          longitude: props.location.longitude,
+          title: props.name,
+          src: mapCtrl.levelToIMG(props.level),
+          radius: mapCtrl.levelToRadius(props.level),
+          overlap: mapCtrl.distance(props, currentPOS),
+          key: props._id,
+          visible: visible,
+        });
+        return result;
+      }, Array());
+      setMindles(list);
+    }
   };
-
+  //API로 데이터 가져오는 함수
   useEffect(() => {
     //GPS 이용 승인
     requestPermission().then((result) => {
@@ -251,7 +177,8 @@ const Maps = ({ navigation }) => {
               });
             }
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            getData(position.coords, position.coords); //초기 민들레 생성
+            setBtnToggle(false);
+            getData(position.coords, position.coords);
           },
           (error) => {
             console.log(error);
@@ -265,29 +192,6 @@ const Maps = ({ navigation }) => {
       }
     });
   }, []);
-  //지도가 준비 될 경우 실행되는 함수
-  const updateMapStyle = () => {
-    setMapWidth('100%');
-  };
-  const [checkInitialRegion, setCheckInitalRegion] = useState(false); //지도 초기 위치로 설정 되었는지(처음부터 재검색 버튼을 뜨는 것을 방지하기 위함)
-  //지도의 좌표가 변경시 호출 되는 함수
-  const onRegionChange = (pos) => {
-    console.log('current: latitude', pos.latitude, 'longitude', pos.longitude);
-    if (pos.latitude != 0 && pos.longitude != 0) {
-      if (!checkInitialRegion) {
-        setCheckInitalRegion(true);
-      }
-      if (checkInitialRegion) {
-        setResearchMap(true);
-      }
-      setCurrentMapCoord({
-        latitude: pos.latitude,
-        longitude: pos.longitude,
-        latitudeDelta: pos.latitudeDelta,
-        longitudeDelta: pos.longitudeDelta,
-      });
-    }
-  };
 
   const getClickedMindleInfo = (mindle) => {
     // console.log('mindle info');
@@ -343,25 +247,38 @@ const Maps = ({ navigation }) => {
             updateMapStyle();
           }}
           onRegionChangeComplete={(currnet) => {
-            onRegionChange(currnet);
+            // onRegionChange(currnet);
+            mapCtrl.onRegionChange(
+              currnet,
+              mindleBaseCoord,
+              checkInitialRegion,
+              setCheckInitalRegion,
+              setResearchMap,
+              setCurrentMapCoord,
+              setMindleBaseCoord,
+            );
           }}
         >
           {mindles.map((props, index) => {
-            return (
-              <Mindle
-                key={props.key}
-                latitude={props.latitude}
-                longitude={props.longitude}
-                title={props.title}
-                src={props.src}
-                radius={props.radius}
-                overlap={props.overlap}
-                onPress={() => {
-                  getClickedMindleInfo(props);
-                  bottomSheet.current.snapTo(1);
-                }}
-              />
-            );
+            if (props.visible === false) {
+              console.log('무야호');
+            } else {
+              return (
+                <Mindle
+                  key={props.key}
+                  latitude={props.latitude}
+                  longitude={props.longitude}
+                  title={props.title}
+                  src={props.src}
+                  radius={props.radius}
+                  overlap={props.overlap}
+                  onPress={() => {
+                    getClickedMindleInfo(props);
+                    bottomSheet.current.snapTo(1);
+                  }}
+                />
+              );
+            }
           })}
         </MapView>
         <View
@@ -382,6 +299,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           ) : (
             <Button
@@ -394,6 +312,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="60px"
               fontSize="25px"
+              backgroundcolor="#431F0E"
             />
           )}
         </View>
@@ -430,6 +349,7 @@ const Maps = ({ navigation }) => {
               width="200px"
               height="50px"
               fontSize="20px"
+              backgroundcolor="#431F0E"
               onPress={() => {
                 setResearchMap(false);
                 getData(currentMapCoord, location);
