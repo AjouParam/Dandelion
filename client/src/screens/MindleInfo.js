@@ -54,6 +54,8 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
   const [listLoading, setListLoading] = useState(true);
   const jwtToken = useRecoilValue(userState.uidState);
   const [noData, setNoData] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+
   const CONTENT_NUM = 5;
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
 
     setLoading(true);
     setListLoading(true);
-    fetchData(mindleKey);
+    fetchData(mindleKey, page);
 
     return () => {
       setData(null);
@@ -83,7 +85,16 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
     }
   }, [data]);
 
-  const fetchData = async (mindleId) => {
+  useEffect(() => {
+    if (refresh) {
+      setLoading(true);
+      setData([]);
+      setPage(1);
+      fetchData(mindleKey, 1);
+    }
+  }, [refresh]);
+
+  const fetchData = async (mindleId, page) => {
     const dataList = await axios
       .get(`/${mindleId}/post/`, {
         params: {
@@ -93,6 +104,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
+          console.log(res.data.data);
           console.log(res.data.message);
           return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         } else if (res.data.status === 'FAILED') {
@@ -103,11 +115,12 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
       .catch((err) => console.log(err));
 
     if (dataList !== 'FAILED') {
-      if (dataList.length === 0 && page === 0) setNoData(true);
+      if (dataList.length === 0 && page === 1) setNoData(true);
       // setDataList(dataList);
 
       setData((prev) => [...prev, ...dataList]);
     }
+    setRefresh(false);
   };
 
   /**
@@ -145,9 +158,25 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
   const renderItem = useCallback(({ item }) => {
     if (data)
       return (
-        <>
+        <View
+          style={{
+            padding: 10,
+            maxHeight: 400,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.2,
+            shadowRadius: 1.41,
+
+            elevation: 2,
+          }}
+        >
           <BoardContent
-            userPhoto={null}
+            mindleId={mindleKey}
+            postId={item._id}
+            userPhoto={null} //TODO : thumbnail
             name={item._user.name}
             date={item.createdAt}
             title={item.title}
@@ -156,17 +185,26 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
             likes={item.likes}
             comments={item.comments}
             setMenuOpen={setMenuOpen}
+            onDeletePost={(deletedId) => {
+              const toDeleteIdx = data.findIndex((item) => item._id === deletedId);
+              if (toDeleteIdx > -1) {
+                const newData = Array.from(data);
+                newData.splice(toDeleteIdx, 1);
+                setData(newData);
+              }
+            }}
             navigation={navigation}
-            isPost={true}
+            isInMindle={true}
+            setRefresh={setRefresh}
           />
-        </>
+        </View>
       );
   });
 
   const handleLoadMore = () => {
     console.log('load more');
     setListLoading(true);
-    fetchData(mindleKey);
+    fetchData(mindleKey, page);
   };
 
   if (loading)
@@ -256,7 +294,7 @@ const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) =
                         </View>
                       )
                 }
-                keyExtractor={(item, idx) => String(idx)}
+                keyExtractor={(item, idx) => String(item._id)}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.1}
                 ListHeaderComponent={() => (

@@ -11,11 +11,6 @@ import userState from '@contexts/userState';
 import MainStack from './MainStack';
 import axios from 'axios';
 
-const headers = {
-  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  Accept: '*/*',
-};
-
 const Navigation = () => {
   const { inProgress } = useContext(ProgressContext);
   const [email, setEmail] = useRecoilState(userState.emailState);

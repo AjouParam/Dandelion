@@ -3,15 +3,18 @@ import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import Post from '@components/MindlePostContent';
 import ProfileModal from '@components/Modal';
+import { Button } from '@components/index';
 
 const Container = styled.View`
   flex: 1;
   background-color: #fff;
 `;
-const Comments = styled.ScrollView``;
-const Comment = styled.View`
+const Comments = styled.ScrollView`
+  border-top-width: 1px;
   padding: 5px;
-  border: 1px solid #000000;
+`;
+const Comment = styled.View`
+  margin: 5px;
 `;
 const Text = styled.Text``;
 const Divider = styled.View`
@@ -28,7 +31,7 @@ const CommentSubmitForm = styled.View`
 `;
 
 const CommentInput = styled.TextInput`
-  height: 100%;
+  height: 90%;
   width: 70%;
   padding: 5px;
   flex: 1;
@@ -37,7 +40,8 @@ const CommentInput = styled.TextInput`
 const CommentSubmitButton = styled.TouchableOpacity`
   width: 20%;
   padding: 5px;
-  height: 100%;
+  height: 90%;
+  color: #ddd;
   align-items: center;
   justify-content: center;
 `;
@@ -56,6 +60,8 @@ const MindlePost = ({ route, navigation }) => {
       { writer: '익명3', comment: '익명3님이 작성하신 댓글입니다.', date: new Date().toISOString() },
     ]);
     setData({
+      mindleId: route.params.mindleId,
+      postId: route.params.postId,
       userPhoto: route.params.userPhoto,
       name: route.params.name,
       date: route.params.date,
@@ -75,6 +81,8 @@ const MindlePost = ({ route, navigation }) => {
     return (
       <Container>
         <Post
+          mindleId={data.mindleId}
+          postId={data.postId}
           userPhoto={
             data.userPhoto ||
             'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'
@@ -86,9 +94,11 @@ const MindlePost = ({ route, navigation }) => {
           images={data.images}
           likes={data.likes}
           comments={data.comments}
-          isPost={true}
+          isInMindle={true}
           isInPost={true}
           setMenuOpen={setMenuOpen}
+          setRefresh={route.params.setRefresh}
+          navigation={navigation}
         />
         <CommentSubmitForm>
           <CommentInput
@@ -97,14 +107,28 @@ const MindlePost = ({ route, navigation }) => {
             onChangeText={(text) => {
               setCommentInput(text);
             }}
+            style={{
+              paddingTop: 5,
+              paddingBottom: 5,
+              backgroundColor: '#ffffff',
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 2.4,
+              elevation: 2,
+            }}
           />
-          <CommentSubmitButton
+          <Button
+            title="게시"
+            width="70px"
+            height="90%"
             onPress={() => {
               Alert.alert('댓글', '댓글 입력');
             }}
-          >
-            <Text>확인</Text>
-          </CommentSubmitButton>
+          />
         </CommentSubmitForm>
         <Comments>
           {comments.map((item, idx) => (
