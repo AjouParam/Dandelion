@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
-import { Button, ImageButton, Mindle } from '@components';
+import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
 import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
 import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -15,10 +15,6 @@ import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 const Container = styled.View`
   flex: 1;
-`;
-const StyledText = styled.Text`
-  font-size: 16px;
-  font-weight: 600;
 `;
 
 const Maps = ({ navigation }) => {
@@ -62,36 +58,7 @@ const Maps = ({ navigation }) => {
     setMapWidth('100%');
   };
   const renderHeader = () => {
-    if (clickedMindleInfo)
-      return (
-        <>
-          <View style={styles.header}>
-            <View style={styles.panelHeader}>
-              <View style={styles.panelHandle} />
-            </View>
-          </View>
-          <View style={styles.panel}>
-            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
-              <View style={{ marginRight: 15 }}>
-                <StyledText>{clickedMindleInfo.name}</StyledText>
-              </View>
-              <Text>made by {clickedMindleInfo.madeby}</Text>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-              <View style={{ marginRight: 15 }}>
-                <Text>누적 방문자 {clickedMindleInfo.visitCount}</Text>
-              </View>
-              <View style={{ marginLeft: 15 }}>
-                <Text>실시간 {clickedMindleInfo.current}</Text>
-              </View>
-            </View>
-
-            <View style={{ marginRight: 10 }}>
-              <Text>{clickedMindleInfo.description}</Text>
-            </View>
-          </View>
-        </>
-      );
+    if (clickedMindleInfo) return <MapsRenderHeader clickedMindleInfo={clickedMindleInfo} />;
   };
   useEffect(() => {
     mapCtrl.getUserLocation(
@@ -159,13 +126,7 @@ const Maps = ({ navigation }) => {
             } else {
               return (
                 <Mindle
-                  key={props.key}
-                  latitude={props.latitude}
-                  longitude={props.longitude}
-                  title={props.title}
-                  src={props.src}
-                  radius={props.radius}
-                  overlap={props.overlap}
+                  props={props}
                   onPress={() => {
                     MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);
                     bottomSheet.current.snapTo(1);
@@ -265,32 +226,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-  },
-  panel: {
-    padding: 15,
-    backgroundColor: '#ffffff',
-  },
-
-  header: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: { width: -1, height: -3 },
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
-    // elevation: 5,
-    paddingTop: 15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  panelHeader: {
-    alignItems: 'center',
-  },
-  panelHandle: {
-    width: 40,
-    height: 6,
-    borderRadius: 4,
-    backgroundColor: '#00000040',
-    marginBottom: 5,
   },
 });
 export default Maps;
