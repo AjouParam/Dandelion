@@ -78,7 +78,6 @@ const Maps = ({ navigation }) => {
         position={location}
         setMindles={setMindles}
       />
-
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[700, 140, 0]}
@@ -94,7 +93,6 @@ const Maps = ({ navigation }) => {
           setClickedMindleInfo(null);
         }}
       />
-
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
         <MapView
           style={[styles.map, { width: mapWidth }]}
