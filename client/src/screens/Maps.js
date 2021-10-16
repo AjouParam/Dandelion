@@ -121,41 +121,42 @@ const Maps = ({ navigation }) => {
   };
 
   //level별 반경 크기
-  const getData = async (x, currentPOS) => {
-    const data = await dandelionCtrl.getData(x); //초기 민들레 생성
-    if (data.length > 0) {
-      console.log('데이터는 이거지', typeof data, toString.call(data), data);
-      const list = data.reduce((result, props) => {
-        //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-        const visible = dandelionCtrl.isCollision(props, result) ? false : true;
-        if (mapCtrl.distance(props, currentPOS)) {
-          setCurrentMindle({
-            latitude: props.location.latitude,
-            longitude: props.location.longitude,
-            title: props.name,
-            src: mapCtrl.levelToIMG(props.level),
-            radius: mapCtrl.levelToRadius(props.level),
-            overlap: mapCtrl.distance(props, currentPOS),
-            key: props._id,
-            visible: visible,
-          });
-          setBtnToggle(true);
-        }
-        result.push({
-          latitude: props.location.latitude,
-          longitude: props.location.longitude,
-          title: props.name,
-          src: mapCtrl.levelToIMG(props.level),
-          radius: mapCtrl.levelToRadius(props.level),
-          overlap: mapCtrl.distance(props, currentPOS),
-          key: props._id,
-          visible: visible,
-        });
-        return result;
-      }, Array());
-      setMindles(list);
-    }
-  };
+
+  // const getData = async (x, currentPOS) => {
+  //   const data = await dandelionCtrl.getData(x); //초기 민들레 생성
+  //   if (data.length > 0) {
+  //     console.log('데이터는 이거지', typeof data, toString.call(data), data);
+  //     const list = data.reduce((result, props) => {
+  //       //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+  //       const visible = dandelionCtrl.isCollision(props, result) ? false : true;
+  //       if (mapCtrl.distance(props, currentPOS)) {
+  //         setCurrentMindle({
+  //           latitude: props.location.latitude,
+  //           longitude: props.location.longitude,
+  //           title: props.name,
+  //           src: mapCtrl.levelToIMG(props.level),
+  //           radius: mapCtrl.levelToRadius(props.level),
+  //           overlap: mapCtrl.distance(props, currentPOS),
+  //           key: props._id,
+  //           visible: visible,
+  //         });
+  //         setBtnToggle(true);
+  //       }
+  //       result.push({
+  //         latitude: props.location.latitude,
+  //         longitude: props.location.longitude,
+  //         title: props.name,
+  //         src: mapCtrl.levelToIMG(props.level),
+  //         radius: mapCtrl.levelToRadius(props.level),
+  //         overlap: mapCtrl.distance(props, currentPOS),
+  //         key: props._id,
+  //         visible: visible,
+  //       });
+  //       return result;
+  //     }, Array());
+  //     setMindles(list);
+  //   }
+  // };
   //API로 데이터 가져오는 함수
   useEffect(() => {
     //GPS 이용 승인
@@ -178,7 +179,9 @@ const Maps = ({ navigation }) => {
             }
             console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
             setBtnToggle(false);
-            getData(position.coords, position.coords);
+            //getData(position.coords, position.coords);
+            console.log('함수 실행');
+            dandelionCtrl.CompData(position.coords, position.coords, setCurrentMindle, setBtnToggle, setMindles);
           },
           (error) => {
             console.log(error);
@@ -352,7 +355,8 @@ const Maps = ({ navigation }) => {
               backgroundcolor="#431F0E"
               onPress={() => {
                 setResearchMap(false);
-                getData(currentMapCoord, location);
+                //getData(currentMapCoord, location);
+                dandelionCtrl.CompData(currentMapCoord, location, setCurrentMindle, setBtnToggle, setMindles);
               }}
             />
           </View>

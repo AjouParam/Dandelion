@@ -1,8 +1,15 @@
 import axios from 'axios';
-
+import { level1, level2, level3, level4 } from '../assets/index';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
+import mapCtrl from '@controller/mapCtrl';
 const jwtToken = useRecoilValue(userState.uidState);
+
+const levelToRadius = (num) => (num == 1 || num == 2 ? 30 : num == 3 ? 40 : 50);
+
+//level별 민들레 이미지
+const levelList = [level1, level2, level3, level4];
+const levelToIMG = (num) => levelList[1 <= num && num <= 3 ? num - 1 : 3];
 
 const sortForRadius = (list) =>
   list.sort(function (a, b) {
@@ -44,4 +51,43 @@ const getData = async (TargetPOS) => {
     });
 };
 
-export default { isCollision, getData };
+//level별 반경 크기 및 충돌 확인
+const CompData = async (Target, currentPOS, setCurrentMindle, setBtnToggle, setMindles) => {
+  const data = await getData(Target); //초기 민들레 생성
+
+  if (data.length > 0) {
+    console.log('데이터는 이거지', typeof data, toString.call(data), data);
+    const list = data.reduce((result, props) => {
+      //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
+      const visible = isCollision(props, result) ? false : true;
+      if (mapCtrl.distance(props, currentPOS)) {
+        setCurrentMindle({
+          latitude: props.location.latitude,
+          longitude: props.location.longitude,
+          title: props.name,
+          src: levelToIMG(props.level),
+          radius: levelToRadius(props.level),
+          overlap: mapCtrl.distance(props, currentPOS),
+          key: props._id,
+          visible: visible,
+        });
+        setBtnToggle(true);
+      }
+      result.push({
+        latitude: props.location.latitude,
+        longitude: props.location.longitude,
+        title: props.name,
+        src: levelToIMG(props.level),
+        radius: levelToRadius(props.level),
+        overlap: mapCtrl.distance(props, currentPOS),
+        key: props._id,
+        visible: visible,
+      });
+      return result;
+    }, Array());
+    console.log('데이터는 이거지2', typeof list, toString.call(list), list);
+    setMindles(list);
+  }
+};
+
+export default { isCollision, getData, CompData, levelToRadius, levelToIMG };
