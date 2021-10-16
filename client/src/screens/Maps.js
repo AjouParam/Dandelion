@@ -51,20 +51,9 @@ const Maps = ({ navigation }) => {
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
         {clickedMindleInfo.overlap ? (
-          <MindleInfo
-            mindleKey={clickedMindleInfo.key}
-            name={clickedMindleInfo.name}
-            overlap={clickedMindleInfo.overlap}
-            navigation={navigation}
-            position={clickedMindleInfo.position}
-          />
+          <MindleInfo navigation={navigation} props={clickedMindleInfo} />
         ) : (
-          <MindlePreview
-            mindleKey={clickedMindleInfo.key}
-            name={clickedMindleInfo.name}
-            overlap={clickedMindleInfo.overlap}
-            navigation={navigation}
-          />
+          <MindlePreview navigation={navigation} props={clickedMindleInfo} mindleKey={clickedMindleInfo.mindleKey} />
         )}
       </View>
     );

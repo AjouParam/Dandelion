@@ -44,7 +44,8 @@ const Tab = styled.View`
   justify-content: space-evenly;
 `;
 
-const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
+const MindlePreview = ({ navigation, props, mindleKey }) => {
+  const { name, overlap } = props;
   const [tabIndex, setTabIndex] = useState(0);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);

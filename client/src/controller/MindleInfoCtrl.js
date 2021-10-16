@@ -1,8 +1,12 @@
+import React from 'react';
+import { View } from 'react-native';
+import MindlePreview from '@screens/MindlePreview';
+import MindleInfo from '@screens/MindleInfo';
 const getClickedMindleInfo = (mindle, setClickedMindleInfo) => {
   // console.log('mindle info');
   // console.log(mindle);
   setClickedMindleInfo({
-    key: mindle.key,
+    mindleKey: mindle.key,
     name: mindle.title,
     madeby: '창시자', //데이터 필요
     description: mindle.description || '민들레 설명 데이터 없음',
@@ -13,5 +17,4 @@ const getClickedMindleInfo = (mindle, setClickedMindleInfo) => {
   });
   console.log(mindle);
 };
-
 export default { getClickedMindleInfo };

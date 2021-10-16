@@ -85,7 +85,6 @@ const CompData = async (Target, currentPOS, setCurrentMindle, setBtnToggle, setM
       });
       return result;
     }, Array());
-    console.log('데이터는 이거지2', typeof list, toString.call(list), list);
     setMindles(list);
   }
 };
