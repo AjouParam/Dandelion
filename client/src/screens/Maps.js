@@ -3,8 +3,7 @@ import styled from 'styled-components/native';
 import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle } from '@components';
-import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
 import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -20,21 +19,6 @@ const StyledText = styled.Text`
   font-size: 16px;
   font-weight: 600;
 `;
-
-//안드로이드 혹은 ios에서 지도 사용 승인 절차
-const requestPermission = async () => {
-  try {
-    if (Platform.OS === 'ios') {
-      return await Geolocation.requestAuthorization('always');
-    }
-    if (Platform.OS === 'android') {
-      return await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
-//안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
 
 const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
@@ -119,81 +103,15 @@ const Maps = ({ navigation }) => {
         </>
       );
   };
-
-  //level별 반경 크기
-
-  // const getData = async (x, currentPOS) => {
-  //   const data = await dandelionCtrl.getData(x); //초기 민들레 생성
-  //   if (data.length > 0) {
-  //     console.log('데이터는 이거지', typeof data, toString.call(data), data);
-  //     const list = data.reduce((result, props) => {
-  //       //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-  //       const visible = dandelionCtrl.isCollision(props, result) ? false : true;
-  //       if (mapCtrl.distance(props, currentPOS)) {
-  //         setCurrentMindle({
-  //           latitude: props.location.latitude,
-  //           longitude: props.location.longitude,
-  //           title: props.name,
-  //           src: mapCtrl.levelToIMG(props.level),
-  //           radius: mapCtrl.levelToRadius(props.level),
-  //           overlap: mapCtrl.distance(props, currentPOS),
-  //           key: props._id,
-  //           visible: visible,
-  //         });
-  //         setBtnToggle(true);
-  //       }
-  //       result.push({
-  //         latitude: props.location.latitude,
-  //         longitude: props.location.longitude,
-  //         title: props.name,
-  //         src: mapCtrl.levelToIMG(props.level),
-  //         radius: mapCtrl.levelToRadius(props.level),
-  //         overlap: mapCtrl.distance(props, currentPOS),
-  //         key: props._id,
-  //         visible: visible,
-  //       });
-  //       return result;
-  //     }, Array());
-  //     setMindles(list);
-  //   }
-  // };
-  //API로 데이터 가져오는 함수
   useEffect(() => {
-    //GPS 이용 승인
-    requestPermission().then((result) => {
-      //사용자 승인 후 좌표 값 획득
-      if (result == 'granted') {
-        //변화된 좌표 값 획득
-        //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
-        Geolocation.watchPosition(
-          async (position) => {
-            //변화된 사용자 좌표 location 변수에 최신화
-            setLocation(position.coords);
-            if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
-              setCurrentMapCoord({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                latitudeDelta: 0.0001,
-                longitudeDelta: 0.003,
-              });
-            }
-            console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            setBtnToggle(false);
-            //getData(position.coords, position.coords);
-            console.log('함수 실행');
-            dandelionCtrl.CompData(position.coords, position.coords, setCurrentMindle, setBtnToggle, setMindles);
-          },
-          (error) => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            //재측정할 변화 차이
-            distanceFilter: 20,
-          },
-        );
-      }
-    });
+    mapCtrl.getUserLocation(
+      setLocation,
+      currentMapCoord,
+      setCurrentMapCoord,
+      setBtnToggle,
+      setCurrentMindle,
+      setMindles,
+    );
   }, []);
 
   const getClickedMindleInfo = (mindle) => {

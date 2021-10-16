@@ -1,4 +1,6 @@
 import dandelionCtrl from './dandelionCtrl';
+import { Platform, PermissionsAndroid } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
 //유클리드 distance로 민들레 반경 안에 사용자가 들어와 있는 판단하는 함수
 const distance = (mindlePOS, currnetPOS) => {
   return (
@@ -50,4 +52,62 @@ const onRegionChange = (
   }
 };
 
-export default { distance, onRegionChange };
+//안드로이드 혹은 ios에서 지도 사용 승인 절차
+const requestPermission = async () => {
+  try {
+    if (Platform.OS === 'ios') {
+      return await Geolocation.requestAuthorization('always');
+    }
+    if (Platform.OS === 'android') {
+      return await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+//안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
+
+const getUserLocation = async (
+  setLocation,
+  currentMapCoord,
+  setCurrentMapCoord,
+  setBtnToggle,
+  setCurrentMindle,
+  setMindles,
+) => {
+  //GPS 이용 승인
+  requestPermission().then((result) => {
+    //사용자 승인 후 좌표 값 획득
+    if (result == 'granted') {
+      //변화된 좌표 값 획득
+      //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
+      Geolocation.watchPosition(
+        async (position) => {
+          //변화된 사용자 좌표 location 변수에 최신화
+          setLocation(position.coords);
+          if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
+            setCurrentMapCoord({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.0001,
+              longitudeDelta: 0.003,
+            });
+          }
+          console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
+          setBtnToggle(false);
+          console.log('함수 실행');
+          dandelionCtrl.CompData(position.coords, position.coords, setCurrentMindle, setBtnToggle, setMindles);
+        },
+        (error) => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          //재측정할 변화 차이
+          distanceFilter: 20,
+        },
+      );
+    }
+  });
+};
+export default { distance, onRegionChange, getUserLocation };
