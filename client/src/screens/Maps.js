@@ -12,6 +12,7 @@ import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
 import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
+import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 const Container = styled.View`
   flex: 1;
 `;
@@ -113,23 +114,6 @@ const Maps = ({ navigation }) => {
       setMindles,
     );
   }, []);
-
-  const getClickedMindleInfo = (mindle) => {
-    // console.log('mindle info');
-    // console.log(mindle);
-    setClickedMindleInfo({
-      key: mindle.key,
-      name: mindle.title,
-      madeby: '창시자', //데이터 필요
-      description: mindle.description || '민들레 설명 데이터 없음',
-      visitCount: 18, //데이터 필요
-      current: 1, //데이터 필요
-      overlap: mindle.overlap,
-      position: { latitude: mindle.latitude, longitude: mindle.longitude },
-    });
-    console.log(mindle);
-  };
-
   return (
     <Container>
       <CreateMindle
@@ -194,7 +178,7 @@ const Maps = ({ navigation }) => {
                   radius={props.radius}
                   overlap={props.overlap}
                   onPress={() => {
-                    getClickedMindleInfo(props);
+                    MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);
                     bottomSheet.current.snapTo(1);
                   }}
                 />
@@ -214,7 +198,7 @@ const Maps = ({ navigation }) => {
               title={'민들레 입장'}
               onPress={() => {
                 //TODO : 민들레 입장
-                getClickedMindleInfo(currentMindle);
+                MindleInfoCtrl.getClickedMindleInfo(currentMindle, setClickedMindleInfo);
                 bottomSheet.current.snapTo(1);
               }}
               width="200px"
