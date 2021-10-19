@@ -1,11 +1,13 @@
 const clickedMindleInfo = {
-  key: '',
+  mindleKey: '',
   name: '',
   madeby: '',
   description: [],
   visitCount: '',
   current: '',
   position: { latitude: '', longitude: '' },
+  name: '',
+  route: '',
 };
 
 const location = {

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Marker, Circle } from 'react-native-maps';
 
-const Mindle = ({ latitude, longitude, radius, src, title, description, onPress, overlap }) => {
+const Mindle = ({ props, onPress }) => {
+  const { latitude, longitude, radius, src, title, description, overlap } = props;
   return (
     <>
       <Circle
