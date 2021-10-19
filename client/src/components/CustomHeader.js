@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { back } from '../assets/index';
-const TRANSPARENT = 'transparent';
 
 const Header = styled.View`
   display: flex;

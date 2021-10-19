@@ -80,31 +80,31 @@ const Mypage = ({ navigation }) => {
         <Text>내가 쓴 글</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 심은 민들레' })}>
         <Text>내가 심은 민들레</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '쿠폰 목록' })}>
         <Text>쿠폰 목록</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '쪽지' })}>
         <Text>쪽지</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '권한 설정' })}>
         <Text>권한 설정</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '등급 설명' })}>
         <Text>등급 설명</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '무료 광고' })}>
         <Text>무료 광고</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '회원 탈퇴' })}>
         <Text>회원 탈퇴</Text>
       </Container>
     </>
