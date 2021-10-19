@@ -148,6 +148,8 @@ const MindlePreview = ({ mindleKey, name, overlap, navigation }) => {
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
               <ScrollView>
                 <BoardContent
+                  mindleId={mindleKey}
+                  postId={data._id}
                   userPhoto={data.userPhoto}
                   name={data._user.name}
                   date={data.createdAt}
