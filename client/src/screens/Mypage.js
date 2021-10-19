@@ -5,6 +5,7 @@ import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import { profile } from '../assets/index'; //dummy
 import { Button, ImageButton } from '@components';
+import PostContainer from './PostContainer';
 const Container = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
@@ -75,7 +76,7 @@ const Mypage = ({ navigation }) => {
           }}
         />
       </LogoutContainer>
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 쓴 글' })}>
         <Text>내가 쓴 글</Text>
       </Container>
 

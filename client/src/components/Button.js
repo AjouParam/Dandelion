@@ -8,13 +8,11 @@ const Container = styled.TouchableOpacity`
   background-color: ${({ theme, isFilled, disabled, backgroundcolor = theme.buttonBackground }) =>
     disabled ? theme.buttonDisabledBackground : isFilled ? backgroundcolor : TRANSPARENT};
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   border-radius: 4px;
-  width: ${(props) => props.width}
-  height:${(props) => props.height}
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
   padding: 10px;
-
-  borderRadius:20px;
 `;
 
 const Title = styled.Text`
