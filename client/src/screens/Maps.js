@@ -2,9 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/native';
 import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
-import { Button, ImageButton, Mindle } from '@components';
-import { TouchableOpacity, Platform, PermissionsAndroid, View, Text, StyleSheet, Alert } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
+import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
+import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
 import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -13,28 +12,10 @@ import MindlePreview from '@screens/MindlePreview';
 import MindleInfo from '@screens/MindleInfo';
 import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
+import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 const Container = styled.View`
   flex: 1;
 `;
-const StyledText = styled.Text`
-  font-size: 16px;
-  font-weight: 600;
-`;
-
-//안드로이드 혹은 ios에서 지도 사용 승인 절차
-const requestPermission = async () => {
-  try {
-    if (Platform.OS === 'ios') {
-      return await Geolocation.requestAuthorization('always');
-    }
-    if (Platform.OS === 'android') {
-      return await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
-//안드로이드 혹은 ios에서 지도 사용 승인 절차 끝
 
 const Maps = ({ navigation }) => {
   const bottomSheet = useRef();
@@ -66,20 +47,9 @@ const Maps = ({ navigation }) => {
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
         {clickedMindleInfo.overlap ? (
-          <MindleInfo
-            mindleKey={clickedMindleInfo.key}
-            name={clickedMindleInfo.name}
-            overlap={clickedMindleInfo.overlap}
-            navigation={navigation}
-            position={clickedMindleInfo.position}
-          />
+          <MindleInfo navigation={navigation} props={clickedMindleInfo} />
         ) : (
-          <MindlePreview
-            mindleKey={clickedMindleInfo.key}
-            name={clickedMindleInfo.name}
-            overlap={clickedMindleInfo.overlap}
-            navigation={navigation}
-          />
+          <MindlePreview navigation={navigation} props={clickedMindleInfo} mindleKey={clickedMindleInfo.mindleKey} />
         )}
       </View>
     );
@@ -88,127 +58,18 @@ const Maps = ({ navigation }) => {
     setMapWidth('100%');
   };
   const renderHeader = () => {
-    if (clickedMindleInfo)
-      return (
-        <>
-          <View style={styles.header}>
-            <View style={styles.panelHeader}>
-              <View style={styles.panelHandle} />
-            </View>
-          </View>
-          <View style={styles.panel}>
-            <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
-              <View style={{ marginRight: 15 }}>
-                <StyledText>{clickedMindleInfo.name}</StyledText>
-              </View>
-              <Text>made by {clickedMindleInfo.madeby}</Text>
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-              <View style={{ marginRight: 15 }}>
-                <Text>누적 방문자 {clickedMindleInfo.visitCount}</Text>
-              </View>
-              <View style={{ marginLeft: 15 }}>
-                <Text>실시간 {clickedMindleInfo.current}</Text>
-              </View>
-            </View>
-
-            <View style={{ marginRight: 10 }}>
-              <Text>{clickedMindleInfo.description}</Text>
-            </View>
-          </View>
-        </>
-      );
+    if (clickedMindleInfo) return <MapsRenderHeader clickedMindleInfo={clickedMindleInfo} />;
   };
-
-  //level별 반경 크기
-  const getData = async (x, currentPOS) => {
-    const data = await dandelionCtrl.getData(x); //초기 민들레 생성
-    if (data.length > 0) {
-      console.log('데이터는 이거지', typeof data, toString.call(data), data);
-      const list = data.reduce((result, props) => {
-        //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
-        const visible = dandelionCtrl.isCollision(props, result) ? false : true;
-        if (mapCtrl.distance(props, currentPOS)) {
-          setCurrentMindle({
-            latitude: props.location.latitude,
-            longitude: props.location.longitude,
-            title: props.name,
-            src: mapCtrl.levelToIMG(props.level),
-            radius: mapCtrl.levelToRadius(props.level),
-            overlap: mapCtrl.distance(props, currentPOS),
-            key: props._id,
-            visible: visible,
-          });
-          setBtnToggle(true);
-        }
-        result.push({
-          latitude: props.location.latitude,
-          longitude: props.location.longitude,
-          title: props.name,
-          src: mapCtrl.levelToIMG(props.level),
-          radius: mapCtrl.levelToRadius(props.level),
-          overlap: mapCtrl.distance(props, currentPOS),
-          key: props._id,
-          visible: visible,
-        });
-        return result;
-      }, Array());
-      setMindles(list);
-    }
-  };
-  //API로 데이터 가져오는 함수
   useEffect(() => {
-    //GPS 이용 승인
-    requestPermission().then((result) => {
-      //사용자 승인 후 좌표 값 획득
-      if (result == 'granted') {
-        //변화된 좌표 값 획득
-        //초기 위치에서 20m 이상 차이 발생시 새로운 좌표 값 설정
-        Geolocation.watchPosition(
-          async (position) => {
-            //변화된 사용자 좌표 location 변수에 최신화
-            setLocation(position.coords);
-            if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
-              setCurrentMapCoord({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                latitudeDelta: 0.0001,
-                longitudeDelta: 0.003,
-              });
-            }
-            console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
-            setBtnToggle(false);
-            getData(position.coords, position.coords);
-          },
-          (error) => {
-            console.log(error);
-          },
-          {
-            enableHighAccuracy: true,
-            //재측정할 변화 차이
-            distanceFilter: 20,
-          },
-        );
-      }
-    });
+    mapCtrl.getUserLocation(
+      setLocation,
+      currentMapCoord,
+      setCurrentMapCoord,
+      setBtnToggle,
+      setCurrentMindle,
+      setMindles,
+    );
   }, []);
-
-  const getClickedMindleInfo = (mindle) => {
-    // console.log('mindle info');
-    // console.log(mindle);
-    setClickedMindleInfo({
-      key: mindle.key,
-      name: mindle.title,
-      madeby: '창시자', //데이터 필요
-      description: mindle.description || '민들레 설명 데이터 없음',
-      visitCount: 18, //데이터 필요
-      current: 1, //데이터 필요
-      overlap: mindle.overlap,
-      position: { latitude: mindle.latitude, longitude: mindle.longitude },
-    });
-    console.log(mindle);
-  };
-
   return (
     <Container>
       <CreateMindle
@@ -217,7 +78,6 @@ const Maps = ({ navigation }) => {
         position={location}
         setMindles={setMindles}
       />
-
       <BottomSheet
         ref={bottomSheet}
         snapPoints={[700, 140, 0]}
@@ -233,7 +93,6 @@ const Maps = ({ navigation }) => {
           setClickedMindleInfo(null);
         }}
       />
-
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
         <MapView
           style={[styles.map, { width: mapWidth }]}
@@ -265,15 +124,9 @@ const Maps = ({ navigation }) => {
             } else {
               return (
                 <Mindle
-                  key={props.key}
-                  latitude={props.latitude}
-                  longitude={props.longitude}
-                  title={props.title}
-                  src={props.src}
-                  radius={props.radius}
-                  overlap={props.overlap}
+                  props={props}
                   onPress={() => {
-                    getClickedMindleInfo(props);
+                    MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);
                     bottomSheet.current.snapTo(1);
                   }}
                 />
@@ -293,7 +146,7 @@ const Maps = ({ navigation }) => {
               title={'민들레 입장'}
               onPress={() => {
                 //TODO : 민들레 입장
-                getClickedMindleInfo(currentMindle);
+                MindleInfoCtrl.getClickedMindleInfo(currentMindle, setClickedMindleInfo);
                 bottomSheet.current.snapTo(1);
               }}
               width="200px"
@@ -352,7 +205,8 @@ const Maps = ({ navigation }) => {
               backgroundcolor="#431F0E"
               onPress={() => {
                 setResearchMap(false);
-                getData(currentMapCoord, location);
+                //getData(currentMapCoord, location);
+                dandelionCtrl.CompData(currentMapCoord, location, setCurrentMindle, setBtnToggle, setMindles);
               }}
             />
           </View>
@@ -370,32 +224,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-  },
-  panel: {
-    padding: 15,
-    backgroundColor: '#ffffff',
-  },
-
-  header: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: { width: -1, height: -3 },
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
-    // elevation: 5,
-    paddingTop: 15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  panelHeader: {
-    alignItems: 'center',
-  },
-  panelHandle: {
-    width: 40,
-    height: 6,
-    borderRadius: 4,
-    backgroundColor: '#00000040',
-    marginBottom: 5,
   },
 });
 export default Maps;

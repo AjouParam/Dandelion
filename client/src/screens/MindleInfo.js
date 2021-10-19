@@ -7,6 +7,7 @@ import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
+import { baseProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlers';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -45,7 +46,8 @@ const Tab = styled.View`
   justify-content: space-evenly;
 `;
 
-const MindleInfo = ({ mindleKey, name, position, overlap, navigation, route }) => {
+const MindleInfo = ({ navigation, props }) => {
+  const { mindleKey, name, position, overlap, route } = props;
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [tabIndex, setTabIndex] = useState(0);
