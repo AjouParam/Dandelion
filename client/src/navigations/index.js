@@ -11,15 +11,11 @@ import userState from '@contexts/userState';
 import MainStack from './MainStack';
 import axios from 'axios';
 
-const headers = {
-  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  Accept: '*/*',
-};
-
 const Navigation = () => {
   const { inProgress } = useContext(ProgressContext);
   const [email, setEmail] = useRecoilState(userState.emailState);
   const [uid, setUid] = useRecoilState(userState.uidState);
+  const [name, setName] = useRecoilState(userState.nameState);
 
   useLayoutEffect(() => {
     const _loadInitialState = async () => {
@@ -27,6 +23,7 @@ const Navigation = () => {
         const value = await AsyncStorage.getItem('token');
         if (value !== null) {
           const userData = decode(value);
+          console.log(userData);
           const todayUTC = new Date().getTime() / 1000;
           const expUTC = userData.exp;
           console.log(expUTC - todayUTC);
@@ -45,7 +42,10 @@ const Navigation = () => {
               .then(async (res) => {
                 if (res.data.status === 'SUCCESS') {
                   console.log('refresh token');
+                  console.log();
                   await AsyncStorage.setItem('token', res.data.accessToken);
+                  const token = decode(res.data.accessToken);
+                  setName(token.name);
                   setUid(res.data.accessToken);
                   setEmail(userData.email);
                 } else {
@@ -57,6 +57,7 @@ const Navigation = () => {
               });
           } else {
             console.log('valid token');
+            setName(userData.name);
             setUid(value);
             setEmail(userData.email);
           }

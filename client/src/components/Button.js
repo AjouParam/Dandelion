@@ -5,15 +5,15 @@ import PropTypes from 'prop-types';
 const TRANSPARENT = 'transparent';
 
 const Container = styled.TouchableOpacity`
-  background-color: ${({ theme, isFilled, disabled }) =>
-    disabled ? theme.buttonDisabledBackground : isFilled ? theme.buttonBackground : TRANSPARENT};
+  background-color: ${({ theme, isFilled, disabled, backgroundcolor = theme.buttonBackground }) =>
+    disabled ? theme.buttonDisabledBackground : isFilled ? backgroundcolor : TRANSPARENT};
   align-items: center;
   justify-content:center;
   border-radius: 4px;
   width: ${(props) => props.width}
   height:${(props) => props.height}
   padding: 10px;
-  
+
   borderRadius:20px;
 `;
 

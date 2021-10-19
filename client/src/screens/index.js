@@ -6,4 +6,23 @@ import Maps from './Maps';
 import HotSpot from './HotSpot';
 import Settings from './Settings';
 import Mypage from './Mypage';
-export { Login, Signup, Profile, Award, Maps, HotSpot, Settings, Mypage };
+import MindleInfo from './MindleInfo';
+import MindlePreview from './MindlePreview';
+import MypageList from './MypageList';
+import MindlePost from './MindlePost';
+import MakePost from './MakePost';
+export {
+  Login,
+  Signup,
+  Profile,
+  Award,
+  Maps,
+  HotSpot,
+  Settings,
+  Mypage,
+  MypageList,
+  MindleInfo,
+  MindlePreview,
+  MindlePost,
+  MakePost,
+};
