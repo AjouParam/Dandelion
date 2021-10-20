@@ -1,26 +1,15 @@
 import React from 'react';
 import { View, Text, Header } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
-import Post from '../components/Post';
+import PostCtrl from '../controller/postCtrl';
 
 const PostContainer = ({ navigation, route }) => {
-  const { title } = route.params;
+  const { title, type } = route.params;
   return (
     <>
       <View>
         <CustomHeader navigation={navigation} title={title} />
-        <Post //type setting
-          props={{
-            name: '동관 앞',
-            distance: '5.8',
-            countVisitor: 42,
-            countEvent: 9,
-            address: '영통임다.',
-            tag: '#아대',
-          }}
-        />
-        <Post /> //default post
-        <Post />
+        {PostCtrl[type]}
       </View>
     </>
   );

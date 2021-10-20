@@ -76,11 +76,11 @@ const Mypage = ({ navigation }) => {
           }}
         />
       </LogoutContainer>
-      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 쓴 글' })}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 쓴 글', type: 'post' })}>
         <Text>내가 쓴 글</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 심은 민들레' })}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 심은 민들레', type: 'mindle' })}>
         <Text>내가 심은 민들레</Text>
       </Container>
 
