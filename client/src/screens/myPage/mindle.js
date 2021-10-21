@@ -7,6 +7,7 @@ const MindleSubPage = ({ navigation }) => {
   return (
     <>
       <Mindle //type setting
+        click={true}
         navigation={navigation}
         props={{
           name: '동관 앞',

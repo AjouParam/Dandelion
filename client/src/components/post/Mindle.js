@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Header, TouchableOpacity } from 'react-native';
+import { View, Text, Header, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
@@ -30,9 +30,13 @@ const CountEvent = styled.Text``;
 const Address = styled.Text``;
 const TagText = styled.Text``;
 
-const Mindle = ({ navigation, props }) => {
+const Mindle = ({ navigation, props, click }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('PostContainer', { title: props.name })}>
+    <TouchableWithoutFeedback
+      onPress={() =>
+        click && navigation.navigate('PostContainer', { title: props.name, props, type: 'detail', state: 'mindle' })
+      }
+    >
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>
@@ -47,7 +51,7 @@ const Mindle = ({ navigation, props }) => {
           <TagText>{props.tag}</TagText>
         </BottomView>
       </Container>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 

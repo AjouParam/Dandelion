@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Header, Image, ScrollView } from 'react-native';
+import { View, Text, Header, Image, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
 
@@ -71,35 +71,41 @@ const PostText = styled.Text``;
 const Like = styled.Text``;
 const Message = styled.Text``;
 
-const Post = ({ navigation, props }) => {
+const Post = ({ navigation, props, click }) => {
   return (
-    <Container>
-      <TopView>
-        <ProfileImg source={level1} />
-        <PostFrontView>
-          <MindleName>{props.name}</MindleName>
-          <MindleDate>{props.date}</MindleDate>
-        </PostFrontView>
-      </TopView>
-      <MidView>
-        <PostText>{props.text}</PostText>
-        <ImageList horizontal={true}>
-          {props.imageList.map((element) => (
-            <PostImage source={element} />
-          ))}
-        </ImageList>
-      </MidView>
-      <BottomView>
-        <LikeContainer>
-          <LikeImage source={level2} />
-          <Like>{props.like}</Like>
-        </LikeContainer>
-        <MessageContainer>
-          <MessageImage source={level3} />
-          <Message>{props.message}</Message>
-        </MessageContainer>
-      </BottomView>
-    </Container>
+    <TouchableWithoutFeedback
+      onPress={() =>
+        click && navigation.navigate('PostContainer', { title: props.name, props, type: 'detail', state: 'post' })
+      }
+    >
+      <Container>
+        <TopView>
+          <ProfileImg source={level1} />
+          <PostFrontView>
+            <MindleName>{props.name}</MindleName>
+            <MindleDate>{props.date}</MindleDate>
+          </PostFrontView>
+        </TopView>
+        <MidView>
+          <PostText>{props.text}</PostText>
+          <ImageList horizontal={true}>
+            {[level1, level2, level3, level4, level1, level2].map((element) => (
+              <PostImage source={element} />
+            ))}
+          </ImageList>
+        </MidView>
+        <BottomView>
+          <LikeContainer>
+            <LikeImage source={level2} />
+            <Like>{props.like}</Like>
+          </LikeContainer>
+          <MessageContainer>
+            <MessageImage source={level3} />
+            <Message>{props.message}</Message>
+          </MessageContainer>
+        </BottomView>
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
 

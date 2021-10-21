@@ -2,21 +2,13 @@ import React from 'react';
 import { View, Text, Header } from 'react-native';
 import Post from '../../components/post/Post';
 
-const PostSubPage = ({ navigation }) => {
-  console.log(navigation);
+const PostSubPage = ({ navigation, props }) => {
   return (
     <>
       <Post //type setting
-        click={true}
+        click={false}
         navigation={navigation}
-        props={{
-          name: '동관 앞',
-          distance: '5.8',
-          countVisitor: 42,
-          countEvent: 9,
-          address: '영통임다.',
-          tag: '#아대',
-        }}
+        props={props}
       />
       {/* <Post />
       <Post /> */}
