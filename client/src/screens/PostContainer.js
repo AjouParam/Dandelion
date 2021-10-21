@@ -9,7 +9,7 @@ const PostContainer = ({ navigation, route }) => {
     <>
       <View>
         <CustomHeader navigation={navigation} title={title} />
-        {PostCtrl[type]}
+        {PostCtrl[type]?.call(navigation)}
       </View>
     </>
   );

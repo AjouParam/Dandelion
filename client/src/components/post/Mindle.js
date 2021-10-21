@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Header } from 'react-native';
+import { View, Text, Header, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
@@ -30,22 +30,24 @@ const CountEvent = styled.Text``;
 const Address = styled.Text``;
 const TagText = styled.Text``;
 
-const Mindle = (props) => {
+const Mindle = ({ navigation, props }) => {
   return (
-    <Container>
-      <TopView>
-        <MindleName>{props.name}</MindleName>
-        <MindleDistance>{`${props.distance} km`}</MindleDistance>
-      </TopView>
-      <MidView>
-        <CountVisitor>{`누적 방문자 ${props.countVisitor}명`}</CountVisitor>
-        <CountEvent>{`이벤트 ${props.countEvent}개`}</CountEvent>
-      </MidView>
-      <BottomView>
-        <Address>{props.address}</Address>
-        <TagText>{props.tag}</TagText>
-      </BottomView>
-    </Container>
+    <TouchableOpacity onPress={() => navigation.navigate('PostContainer', { title: props.name })}>
+      <Container>
+        <TopView>
+          <MindleName>{props.name}</MindleName>
+          <MindleDistance>{`${props.distance} km`}</MindleDistance>
+        </TopView>
+        <MidView>
+          <CountVisitor>{`누적 방문자 ${props.countVisitor}명`}</CountVisitor>
+          <CountEvent>{`이벤트 ${props.countEvent}개`}</CountEvent>
+        </MidView>
+        <BottomView>
+          <Address>{props.address}</Address>
+          <TagText>{props.tag}</TagText>
+        </BottomView>
+      </Container>
+    </TouchableOpacity>
   );
 };
 

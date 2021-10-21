@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, Header } from 'react-native';
 import Post from '../../components/post/Post';
 
-const PostSubPage = () => {
+const PostSubPage = ({ navigation }) => {
+  console.log(navigation);
   return (
     <>
       <Post //type setting
+        navigation={navigation}
         props={{
           name: '동관 앞',
           distance: '5.8',
@@ -15,8 +17,8 @@ const PostSubPage = () => {
           tag: '#아대',
         }}
       />
-      <Post />
-      <Post />
+      {/* <Post />
+      <Post /> */}
     </>
   );
 };

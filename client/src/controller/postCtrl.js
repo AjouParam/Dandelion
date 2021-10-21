@@ -5,8 +5,12 @@ import Mindle from '../screens/myPage/mindle';
 
 const PostModule = {
   //   hotSpot: <HotSpot />,
-  post: <Post />,
-  mindle: <Mindle />,
+  post: function () {
+    return <Post navigation={this} />;
+  },
+  mindle: function () {
+    return <Mindle navigation={this} />;
+  },
 };
 
 export default PostModule;

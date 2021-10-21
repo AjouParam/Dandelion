@@ -71,7 +71,7 @@ const PostText = styled.Text``;
 const Like = styled.Text``;
 const Message = styled.Text``;
 
-const Post = (props) => {
+const Post = ({ navigation, props }) => {
   return (
     <Container>
       <TopView>
