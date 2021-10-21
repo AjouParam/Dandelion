@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Header, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
 import Mindle from '../../components/post/Mindle';
-import Post from '../../components/post/Post';
+import Post from '../../screens/myPage/post';
 
 const ImageList = styled.View`
   display: flex;
@@ -60,18 +60,7 @@ const MindleSubPage = ({ navigation, props }) => {
           <EventButton>이벤트</EventButton>
         </TouchableOpacity>
       </ButtonContainer>
-      <Post //type setting
-        click={false}
-        navigation={navigation}
-        props={{
-          name: '동관 앞',
-          distance: '5.8',
-          countVisitor: 42,
-          countEvent: 9,
-          address: '영통임다.',
-          tag: '#아대',
-        }}
-      />
+      <Post navigation={navigation} />
     </>
   );
 };

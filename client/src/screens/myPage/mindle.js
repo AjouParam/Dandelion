@@ -18,6 +18,30 @@ const MindleSubPage = ({ navigation }) => {
           tag: '#아대',
         }}
       />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 옆',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
       {/* <Mindle />
       <Mindle /> */}
     </>
