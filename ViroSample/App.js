@@ -8,10 +8,11 @@
  */
 
 import React, { Component } from 'react';
-import { AppRegistry, Text, View, StyleSheet, PixelRatio, Image, TouchableHighlight } from 'react-native';
-import { ViroARSceneNavigator } from 'react-viro';
+import { AppRegistry, Text, View, StyleSheet, PixelRatio, Image, Alert, TouchableHighlight } from 'react-native';
+import { ViroARSceneNavigator, ViroFlexView } from 'react-viro';
 import ARDrivingCar from './js/RCcar/ARDrivingCar';
 import ARHitApp from './js/HitPractice/ARHItApp';
+import DialogInput from 'react-native-dialog-input';
 /*
  TODO: Insert your API key below
  */
@@ -36,100 +37,57 @@ export default class ViroSample extends Component {
     this.state = {
       navigatorType: defaultNavigatorType,
       sharedProps: sharedProps,
+      isWrite: false,
+      show: false,
     };
 
     this._getExperienceSelector = this._getExperienceSelector.bind(this);
-    this._getNormalNavigator = this._getNormalNavigator.bind(this);
     this._getRCcarNavigator = this._getRCcarNavigator.bind(this);
     this._getARHitNavigator = this._getARHitNavigator.bind(this);
     this._getButtonOnPress = this._getButtonOnPress.bind(this);
+    this._showPopup = this._showPopup.bind(this);
+    this._hidePopup = this._hidePopup.bind(this);
   }
 
   render() {
-    // if (this.state.navigatorType == UNSET) {
-    //   return this._getExperienceSelector();
-    // } else if (this.state.navigatorType == Normal_NAVIGATOR_TYPE) {
-    //   return this._getNormalNavigator();
-    // } else if (this.state.navigatorType == RCcar_NAVIGATOR_TYPE) {
-    //   return this._getRCcarNavigator();
-    // } else if (this.state.navigatorType == ARHit_NaviGator_TYPE) {
-    //   return this._getARHitNavigator();
-    // }
-    return (
-      <View style={localStyles.normal}>
-        <ViroARSceneNavigator
-          {...this.state.sharedProps}
-          style={localStyles.normal}
-          initialScene={{ scene: InitialNormalScene }}
-        />
-
-        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
-          <TouchableHighlight
-            style={localStyles.writebuttons}
-            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
-            underlayColor={'#00000000'}
-          >
-            <Image source={require('./js/res/btn_mode_objects.png')} />
-          </TouchableHighlight>
-        </View>
-      </View>
-    );
+    if (this.state.navigatorType == UNSET) {
+      return this._getExperienceSelector();
+    }
   }
 
   _getExperienceSelector() {
     return (
-      <View style={localStyles.outer}>
-        <View style={localStyles.inner}>
-          <Text style={localStyles.titleText}>Choose Three Experience</Text>
-
-          <TouchableHighlight
-            style={localStyles.buttons}
-            onPress={this._getButtonOnPress(Normal_NAVIGATOR_TYPE)}
-            underlayColor={'#000000'}
-          >
-            <Text style={localStyles.buttonText}>Normal</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            style={localStyles.buttons}
-            onPress={this._getButtonOnPress(RCcar_NAVIGATOR_TYPE)}
-            underlayColor={'#000000'}
-          >
-            <Text style={localStyles.buttonText}>RCcar</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            style={localStyles.buttons}
-            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
-            underlayColor={'#000000'}
-          >
-            <Text style={localStyles.buttonText}>ARHit</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    );
-  }
-
-  _getNormalNavigator() {
-    return (
       <View style={localStyles.normal}>
         <ViroARSceneNavigator
           {...this.state.sharedProps}
           style={localStyles.normal}
           initialScene={{ scene: InitialNormalScene }}
         />
-
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
-          <TouchableHighlight
-            style={localStyles.writebuttons}
-            onPress={this._getButtonOnPress(ARHit_NaviGator_TYPE)}
-            underlayColor={'#00000000'}
-          >
+          <TouchableHighlight style={localStyles.writebuttons} onPress={this._showPopup} underlayColor={'#00000000'}>
             <Image source={require('./js/res/btn_mode_objects.png')} />
           </TouchableHighlight>
         </View>
+        <DialogInput
+          isDialogVisible={this.state.show}
+          title={'Write AR Message!'}
+          message={'Input your own Message'}
+          hintInput={'write on here'}
+          submitInput={() => {}}
+          closeDialog={this._hidePopup}
+        ></DialogInput>
       </View>
     );
+  }
+  _showPopup() {
+    this.setState({
+      show: true,
+    });
+  }
+  _hidePopup() {
+    this.setState({
+      show: false,
+    });
   }
   _getRCcarNavigator() {
     return <ARDrivingCar></ARDrivingCar>;
@@ -177,17 +135,17 @@ var localStyles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 10,
   },
   buttons: {
-    height: 80,
-    width: 150,
-    paddingTop: 20,
-    paddingBottom: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    height: 30,
+    width: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginTop: 1,
+    marginBottom: 1,
     backgroundColor: '#000000',
-    borderRadius: 10,
+    borderRadius: 1,
     borderWidth: 1,
     borderColor: '#fff',
   },
