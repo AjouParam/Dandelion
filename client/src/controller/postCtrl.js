@@ -1,10 +1,12 @@
 import React from 'react';
+
 // import HotSpot from '../screens/HotSpot';
 import Post from '../screens/myPage/post';
 import Mindle from '../screens/myPage/mindle';
 import Detail from '../screens/detailPage/detail';
+import Comment from '../components/post/comment';
 
-const PostModule = {
+export const PostModule = {
   //   hotSpot: <HotSpot />,
   detail: function () {
     return <Detail navigation={this.navigation} props={this.props} state={this.state} />;
@@ -17,4 +19,7 @@ const PostModule = {
   },
 };
 
-export default PostModule;
+export const setComment = (text, list) => [
+  ...list,
+  <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text }} />,
+];

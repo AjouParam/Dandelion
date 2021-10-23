@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Header, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
 import styled from 'styled-components';
+
 import Mindle from '../../components/post/Mindle';
-import Post from '../../screens/myPage/post';
+
+import utilConstant from '../../utils/utilConstant';
+import { PostModule } from '../../controller/postCtrl';
 
 const ImageList = styled.View`
   display: flex;
@@ -24,7 +27,6 @@ const ButtonContainer = styled.View`
 `;
 
 const PostButton = styled.Text`
-  background-color: dimgrey;
   border-bottom-width: 1;
   border-color: 'rgba(158, 150, 150, .5)';
   width: ${Dimensions.get('window').width / 2}px;
@@ -39,7 +41,11 @@ const EventButton = styled.Text`
   text-align: center;
 `;
 
+const backgroundStyle = { backgroundColor: 'dimgrey' };
+
 const MindleSubPage = ({ navigation, props }) => {
+  const [state, setState] = useState('post');
+
   return (
     <>
       <Mindle //type setting
@@ -48,19 +54,19 @@ const MindleSubPage = ({ navigation, props }) => {
         props={props}
       />
       <ImageList>
-        {Array.from({ length: 8 }).map((element) => (
+        {Array.from({ length: utilConstant.defaultMindleImage }).map((element) => (
           <ImageElement />
         ))}
       </ImageList>
       <ButtonContainer>
-        <TouchableOpacity>
-          <PostButton>게시물</PostButton>
+        <TouchableOpacity onPress={() => setState('post')}>
+          <PostButton style={state === 'post' ? backgroundStyle : {}}>게시물</PostButton>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <EventButton>이벤트</EventButton>
+        <TouchableOpacity onPress={() => setState('event')}>
+          <EventButton style={state === 'event' ? backgroundStyle : {}}>이벤트</EventButton>
         </TouchableOpacity>
       </ButtonContainer>
-      <Post navigation={navigation} />
+      {PostModule[state]?.call({ navigation, props: null, state: null })}
     </>
   );
 };

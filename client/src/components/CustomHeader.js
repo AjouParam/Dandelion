@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
+
 import { back } from '../assets/index';
 
 const Header = styled.View`
@@ -18,10 +19,12 @@ const BackButton = styled.Image`
   width: 40px;
   height: 40px;
 `;
+
 const OuterButton = styled.TouchableOpacity`
   position: absolute;
   left: 0px;
 `;
+
 const Title = styled.Text``;
 
 const CustomHeader = ({ navigation, title }) => {

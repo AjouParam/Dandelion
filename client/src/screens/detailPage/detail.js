@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Header } from 'react-native';
+
 import Post from '../../screens/detailPage/post';
 import Mindle from '../../screens/detailPage/mindle';
 
 const DetailSubPage = ({ navigation, props, state }) => {
-  console.log(props, state);
   return (
     <>
       {state === 'mindle' ? (

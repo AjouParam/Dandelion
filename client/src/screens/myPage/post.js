@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, Header } from 'react-native';
+
 import Post from '../../components/post/Post';
 
 const PostSubPage = ({ navigation, click = true }) => {
-  console.log(navigation);
   return (
     <>
       <Post //type setting

@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, Header } from 'react-native';
+
 import Mindle from '../../components/post/Mindle';
 
 const MindleSubPage = ({ navigation }) => {
-  console.log(navigation);
   return (
     <>
       <Mindle //type setting
