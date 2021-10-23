@@ -46,16 +46,12 @@ const Mypage = ({ navigation }) => {
         </View>
         <View
           style={{
+            display: 'flex',
+            flexDirection: 'column',
             alignSelf: 'center', //for align to right
           }}
         >
           <Text>이름: {Username}</Text>
-        </View>
-        <View
-          style={{
-            alignSelf: 'center', //for align to right
-          }}
-        >
           <Text>이메일: {email}</Text>
         </View>
       </LogoutContainer>
