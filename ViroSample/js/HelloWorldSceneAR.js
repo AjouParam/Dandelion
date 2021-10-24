@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 
-import { AppRegistry, StyleSheet } from 'react-native';
+import { AppRegistry, StyleSheet, View } from 'react-native';
 
 import {
   ViroARScene,
@@ -14,6 +14,7 @@ import {
   ViroImage,
   ViroNode,
 } from 'react-viro';
+import DialogInput from 'react-native-dialog-input';
 
 export default class HelloWorldSceneAR extends Component {
   constructor() {
@@ -30,6 +31,7 @@ export default class HelloWorldSceneAR extends Component {
     this._onEmailTap = this._onEmailTap.bind(this);
     this._onClickARPost = this._onClickARPost.bind(this);
     this._onCreatePost = this._onCreatePost.bind(this);
+    this._onCreateARPost = this._onCreateARPost.bind(this);
   }
 
   render() {
@@ -55,6 +57,10 @@ export default class HelloWorldSceneAR extends Component {
         {this._onCreatePost([3, 0, -5], [3, -1, -5])}
         {this._onCreatePost([-3, 0, -2], [-3, -1, -2])}
         {this._onCreatePost([-2, 0, -7], [-2, -1, -7])}
+        {this._onCreateARPost(
+          this.props.arSceneNavigator.viroAppProps.arshow,
+          this.props.arSceneNavigator.viroAppProps.artext,
+        )}
       </ViroARScene>
     );
   }
@@ -75,7 +81,20 @@ export default class HelloWorldSceneAR extends Component {
       text: '이벤트 확인',
     });
   }
-
+  _onCreateARPost(show, message) {
+    var model = [];
+    if (show) {
+      model.push(
+        <ViroText
+          position={[0, 0, 0]}
+          transformBehaviors={'billboard'}
+          text={message}
+          style={styles.arpost}
+        ></ViroText>,
+      );
+    }
+    return model;
+  }
   _onCreatePost(position, positionT) {
     var model = [];
     model.push(
@@ -117,7 +136,7 @@ var styles = StyleSheet.create({
   helloWorldTextStyle: {
     fontFamily: 'NotoSansCJK',
     fontSize: 30,
-    color: '#ffffff',
+    color: '#000000',
     textAlignVertical: 'center',
     textAlign: 'center',
   },
@@ -125,6 +144,13 @@ var styles = StyleSheet.create({
     fontFamily: 'NotoSansCJK',
     fontSize: 20,
     color: '#000000',
+    textAlignVertical: 'center',
+    textAlign: 'center',
+  },
+  artext: {
+    fontFamily: 'NotoSansCJK',
+    fontSize: 10,
+    color: '#ff0000',
     textAlignVertical: 'center',
     textAlign: 'center',
   },

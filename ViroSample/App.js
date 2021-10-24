@@ -35,6 +35,10 @@ export default class ViroSample extends Component {
     super();
 
     this.state = {
+      viroAppProps: {
+        artext: '',
+        arshow: false,
+      },
       navigatorType: defaultNavigatorType,
       sharedProps: sharedProps,
       isWrite: false,
@@ -47,6 +51,7 @@ export default class ViroSample extends Component {
     this._getButtonOnPress = this._getButtonOnPress.bind(this);
     this._showPopup = this._showPopup.bind(this);
     this._hidePopup = this._hidePopup.bind(this);
+    this._onCreateARPost = this._onCreateARPost.bind(this);
   }
 
   render() {
@@ -62,6 +67,7 @@ export default class ViroSample extends Component {
           {...this.state.sharedProps}
           style={localStyles.normal}
           initialScene={{ scene: InitialNormalScene }}
+          viroAppProps={this.state.viroAppProps}
         />
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
           <TouchableHighlight style={localStyles.writebuttons} onPress={this._showPopup} underlayColor={'#00000000'}>
@@ -73,7 +79,9 @@ export default class ViroSample extends Component {
           title={'Write AR Message!'}
           message={'Input your own Message'}
           hintInput={'write on here'}
-          submitInput={() => {}}
+          submitInput={(inputText) => {
+            this._onCreateARPost(inputText);
+          }}
           closeDialog={this._hidePopup}
         ></DialogInput>
       </View>
@@ -87,6 +95,14 @@ export default class ViroSample extends Component {
   _hidePopup() {
     this.setState({
       show: false,
+    });
+  }
+  _onCreateARPost(inputText) {
+    this.setState({
+      viroAppProps: {
+        artext: inputText,
+        arshow: true,
+      },
     });
   }
   _getRCcarNavigator() {
