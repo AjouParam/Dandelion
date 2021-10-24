@@ -30,7 +30,7 @@ const Title = styled.Text``;
 const CustomHeader = ({ navigation, title }) => {
   return (
     <Header>
-      <OuterButton onPress={() => navigation.navigate('Mypage')}>
+      <OuterButton onPress={() => navigation.goBack()}>
         <BackButton source={back} />
       </OuterButton>
       <Title>{title}</Title>

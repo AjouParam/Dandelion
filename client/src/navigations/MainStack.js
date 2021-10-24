@@ -27,7 +27,7 @@ const MainStack = () => {
       <Stack.Screen name="Mypage" component={Mypage} options={{ headerShown: true, title: 'MY' }} />
       <Stack.Screen name="PostContainer" component={PostContainer} options={{ headerShown: false }} />
       <Stack.Screen name="MypageList" component={MypageList} options={{ headerShown: false }} />
-      <Stack.Screen name="HotSpot" component={HotSpot} options={{ headerShown: false }} />
+      <Stack.Screen name="HotSpot" component={PostContainer} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

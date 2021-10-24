@@ -1,33 +1,33 @@
 import React from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
+import Swiper from 'react-native-swiper';
 
-const Container = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.listBorder};
-  padding: 15px 20px;
+import { HotSpotModule } from '../controller/hotSpotCtrl';
+import HotSpotComponent from '../components/post/Mindle';
+import utilConstant from '../utils/utilConstant';
+
+const Container = styled.View`
+  height: ${Dimensions.get('window').height - utilConstant.marginWidth}px;
 `;
+const SwipeContainer = styled.View`
+  height: 30px;
+  background-color: 'rgba(158, 150, 150, .5)';
+`;
+
 const HotSpot = ({ navigation }) => {
   return (
-    <>
-      <Container onPress={() => Alert.alert('구현 예정')}>
-        <Text>핫스팟 구현할 게시물1</Text>
-      </Container>
-
-      <Container onPress={() => Alert.alert('구현 예정')}>
-        <Text>핫스팟 구현할 게시물2</Text>
-      </Container>
-
-      <Container onPress={() => Alert.alert('구현 예정')}>
-        <Text>핫스팟 구현할 게시물3</Text>
-      </Container>
-
-      <Container onPress={() => Alert.alert('구현 예정')}>
-        <Text>핫스팟 구현할 게시물4</Text>
-      </Container>
-    </>
+    <Container>
+      <SwipeContainer></SwipeContainer>
+      <Swiper
+        showsPagination={true}
+        paginationStyle={{ position: 'absolute', bottom: Dimensions.get('window').height - utilConstant.marginSwiper }}
+        loop={false}
+      >
+        {HotSpotModule['local']?.call({ navigation })}
+        {HotSpotModule['global']?.call({ navigation })}
+      </Swiper>
+    </Container>
   );
 };
 
