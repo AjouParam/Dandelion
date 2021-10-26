@@ -31,3 +31,6 @@ export const setComment = (text, list) => [
   ...list,
   <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text }} />,
 ];
+
+// addchildCOmment;
+// deleteComment;

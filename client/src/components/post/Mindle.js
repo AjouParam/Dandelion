@@ -34,7 +34,7 @@ const Mindle = ({ navigation, props, click }) => {
   return (
     <TouchableWithoutFeedback
       onPress={() =>
-        click && navigation.navigate('PostContainer', { title: props.name, props, type: 'detail', state: 'mindle' })
+        click && navigation.navigate('Mindle', { title: props.name, props, type: 'detail', state: 'mindle' })
       }
     >
       <Container>
