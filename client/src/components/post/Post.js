@@ -8,6 +8,8 @@ const Container = styled.View`
   flex-direction: column;
   padding: 10px;
   background-color: white;
+  border-bottom-width: 1px;
+  border-color: 'rgba(158, 150, 150, .5)';
 `;
 const TopView = styled.View`
   display: flex;
