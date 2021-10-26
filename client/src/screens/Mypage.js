@@ -5,6 +5,7 @@ import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
 import { profile } from '../assets/index'; //dummy
 import { Button, ImageButton } from '@components';
+import PostContainer from './PostContainer';
 const Container = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
@@ -45,16 +46,12 @@ const Mypage = ({ navigation }) => {
         </View>
         <View
           style={{
+            display: 'flex',
+            flexDirection: 'column',
             alignSelf: 'center', //for align to right
           }}
         >
           <Text>이름: {Username}</Text>
-        </View>
-        <View
-          style={{
-            alignSelf: 'center', //for align to right
-          }}
-        >
           <Text>이메일: {email}</Text>
         </View>
       </LogoutContainer>
@@ -75,35 +72,35 @@ const Mypage = ({ navigation }) => {
           }}
         />
       </LogoutContainer>
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 쓴 글', type: 'post' })}>
         <Text>내가 쓴 글</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '내가 심은 민들레', type: 'mindle' })}>
         <Text>내가 심은 민들레</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '쿠폰 목록' })}>
         <Text>쿠폰 목록</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '쪽지', type: 'mail' })}>
         <Text>쪽지</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '권한 설정' })}>
         <Text>권한 설정</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '등급 설명' })}>
         <Text>등급 설명</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '무료 광고' })}>
         <Text>무료 광고</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('MypageList')}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '회원 탈퇴' })}>
         <Text>회원 탈퇴</Text>
       </Container>
     </>

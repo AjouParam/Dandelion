@@ -6,13 +6,6 @@ const curr = new Date();
 const DandelionSchema = new Schema({
   name: String,
   _creator: {
-<<<<<<< HEAD
-    type: String,
-    ref: 'User',
-  },
-  _parent: {
-    type: String,
-=======
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
@@ -22,7 +15,6 @@ const DandelionSchema = new Schema({
   },
   _child: {
     type: mongoose.Schema.Types.ObjectId,
->>>>>>> 9dea053b16cf54ae3f62e0b09b894af0825e6848
     ref: 'Dandelion',
   },
   createdAt: {

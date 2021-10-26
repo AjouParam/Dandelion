@@ -11,6 +11,7 @@ import MindlePreview from './MindlePreview';
 import MypageList from './MypageList';
 import MindlePost from './MindlePost';
 import MakePost from './MakePost';
+import PostContainer from './PostContainer';
 export {
   Login,
   Signup,
@@ -25,4 +26,5 @@ export {
   MindlePreview,
   MindlePost,
   MakePost,
+  PostContainer,
 };

@@ -187,7 +187,11 @@ const Maps = ({ navigation }) => {
           }}
         >
           {/* 현재 ../asset/index.js에 있는 button 이미지로 버튼 생성 rounded 값으로 둥근 형태*/}
-          <ImageButton src={button} onPress={() => navigation.navigate('HotSpot')} rounded />
+          <ImageButton
+            src={button}
+            onPress={() => navigation.navigate('HotSpot', { title: '핫스팟', type: 'hotSpot' })}
+            rounded
+          />
         </View>
         {researchMap && (
           <View

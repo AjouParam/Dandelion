@@ -2,13 +2,6 @@
 
 const express = require('express');
 const router = express.Router();
-<<<<<<< HEAD
-const account = require('./controller/accountControl');
-const dandelion = require('./controller/mainControl');
-const verifyToken = require('./provider/verifyToken');
-//test
-const Dandelion = require('../models/Dandelion');
-=======
 
 const account = require('./controller/accountControl');
 const dandelion = require('./controller/mainControl');
@@ -16,7 +9,6 @@ const post = require('./controller/postControl');
 const event = require('./controller/eventControl');
 const comment = require('./controller/commentControl');
 const verifyToken = require('./provider/verifyToken');
->>>>>>> 9dea053b16cf54ae3f62e0b09b894af0825e6848
 
 //account
 //회원가입
@@ -36,17 +28,6 @@ router.post('/account/checkName', account.checkName);
 router.post('/account/emailAuth', account.sendEmail);
 //토큰 재발행
 router.get('/account/regenerateToken', verifyToken, account.regenerateToken);
-<<<<<<< HEAD
-
-//main
-//민들레 생성
-router.post('/dandelion/create', verifyToken, dandelion.create);
-//좌표 범위 내의 민들레 불러오기
-router.post('/dandelion/get', verifyToken, dandelion.get);
-
-//민들레 성장, 실시간 방문자 수 부분
-
-=======
 
 //main
 //민들레 생성
@@ -81,5 +62,4 @@ router.delete('/:dandelionId/event/delete/:eventId', verifyToken, event.delete);
 router.patch('/:dandelionId/event/update/:eventId', verifyToken, event.update);
 router.get('/:dandelionId/event/', verifyToken, event.get);
 
->>>>>>> 9dea053b16cf54ae3f62e0b09b894af0825e6848
 module.exports = router;

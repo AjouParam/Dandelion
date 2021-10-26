@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\JangByeongHui\\Desktop\\AjouParam\\Dandelion\\client\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hr\\values-hr.xml",
+            "outputFile": "/Users/maxcha/Dandelion/client/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-hr/values-hr.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\1afa04f7a9885f515e1caf924e287ee0\\transformed\\core-1.6.0\\res\\values-hr\\values-hr.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "48",
-                        "startColumns": "4",
-                        "startOffsets": "5576",
-                        "endColumns": "100",
-                        "endOffsets": "5672"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\c646b570175b32a0ca61a5b0cc844154\\transformed\\appcompat-1.1.0\\res\\values-hr\\values-hr.xml",
+                    "source": "/Users/maxcha/.gradle/caches/transforms-3/c646b570175b32a0ca61a5b0cc844154/transformed/appcompat-1.1.0/res/values-hr/values-hr.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -38,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\1b3a45d54e60712d491be56bef232c90\\transformed\\jetified-play-services-base-17.0.0\\res\\values-hr\\values.xml",
+                    "source": "/Users/maxcha/.gradle/caches/transforms-3/1b3a45d54e60712d491be56bef232c90/transformed/jetified-play-services-base-17.0.0/res/values-hr/values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -55,7 +38,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\JangByeongHui\\.gradle\\caches\\transforms-3\\59dbe87081ed6bae5b08aa4d30a5e022\\transformed\\jetified-play-services-basement-17.0.0\\res\\values-hr\\values.xml",
+                    "source": "/Users/maxcha/.gradle/caches/transforms-3/1afa04f7a9885f515e1caf924e287ee0/transformed/core-1.6.0/res/values-hr/values-hr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "48",
+                        "startColumns": "4",
+                        "startOffsets": "5576",
+                        "endColumns": "100",
+                        "endOffsets": "5672"
+                    }
+                },
+                {
+                    "source": "/Users/maxcha/.gradle/caches/transforms-3/59dbe87081ed6bae5b08aa4d30a5e022/transformed/jetified-play-services-basement-17.0.0/res/values-hr/values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
