@@ -24,6 +24,7 @@ export default class HelloWorldSceneAR extends Component {
     this.state = {
       text: 'Initializing AR...',
       points: [[0, 0, 0]],
+      arrowRot: [],
     };
 
     // bind 'this' to functions
@@ -36,12 +37,21 @@ export default class HelloWorldSceneAR extends Component {
 
   render() {
     return (
-      <ViroARScene onTrackingInitialized={this._onInitialized}>
+      <ViroARScene
+        onTrackingInitialized={this._onInitialized}
+        // onCameraTransformUpdate={_onCreateArrow(cameraTransform)}
+      >
         <ViroText
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}
           position={[0, 0, -5]}
           style={styles.helloWorldTextStyle}
+        />
+        <ViroImage
+          position={[0, -1, -1]}
+          source={require('./res/arrow.png')}
+          rotation={[-90, 0, 0]}
+          renderingOrder={-1}
         />
 
         {/* <ViroButton
@@ -53,10 +63,10 @@ export default class HelloWorldSceneAR extends Component {
           animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
         /> */}
-        {this._onCreatePost([5, 0, -2], [5, -1, -2])}
-        {this._onCreatePost([3, 0, -5], [3, -1, -5])}
-        {this._onCreatePost([-3, 0, -2], [-3, -1, -2])}
-        {this._onCreatePost([-2, 0, -7], [-2, -1, -7])}
+        {this._onCreatePost([7, 0, -5], [7, 0, -5])}
+        {this._onCreatePost([3, 0, -5], [3, 0, -5])}
+        {this._onCreatePost([-3, 0, -2], [-3, 0, -2])}
+        {this._onCreatePost([-2, 0, -7], [-2, 0, -7])}
         {this._onCreateARPost(
           this.props.arSceneNavigator.viroAppProps.arshow,
           this.props.arSceneNavigator.viroAppProps.artext,
@@ -85,12 +95,24 @@ export default class HelloWorldSceneAR extends Component {
     var model = [];
     if (show) {
       model.push(
-        <ViroText
-          position={[0, 0, 0]}
-          transformBehaviors={'billboard'}
-          text={message}
-          style={styles.arpost}
-        ></ViroText>,
+        <ViroNode>
+          <ViroImage
+            position={[0, 0, 0]}
+            transformBehaviors={'billboard'}
+            source={require('./res/dialogicon.png')}
+            width={2.4}
+            height={0.8}
+            onClick={this._onClickARPost}
+            renderingOrder={0}
+          />
+          <ViroText
+            position={[0, 0, 0]}
+            transformBehaviors={'billboard'}
+            text={message}
+            style={styles.artext}
+            renderingOrder={-1}
+          />
+        </ViroNode>,
       );
     }
     return model;
@@ -102,8 +124,8 @@ export default class HelloWorldSceneAR extends Component {
         <ViroImage
           position={position}
           transformBehaviors={'billboard'}
-          source={require('./res/ARpost.png')}
-          width={1}
+          source={require('./res/dialogicon.png')}
+          width={3}
           height={1}
           onClick={this._onClickARPost}
           renderingOrder={0}
@@ -111,7 +133,7 @@ export default class HelloWorldSceneAR extends Component {
         <ViroText
           position={positionT}
           transformBehaviors={'billboard'}
-          text={'ARPost'}
+          text={'OO왔었음'}
           style={styles.arpost}
           renderingOrder={-1}
         />
@@ -119,6 +141,16 @@ export default class HelloWorldSceneAR extends Component {
     );
     return model;
   }
+  // _onCreateArrow(cameraTransform){
+  //   var model = [];
+  //   model.push(
+  //     <ViroImage position={} rotation={} source={} renderingOrder={-1}></ViroImage>,
+  //   );
+  //   return model;
+  // }
+  // _lookatObject(destPosition){
+
+  // }
 }
 ViroAnimations.registerAnimations({
   moveRight: { properties: { positionX: '+=0.5' }, duration: 1000 },
@@ -142,14 +174,14 @@ var styles = StyleSheet.create({
   },
   arpost: {
     fontFamily: 'NotoSansCJK',
-    fontSize: 20,
-    color: '#000000',
+    fontSize: 30,
+    color: '#ffffff',
     textAlignVertical: 'center',
     textAlign: 'center',
   },
   artext: {
     fontFamily: 'NotoSansCJK',
-    fontSize: 10,
+    fontSize: 20,
     color: '#ff0000',
     textAlignVertical: 'center',
     textAlign: 'center',
