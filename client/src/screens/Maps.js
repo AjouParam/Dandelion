@@ -96,12 +96,15 @@ const Maps = ({ navigation }) => {
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
         <MapView
           style={[styles.map, { width: mapWidth }]}
+          loadingEnabled={true}
+          loadingIndicatorColor={'#F3D737'}
           provider={PROVIDER_GOOGLE}
           showsUserLocation={true}
           showsMyLocationButton={true}
           region={currentMapCoord}
           maxZoomLevel={19}
           minZoomLevel={17}
+          toolbarEnabled={false}
           onMapReady={() => {
             updateMapStyle();
           }}

@@ -19,10 +19,10 @@ const ImageContainer = styled.View`
   flex: 2;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding-top: 80px;
 `;
 const Logo = styled.Image`
-  width: 107px;
+  width: 130px;
   height: 142px;
 `;
 const Container = styled.View`
