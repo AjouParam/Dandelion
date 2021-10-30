@@ -9,8 +9,8 @@ import CommentInput from '../../components/post/commentInput';
 import utilConstant from '../../utils/utilConstant';
 import { setComment } from '../../controller/postCtrl';
 
+//background-color: rgba(158, 150, 150, .5);
 const Container = styled.View`
-  background-color: 'rgba(158, 150, 150, .5)';
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -19,6 +19,8 @@ const Container = styled.View`
 
 const MessageContainer = styled.ScrollView`
   height: 400px;
+  padding-top: 10px;
+  background-color: #ffffff;
 `;
 
 const PostSubPage = ({ navigation, props }) => {
