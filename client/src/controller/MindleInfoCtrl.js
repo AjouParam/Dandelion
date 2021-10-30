@@ -1,7 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import MindlePreview from '@screens/MindlePreview';
-import MindleInfo from '@screens/MindleInfo';
+import MindlePreview from '@screens/mindlePage/MindlePreview';
+import MindleInfo from '@screens/mindlePage/MindleInfo';
+
 const getClickedMindleInfo = (mindle, setClickedMindleInfo) => {
   // console.log('mindle info');
   // console.log(mindle);
@@ -14,7 +15,20 @@ const getClickedMindleInfo = (mindle, setClickedMindleInfo) => {
     current: 1, //데이터 필요
     overlap: mindle.overlap,
     position: { latitude: mindle.latitude, longitude: mindle.longitude },
+    level: mindle.level,
   });
   console.log(mindle);
+};
+
+export const MindleModule = {
+  mindleSelect: function () {
+    return <MindleSelect navigation={this.navigation} props={this.props} />;
+  },
+  mindlePost: function () {
+    return <MindleInfo navigation={this.navigation} props={this.props} />;
+  },
+  mindlePreview: function () {
+    return <MindlePreview navigation={this.navigation} props={this.props} />;
+  },
 };
 export default { getClickedMindleInfo };

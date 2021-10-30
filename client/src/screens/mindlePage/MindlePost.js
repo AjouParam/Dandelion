@@ -65,6 +65,7 @@ const MindlePost = ({ route, navigation }) => {
       userPhoto: route.params.userPhoto,
       name: route.params.name,
       date: route.params.date,
+      updatedAt: route.params.updatedAt,
       title: route.params.title,
       text: route.params.text,
       images: route.params.images,
@@ -89,6 +90,7 @@ const MindlePost = ({ route, navigation }) => {
           }
           name={data.name}
           date={data.date}
+          updatedAt={data.updatedAt}
           title={data.title}
           text={data.text}
           images={data.images}

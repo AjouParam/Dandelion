@@ -75,6 +75,7 @@ const MindlePostContent = ({
   userPhoto,
   name,
   date,
+  updatedAt,
   title,
   text,
   images,
@@ -94,6 +95,52 @@ const MindlePostContent = ({
   axios.defaults.baseURL = 'http://10.0.2.2:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+  const checkUpdate = () => {
+    const created = new Date(date).getTime();
+    const updated = new Date(updatedAt).getTime();
+    if (Math.abs(updated - created) <= 20000) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+  const modifyPost = () => {
+    navigation.navigate('MakePost', {
+      mindleId: mindleId,
+      modifyMode: true,
+      postContent: { postId: postId, title: title, bodyText: text, images: images },
+      setRefresh: setRefresh,
+    });
+  };
+
+  const deletePost = () => {
+    axios.delete(`/${mindleId}/post/delete/${postId}`).then((res) => {
+      if (res.data.status === 'SUCCESS') {
+        Alert.alert('완료', '게시글이 삭제되었습니다', [
+          {
+            text: '닫기',
+            onPress: () => {
+              setMenu(false);
+
+              if (isInPost) {
+                setRefresh(true);
+                navigation.navigate('Main');
+              } else {
+                onDeletePost(postId);
+              }
+            },
+          },
+        ]);
+      } else if (res.data.status === 'FAILED') {
+        Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
+          {
+            text: '닫기',
+          },
+        ]);
+      }
+    });
+  };
   if (mindleId && postId)
     return (
       <>
@@ -118,33 +165,7 @@ const MindlePostContent = ({
                       { text: '취소', style: 'cancel' },
                       {
                         text: '확인',
-                        onPress: () => {
-                          axios.delete(`/${mindleId}/post/delete/${postId}`).then((res) => {
-                            if (res.data.status === 'SUCCESS') {
-                              Alert.alert('완료', '게시글이 삭제되었습니다', [
-                                {
-                                  text: '닫기',
-                                  onPress: () => {
-                                    setMenu(false);
-
-                                    if (isInPost) {
-                                      setRefresh(true);
-                                      navigation.navigate('Main');
-                                    } else {
-                                      onDeletePost(postId);
-                                    }
-                                  },
-                                },
-                              ]);
-                            } else if (res.data.status === 'FAILED') {
-                              Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
-                                {
-                                  text: '닫기',
-                                },
-                              ]);
-                            }
-                          });
-                        },
+                        onPress: () => deletePost(),
                       },
                     ],
                     {
@@ -164,9 +185,7 @@ const MindlePostContent = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                onPress={() => {
-                  setMenu(false);
-                }}
+                onPress={() => modifyPost()}
               >
                 <Text style={{ fontSize: 16, fontWeight: '500' }}>게시글 수정</Text>
               </TouchableOpacity>
@@ -215,7 +234,7 @@ const MindlePostContent = ({
               >
                 {name}
               </BoardUserName>
-              <Text>{date}</Text>
+              {checkUpdate() ? <Text>{date}</Text> : <Text>{updatedAt} (수정됨)</Text>}
             </View>
             {userName === name && (
               <View
@@ -249,6 +268,7 @@ const MindlePostContent = ({
                       userPhoto: userPhoto,
                       name: name,
                       date: date,
+                      updatedAt: updatedAt,
                       title: title,
                       text: text,
                       images: images,
@@ -274,6 +294,7 @@ const MindlePostContent = ({
                       userPhoto: userPhoto,
                       name: name,
                       date: date,
+                      updatedAt: updatedAt,
                       title: title,
                       text: text,
                       images: images,

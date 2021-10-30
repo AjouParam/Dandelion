@@ -3,16 +3,19 @@ import styled from 'styled-components/native';
 import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
-import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
 import { profile, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
-import MindlePreview from '@screens/MindlePreview';
-import MindleInfo from '@screens/MindleInfo';
+import MindlePreview from '@screens/mindlePage/MindlePreview';
+import MindleInfo from '@screens/mindlePage/MindleInfo';
 import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
+
+const DEVICE_HEIGHT = Dimensions.get('window').height;
+
 const Container = styled.View`
   flex: 1;
 `;
@@ -80,7 +83,7 @@ const Maps = ({ navigation }) => {
       />
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[700, 140, 0]}
+        snapPoints={[DEVICE_HEIGHT + 30, 140, 0]}
         initialSnap={2}
         callbackNode={fall}
         enabledGestureInteraction={true}

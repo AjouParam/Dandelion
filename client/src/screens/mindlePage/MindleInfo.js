@@ -7,7 +7,6 @@ import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
-import { baseProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlers';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -108,7 +107,7 @@ const MindleInfo = ({ navigation, props }) => {
         if (res.data.status === 'SUCCESS') {
           console.log(res.data.data);
           console.log(res.data.message);
-          return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          return res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         } else if (res.data.status === 'FAILED') {
           console.log(res.data.message);
           return 'FAILED';
@@ -181,6 +180,7 @@ const MindleInfo = ({ navigation, props }) => {
             userPhoto={null} //TODO : thumbnail
             name={item._user.name}
             date={item.createdAt}
+            updatedAt={item.updatedAt}
             title={item.title}
             text={item.text}
             images={item.images}
