@@ -1,64 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
+
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
+
+import utilConstant from '../../utils/utilConstant';
+
 import Post from '@components/MindlePostContent';
 import ProfileModal from '@components/Modal';
-import { Button } from '@components/index';
+import Comment from '@components/post/comment';
+import CommentInput from '@components/post/commentInput';
 
 const Container = styled.View`
-  flex: 1;
-  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: ${Dimensions.get('window').height - utilConstant.postMarginHeight}px;
 `;
-const Comments = styled.ScrollView`
-  border-top-width: 1px;
-  padding: 5px;
-`;
-const Comment = styled.View`
-  margin: 5px;
-`;
-const Text = styled.Text``;
+
 const Divider = styled.View`
   margin-top: 10px;
   height: 1px;
   border: 0.3px solid #000000;
 `;
-const CommentSubmitForm = styled.View`
-  display: flex;
-  flex-direction: row;
-  height: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
-`;
 
-const CommentInput = styled.TextInput`
-  height: 90%;
-  width: 70%;
-  padding: 5px;
-  flex: 1;
-  border-radius: 10px;
-`;
-const CommentSubmitButton = styled.TouchableOpacity`
-  width: 20%;
-  padding: 5px;
-  height: 90%;
-  color: #ddd;
-  align-items: center;
-  justify-content: center;
+const MessageContainer = styled.ScrollView`
+  height: 400px;
+  padding-top: 10px;
+  background-color: #ffffff;
 `;
 
 const MindlePost = ({ route, navigation }) => {
+  const userName = useRecoilValue(userState.nameState);
   const [loaded, setLoaded] = useState(false);
   const [comments, setComments] = useState([]);
   const [data, setData] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
-  const [commentInput, setCommentInput] = useState('');
 
   useEffect(() => {
     setComments([
-      { writer: '익명1', comment: '익명1님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명2', comment: '익명2님이 작성하신 댓글입니다.', date: new Date().toISOString() },
-      { writer: '익명3', comment: '익명3님이 작성하신 댓글입니다.', date: new Date().toISOString() },
+      {
+        commentId: '1k2j3',
+        depth: 0,
+        name: '라이언',
+        date: '07 09 01:55',
+        state: 'visitor',
+        text: '잘 보고 갑니다.',
+      },
+      {
+        commentId: '2c2j3',
+        depth: 1,
+        name: '피치',
+        date: '07 09 01:55',
+        state: 'admin',
+        text: '네엡',
+      },
+      {
+        commentId: '1q1j3',
+        depth: 0,
+        name: '라이언',
+        date: '07 09 01:55',
+        state: 'visitor',
+        text: '잘 보고 갑니다.',
+      },
+      {
+        commentId: '1k3g3',
+        depth: 0,
+        name: '라이언',
+        date: '07 09 01:55',
+        state: 'visitor',
+        text: '잘 보고 갑니다.',
+      },
     ]);
+
     setData({
       mindleId: route.params.mindleId,
       postId: route.params.postId,
@@ -77,6 +92,21 @@ const MindlePost = ({ route, navigation }) => {
   useEffect(() => {
     if (comments && data) setLoaded(true);
   }, [comments]);
+
+  const setComment = (text) => {};
+
+  const addComment = (text) =>
+    setComments((prev) => [
+      ...prev,
+      {
+        commentId: 'newid',
+        depth: 0,
+        name: userName,
+        date: '30 10 20:55',
+        state: 'visitor',
+        text: text,
+      },
+    ]);
 
   if (loaded)
     return (
@@ -102,45 +132,16 @@ const MindlePost = ({ route, navigation }) => {
           setRefresh={route.params.setRefresh}
           navigation={navigation}
         />
-        <CommentSubmitForm>
-          <CommentInput
-            value={commentInput}
-            placeholder="댓글을 입력해주세요."
-            onChangeText={(text) => {
-              setCommentInput(text);
-            }}
-            style={{
-              paddingTop: 5,
-              paddingBottom: 5,
-              backgroundColor: '#ffffff',
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 2.4,
-              elevation: 2,
-            }}
-          />
-          <Button
-            title="게시"
-            width="70px"
-            height="90%"
-            onPress={() => {
-              Alert.alert('댓글', '댓글 입력');
-            }}
-          />
-        </CommentSubmitForm>
-        <Comments>
-          {comments.map((item, idx) => (
-            <Comment key={String(idx)}>
-              <Text>{item.writer}</Text>
-              <Text>{item.comment}</Text>
-              <Text>{item.date}</Text>
-            </Comment>
+        <MessageContainer>
+          {comments.map((element) => (
+            <Comment
+              key={element.commentId}
+              depth={element.depth}
+              props={{ name: element.name, date: element.date, state: element.state, text: element.text }}
+            />
           ))}
-        </Comments>
+        </MessageContainer>
+        <CommentInput functionCall={{ addComment }} />
         <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
           <View
             style={{

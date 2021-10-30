@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 import axios from 'axios';
 
 const BoardContainer = styled.View`
+  background-color: #ffffff;
   width: 100%;
   min-height: 150px;
   padding: 5px 5px;

@@ -46,7 +46,10 @@ const CommentInput = ({ navigation, functionCall }) => {
     <Container style={{ marginBottom: addHeight }}>
       <ProfileImg source={level1} />
       <Input
-        onSubmitEditing={() => addComment(inputText)}
+        onSubmitEditing={() => {
+          addComment(inputText);
+          setInputText('');
+        }}
         onChangeText={(text) => setInputText(text)}
         placeholder="아무거나 입력해주세요."
       />
