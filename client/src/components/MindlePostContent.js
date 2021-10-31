@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Dimensions, Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
 import MenuModal from '@components/Modal';
 import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
 import axios from 'axios';
 
+const DEVICE_WIDTH = Dimensions.get('window').width;
+
 const BoardContainer = styled.View`
   background-color: #ffffff;
-  width: 100%;
-  min-height: 150px;
+  max-width: ${DEVICE_WIDTH}px;
   padding: 5px 5px;
-  justify-content: flex-start;
+  elevation: 2;
+  margin: 5px 5px;
 `;
 const BoardUserInfo = styled.View`
   width: 100%;
@@ -201,18 +203,7 @@ const MindlePostContent = ({
             </View>
           </MenuModal>
         )}
-        <BoardContainer
-          style={{
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
-        >
+        <BoardContainer>
           <BoardUserInfo>
             <BoardUserImageContainer
               onPress={() => {

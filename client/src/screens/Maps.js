@@ -18,6 +18,7 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const Container = styled.View`
   flex: 1;
+  elevation: 2;
 `;
 
 const Maps = ({ navigation }) => {
@@ -83,7 +84,7 @@ const Maps = ({ navigation }) => {
       />
       <BottomSheet
         ref={bottomSheet}
-        snapPoints={[DEVICE_HEIGHT + 30, 140, 0]}
+        snapPoints={[DEVICE_HEIGHT - 15, 130, 0]}
         initialSnap={2}
         callbackNode={fall}
         enabledGestureInteraction={true}
