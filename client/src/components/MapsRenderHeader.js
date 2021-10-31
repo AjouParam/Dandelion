@@ -10,8 +10,6 @@ const HeaderContainer = styled.View`
   height: 130px;
   padding: 5px 25px;
   background-color: #ffffff;
-  box-shadow: 0px 3px;
-  elevation: 2;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 `;

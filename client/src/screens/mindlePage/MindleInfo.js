@@ -26,7 +26,7 @@ const ImageContainer = styled.View`
   display: flex;
   flex-direction: row;
   flex-flow: row wrap;
-  margin-top: 20px;
+  margin: 10px 0px;
 `;
 
 const Image = styled.View`
@@ -40,8 +40,8 @@ const Tab = styled.View`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 50px;
-  padding: 5px;
+  height: 40px;
+  padding: 0px 5px;
   justify-content: space-evenly;
 `;
 
@@ -218,10 +218,18 @@ const MindleInfo = ({ navigation, props }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '50%',
-                backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+                backgroundColor: '#fff',
+                borderBottomWidth: 2,
+                borderBottomColor: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text>게시글</Text>
+              <Text
+                style={{
+                  color: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
+                }}
+              >
+                게시글
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -231,14 +239,21 @@ const MindleInfo = ({ navigation, props }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '50%',
-                backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+                backgroundColor: '#fff',
+                borderBottomWidth: 2,
+                borderBottomColor: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text>이벤트</Text>
+              <Text
+                style={{
+                  color: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
+                }}
+              >
+                이벤트
+              </Text>
             </TouchableOpacity>
           </Tab>
 
-          <Divider />
           {overlap && (
             <TouchableOpacity
               style={{

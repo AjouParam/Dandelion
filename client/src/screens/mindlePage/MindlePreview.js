@@ -16,16 +16,11 @@ const Container = styled.SafeAreaView`
   justify-content: flex-start;
 `;
 
-const Divider = styled.View`
-  margin-top: 10px;
-  height: 0.5px;
-  border: 0.5px solid #000000;
-`;
 const ImageContainer = styled.View`
   display: flex;
   flex-direction: row;
   flex-flow: row wrap;
-  margin-top: 20px;
+  margin: 10px 0px;
 `;
 
 const Image = styled.View`
@@ -39,8 +34,8 @@ const Tab = styled.View`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 50px;
-  padding: 5px;
+  height: 40px;
+  padding: 0px 5px;
   justify-content: space-evenly;
 `;
 
@@ -118,10 +113,18 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
               alignItems: 'center',
               justifyContent: 'center',
               width: '50%',
-              backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+              backgroundColor: '#fff',
+              borderBottomWidth: 2,
+              borderBottomColor: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
             }}
           >
-            <Text>게시글</Text>
+            <Text
+              style={{
+                color: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
+              }}
+            >
+              게시글
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             disabled={true}
@@ -129,14 +132,20 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
               alignItems: 'center',
               justifyContent: 'center',
               width: '50%',
-              backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+              backgroundColor: '#fff',
+              borderBottomWidth: 2,
+              borderBottomColor: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
             }}
           >
-            <Text>이벤트</Text>
+            <Text
+              style={{
+                color: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
+              }}
+            >
+              이벤트
+            </Text>
           </TouchableOpacity>
         </Tab>
-
-        <Divider />
         {!loading && !data && (
           <>
             <View style={{}}>
