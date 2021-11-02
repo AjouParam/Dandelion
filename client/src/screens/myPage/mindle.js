@@ -1,11 +1,17 @@
 import React from 'react';
-import { View, Text, Header } from 'react-native';
+import { Dimensions } from 'react-native';
+
+import styled from 'styled-components/native';
 
 import Mindle from '../../components/post/Mindle';
 
+const Container = styled.ScrollView`
+  height: ${Dimensions.get('window').height - 60}px;
+  background-color: #ffffff;
+`;
 const MindleSubPage = ({ navigation }) => {
   return (
-    <>
+    <Container>
       <Mindle //type setting
         click={true}
         navigation={navigation}
@@ -42,9 +48,69 @@ const MindleSubPage = ({ navigation }) => {
           tag: '#아대',
         }}
       />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 앞',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 앞',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 앞',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 앞',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: '동관 앞',
+          distance: '5.8',
+          countVisitor: 42,
+          countEvent: 9,
+          address: '영통임다.',
+          tag: '#아대',
+        }}
+      />
       {/* <Mindle />
       <Mindle /> */}
-    </>
+    </Container>
   );
 };
 
