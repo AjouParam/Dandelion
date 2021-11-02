@@ -84,7 +84,7 @@ const Mypage = ({ navigation }) => {
         <Text>쿠폰 목록</Text>
       </Container>
 
-      <Container onPress={() => navigation.navigate('PostContainer', { title: '쪽지' })}>
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '쪽지', type: 'mail' })}>
         <Text>쪽지</Text>
       </Container>
 
