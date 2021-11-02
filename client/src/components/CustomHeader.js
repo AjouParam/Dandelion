@@ -25,7 +25,10 @@ const OuterButton = styled.TouchableOpacity`
   left: 0px;
 `;
 
-const Title = styled.Text``;
+const Title = styled.Text`
+  font-size: 20px;
+  font-weight: 500;
+`;
 
 const CustomHeader = ({ navigation, title }) => {
   return (
