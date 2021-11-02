@@ -8,6 +8,8 @@ const Container = styled.View`
   flex-direction: column;
   padding: 10px;
   background-color: white;
+  border-bottom-width: 1px;
+  border-color: 'rgba(158, 150, 150, .5)';
 `;
 const TopView = styled.View`
   display: flex;
@@ -75,9 +77,7 @@ const Message = styled.Text``;
 const Post = ({ navigation, props, click }) => {
   return (
     <TouchableWithoutFeedback
-      onPress={() =>
-        click && navigation.navigate('PostContainer', { title: props.name, props, type: 'detail', state: 'post' })
-      }
+      onPress={() => click && navigation.navigate('Post', { title: props.name, props, type: 'detail', state: 'post' })}
     >
       <Container>
         <TopView>
