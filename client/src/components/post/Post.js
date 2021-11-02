@@ -15,9 +15,12 @@ const TopView = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  padding: 5px 0px;
 `;
 const MidView = styled.View`
-  margin: 0px 50px;
+  padding: 5px 0px;
+  padding-right: 10px;
+  margin-left: 50px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -29,11 +32,12 @@ const BottomView = styled.View`
   justify-content: space-between;
 `;
 const PostFrontView = styled.View`
-  margin: 0px 5px;
+  padding: 0px 10px;
   display: flex;
   flex-direction: column;
 `;
 const ImageList = styled.ScrollView`
+  padding: 10px 0px;
   display: flex;
   flex-direction: row;
   overflow: scroll;
@@ -67,8 +71,13 @@ const MessageImage = styled.Image`
   height: 20px;
 `;
 
-const MindleName = styled.Text``;
-const MindleDate = styled.Text``;
+const UserName = styled.Text`
+  font-size: 15px;
+  margin-bottom: 3px;
+`;
+const PostDate = styled.Text`
+  font-size: 13px;
+`;
 const PostText = styled.Text``;
 
 const Like = styled.Text``;
@@ -83,8 +92,8 @@ const Post = ({ navigation, props, click }) => {
         <TopView>
           <ProfileImg source={level1} />
           <PostFrontView>
-            <MindleName>{props.name}</MindleName>
-            <MindleDate>{props.date}</MindleDate>
+            <UserName>{props.name}</UserName>
+            <PostDate>{props.date}</PostDate>
           </PostFrontView>
         </TopView>
         <MidView>
