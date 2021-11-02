@@ -6,31 +6,57 @@ const Container = styled.View`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 10px;
   border-bottom-width: 1px;
   border-color: 'rgba(158, 150, 150, .5)';
+  padding: 10px 15px;
 `;
 const TopView = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: flex-end;
+  padding: 5px 0;
 `;
 const MidView = styled.View`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 15px;
 `;
 const BottomView = styled.View`
   display: flex;
   flex-direction: column;
 `;
-
-const MindleName = styled.Text``;
+const MindleName = styled.Text`
+  font-weight: 700;
+  font-size: 18px;
+`;
 const MindleDistance = styled.Text``;
-const CountVisitor = styled.Text``;
-const CountEvent = styled.Text``;
-const Address = styled.Text``;
-const TagText = styled.Text``;
+const InfoText = styled.Text`
+  font-weight: 500;
+  font-size: 13px;
+  margin-right: 25px;
+`;
+const CountVisitor = styled.Text`
+  font-weight: 600;
+  font-size: 13px;
+  color: #efb233;
+`;
+const CountEvent = styled.Text`
+  font-weight: 600;
+  font-size: 13px;
+  color: #87c548;
+`;
+// const Address = styled.Text``;
+const TagText = styled.Text`
+  font-weight: 400;
+  font-size: 13;
+`;
+// const MindleCreater = styled.Text`
+//   margin-left: 25px;
+//   font-weight: 400;
+//   font-size: 13px;
+// `;
 
 const Mindle = ({ navigation, props, click }) => {
   return (
@@ -45,11 +71,15 @@ const Mindle = ({ navigation, props, click }) => {
           <MindleDistance>{`${props.distance} km`}</MindleDistance>
         </TopView>
         <MidView>
-          <CountVisitor>{`누적 방문자 ${props.countVisitor}명`}</CountVisitor>
-          <CountEvent>{`이벤트 ${props.countEvent}개`}</CountEvent>
+          <InfoText>
+            누적 방문자 <CountVisitor>{props.countVisitor}</CountVisitor>
+          </InfoText>
+          <InfoText>
+            이벤트 <CountEvent>{props.countEvent}</CountEvent>
+          </InfoText>
         </MidView>
         <BottomView>
-          <Address>{props.address}</Address>
+          {/* <Address>{props.address}</Address> */}
           <TagText>{props.tag}</TagText>
         </BottomView>
       </Container>
