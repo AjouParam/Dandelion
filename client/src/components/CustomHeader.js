@@ -13,6 +13,7 @@ const Header = styled.View`
   border-bottom-width: 1;
   border-color: 'rgba(158, 150, 150, .5)';
   font-weight: bold;
+  background-color: #ffffff;
 `;
 
 const BackButton = styled.Image`
