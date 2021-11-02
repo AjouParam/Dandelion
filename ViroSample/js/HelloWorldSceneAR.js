@@ -23,8 +23,8 @@ export default class HelloWorldSceneAR extends Component {
     // Set initial state here
     this.state = {
       text: 'Initializing AR...',
-      points: [[0, 0, 0]],
-      arrowRot: [],
+      points: [0, 0, 0],
+      arrowRot: [-90, 0, 0],
     };
 
     // bind 'this' to functions
@@ -33,14 +33,12 @@ export default class HelloWorldSceneAR extends Component {
     this._onClickARPost = this._onClickARPost.bind(this);
     this._onCreatePost = this._onCreatePost.bind(this);
     this._onCreateARPost = this._onCreateARPost.bind(this);
+    this._trackingCamera = this._trackingCamera.bind(this);
   }
 
   render() {
     return (
-      <ViroARScene
-        onTrackingInitialized={this._onInitialized}
-        // onCameraTransformUpdate={_onCreateArrow(cameraTransform)}
-      >
+      <ViroARScene onTrackingInitialized={this._onInitialized} onCameraTransformUpdate={this._trackingCamera}>
         <ViroText
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}
@@ -48,12 +46,11 @@ export default class HelloWorldSceneAR extends Component {
           style={styles.helloWorldTextStyle}
         />
         <ViroImage
-          position={[0, -1, -1]}
+          position={this.state.points}
           source={require('./res/arrow.png')}
-          rotation={[-90, 0, 0]}
+          rotation={[-90, 30, 0]}
           renderingOrder={-1}
         />
-
         {/* <ViroButton
           source={require('./res/emailenclose.png')}
           clickSource={require('./res/emailopen.png')}
@@ -90,6 +87,17 @@ export default class HelloWorldSceneAR extends Component {
     this.setState({
       text: '이벤트 확인',
     });
+  }
+  _trackingCamera(cameraTransform) {
+    this.setState({
+      points: [cameraTransform.position[0], -1, cameraTransform.position[2] - 1],
+    });
+  }
+  _onCreateArrow(destPosition) {
+    var model = [];
+    model.push(
+      <ViroImage position={[0, -1, -1]} source={require('./res/arrow.png')} rotation={arrowRot} renderingOrder={-1} />,
+    );
   }
   _onCreateARPost(show, message) {
     var model = [];
