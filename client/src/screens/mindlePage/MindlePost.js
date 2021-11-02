@@ -49,7 +49,7 @@ const MindlePost = ({ route, navigation }) => {
   const [comments, setComments] = useState([]);
   const [data, setData] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   axios.defaults.baseURL = 'http://10.0.2.2:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
@@ -67,35 +67,16 @@ const MindlePost = ({ route, navigation }) => {
       likes: route.params.likes,
       comments: route.params.comments,
     });
-
-    const fetch = async (page) => {
-      ///:postId/comment/
-      console.log(postId);
-      await axios.get(`/${postId}/comment/`, { page: page, maxPost: 10 }).then((res) => {
-        console.log(res.data);
-        if (res.data.status === 'SUCCESS') {
-          console.log('댓글 불러오기');
-          setComments((prev) => [...prev, ...res.data.data]);
-          setPage((prev) => prev + 1);
-        } else {
-          console.log('댓글 불러오기 실패');
-        }
-        setCommentLoaded(true);
-      });
-      console.log('here end');
-    };
-
-    fetch(page);
+    getComment(page);
   }, []);
 
   useEffect(() => {
-    if (data) {
+    if (data && commentLoaded) {
       setLoaded(true);
     }
-  }, [data]);
+  }, [data, commentLoaded]);
 
   const getComment = async (page) => {
-    ///:postId/comment/
     const maxPost = 10;
     await axios
       .get(`/${postId}/comment`, {
@@ -112,8 +93,13 @@ const MindlePost = ({ route, navigation }) => {
         } else {
           console.log('댓글 불러오기 실패');
         }
-      });
+      })
+      .then((res) => {
+        setCommentLoaded(true);
+      })
+      .catch((err) => console.log(err.message));
   };
+
   const handleLoadMore = () => {
     getComment(page);
   };
