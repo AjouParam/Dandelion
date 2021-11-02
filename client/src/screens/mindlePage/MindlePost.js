@@ -14,6 +14,7 @@ import Comment from '@components/post/comment';
 import CommentInput from '@components/post/commentInput';
 
 const Container = styled.View`
+  background-color: #fcfcfc;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -188,16 +189,16 @@ const MindlePost = ({ route, navigation }) => {
           {commentLoaded && (
             <FlatList
               style={{
-                height: 350,
+                maxHeight: Dimensions.get('window').height - 180,
                 paddingTop: 10,
-                paddingBottom: utilConstant.postMarginHeight,
+                marginBottom: utilConstant.postMarginHeight + 40,
                 backgroundColor: '#ffffff',
               }}
               data={comments}
               renderItem={renderItem}
               keyExtractor={(item) => String(item._id)}
               onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.1}
+              onEndReachedThreshold={0.8}
             />
           )}
           <CommentInput functionCall={{ addComment }} />
