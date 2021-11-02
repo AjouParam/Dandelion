@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Header, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-
+import { MailImage, ImageButton } from '@components';
 const Container = styled.View`
   display: flex;
   flex-direction: column;
@@ -15,14 +15,24 @@ const TopView = styled.View`
   flex-direction: row;
   justify-content: space-between;
 `;
-const BottomView = styled.View`
+const ContentsView = styled.View`
   display: flex;
   flex-direction: column;
 `;
 
-const MindleName = styled.Text``;
-const MailDate = styled.Text``;
-const MailText = styled.Text``;
+const MindleName = styled.Text`
+  padding-left: 5px;
+  padding-top: 5px;
+`;
+const MailDate = styled.Text`
+  margin-right: 5px;
+`;
+const MailText = styled.Text`
+  flex: 1;
+  padding-left: 5px;
+  padding-top: 5px;
+  flex-wrap: wrap;
+`;
 
 const Mail = ({ navigation, props, click }) => {
   return (
@@ -33,12 +43,15 @@ const Mail = ({ navigation, props, click }) => {
     >
       <Container>
         <TopView>
-          <MindleName>{props.name}</MindleName>
+          <View style={{ flexDirection: 'row' }}>
+            <MailImage url={props.src} imageStyle={{}} rounded={true} />
+            <ContentsView>
+              <MindleName>{props.name}</MindleName>
+              <MailText>{props.text.length > 24 ? props.text.substring(0, 24) + '...' : props.text}</MailText>
+            </ContentsView>
+          </View>
           <MailDate>{`${props.date}`}</MailDate>
         </TopView>
-        <BottomView>
-          <MailText>{props.text}</MailText>
-        </BottomView>
       </Container>
     </TouchableWithoutFeedback>
   );
