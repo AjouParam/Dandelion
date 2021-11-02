@@ -7,11 +7,23 @@ import Mindle from '../../components/post/Mindle';
 import utilConstant from '../../utils/utilConstant';
 import { PostModule } from '../../controller/postCtrl';
 
+const Container = styled.View`
+  height: ${Dimensions.get('window').height}px;
+  display: flex;
+  background-color: #fff;
+  justify-content: flex-start;
+`;
+const MindleContainer = styled.View`
+  height: 120px;
+  background-color: #fff;
+`;
 const ImageList = styled.View`
   display: flex;
+  height: 190px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  background-color: #fff;
 `;
 const ImageElement = styled.Image`
   border: 1px solid black;
@@ -19,55 +31,80 @@ const ImageElement = styled.Image`
   height: 80px;
   margin: 5px;
 `;
+
 const ButtonContainer = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  height: 40px;
   align-content: center;
 `;
 
-const PostButton = styled.Text`
-  border-bottom-width: 1;
-  border-color: 'rgba(158, 150, 150, .5)';
+const PostButton = styled.TouchableOpacity`
   width: ${Dimensions.get('window').width / 2}px;
-  font-size: 20px;
-  text-align: center;
 `;
-const EventButton = styled.Text`
-  border-bottom-width: 1;
-  border-color: 'rgba(158, 150, 150, .5)';
+const PostButtonText = styled.Text`
+  color: ${(props) => (props.state === 'post' ? '#EFB233' : '#CCCCCC')};
+`;
+const EventButton = styled.TouchableOpacity`
   width: ${Dimensions.get('window').width / 2}px;
-  font-size: 20px;
-  text-align: center;
 `;
-
+const EventButtonText = styled.Text`
+  color: ${(props) => (props.state === 'event' ? '#EFB233' : '#CCCCCC')};
+`;
+const PostContainer = styled.View`
+  height: ${Dimensions.get('window').height - 310}px;
+  background-color: #fff;
+`;
 const backgroundStyle = { backgroundColor: 'dimgrey' };
 
 const MindleSubPage = ({ navigation, props }) => {
   const [state, setState] = useState('post');
 
   return (
-    <>
-      <Mindle //type setting
-        click={false}
-        navigation={navigation}
-        props={props}
-      />
+    <Container>
+      <MindleContainer>
+        <Mindle //type setting
+          click={false}
+          navigation={navigation}
+          props={props}
+        />
+      </MindleContainer>
       <ImageList>
         {Array.from({ length: utilConstant.defaultMindleImage }).map((element) => (
           <ImageElement />
         ))}
       </ImageList>
       <ButtonContainer>
-        <TouchableOpacity onPress={() => setState('post')}>
-          <PostButton style={state === 'post' ? backgroundStyle : {}}>게시물</PostButton>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setState('event')}>
-          <EventButton style={state === 'event' ? backgroundStyle : {}}>이벤트</EventButton>
-        </TouchableOpacity>
+        <PostButton
+          onPress={() => setState('post')}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50%',
+            backgroundColor: '#fff',
+            borderBottomWidth: 2,
+            borderBottomColor: state === 'post' ? '#EFB233' : '#CCCCCC',
+          }}
+        >
+          <PostButtonText state={state}>게시물</PostButtonText>
+        </PostButton>
+        <EventButton
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50%',
+            backgroundColor: '#fff',
+            borderBottomWidth: 2,
+            borderBottomColor: state === 'event' ? '#EFB233' : '#CCCCCC',
+          }}
+          onPress={() => setState('event')}
+        >
+          <EventButtonText state={state}>이벤트</EventButtonText>
+        </EventButton>
       </ButtonContainer>
-      {PostModule[state]?.call({ navigation, props: null, state: null })}
-    </>
+      <PostContainer>{PostModule[state]?.call({ navigation, props: null, state: null })}</PostContainer>
+    </Container>
   );
 };
 
