@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Header, FlatList } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Text, Header, FlatList, SafeAreaView } from 'react-native';
 import { tester1, tester2, tester3, tester4, tester5 } from '../../assets/index';
 import Mail from '../../components/post/Mail';
 import dummy from './mail_dummy.json';
 const test_image = [tester1, tester2, tester3, tester4, tester5];
 const renderItem = ({ item }) => {
-  console.log(item);
   return (
     <Mail
       click={true}
@@ -31,6 +30,9 @@ const MailSubPage = ({ navigation }) => {
       .then((res) => res.json())
       .then((res) => setData(res));\
     */
+    dummy.data.map((item) => {
+      item.navigation = navigation;
+    });
     setData(dummy.data);
   };
 
@@ -38,7 +40,14 @@ const MailSubPage = ({ navigation }) => {
     getData();
   }, []);
 
-  return <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => String(item.id)}></FlatList>;
+  return (
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      contentContainerStyle={{ paddingBottom: 65 }}
+      keyExtractor={(item) => String(item.id)}
+    />
+  );
 };
 
-export default MailSubPage;
+export default React.memo(MailSubPage);
