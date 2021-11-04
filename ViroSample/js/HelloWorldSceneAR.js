@@ -13,6 +13,7 @@ import {
   ViroMaterials,
   ViroImage,
   ViroNode,
+  Viro3DObject,
 } from 'react-viro';
 import DialogInput from 'react-native-dialog-input';
 
@@ -50,6 +51,14 @@ export default class HelloWorldSceneAR extends Component {
           source={require('./res/arrow.png')}
           rotation={[-90, 30, 0]}
           renderingOrder={-1}
+        />
+        <Viro3DObject
+          source={require('./res/3DArrow.obj')}
+          materials={['black']}
+          position={[0, 0, 0]}
+          scale={[0.001, 0.001, 0.001]}
+          rotation={[0, 0, 0]}
+          type="OBJ"
         />
         {/* <ViroButton
           source={require('./res/emailenclose.png')}
@@ -169,6 +178,9 @@ ViroAnimations.registerAnimations({
 ViroMaterials.createMaterials({
   white: {
     diffuseColor: '#ffffff',
+  },
+  black: {
+    diffuseColor: '#000000',
   },
 });
 
