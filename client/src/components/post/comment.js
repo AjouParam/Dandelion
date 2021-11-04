@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Header, TouchableWithoutFeedback, Button, Dimensions, TouchableOpacity } from 'react-native';
+import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity } from 'react-native';
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
 
@@ -26,23 +26,40 @@ const ProfileImg = styled.Image`
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
-const ChoiceButton = styled.Text``;
+const ChoiceButton = styled.TouchableOpacity`
+  margin: 0px 5px;
+`;
 const CommentText = styled.Text``;
 
 const Comment = ({ navigation, props, depth }) => {
+  const { name, state, text, createdAt, updatedAt, _id, _user, _post, __v, isDeleted, deleteComment } = props;
   return (
-    <Container style={{ marginLeft: depth * 50 }}>
+    <Container style={{ marginLeft: (depth - 1) * 50 }}>
       <ProfileImg source={level1} />
       <CommentContainer>
         <TopContainer>
-          <User>{props.name}</User>
-          <Date>{props.date}</Date>
+          <User>{name}</User>
+          <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
           <TouchableOpacity>
-            <ChoiceButton>{props.state === 'visitor' ? '답글' : '삭제'}</ChoiceButton>
+            <ChoiceButton
+              onPress={() => {
+                Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
+                  { text: '취소', style: 'cancel' },
+                  {
+                    text: '확인',
+                    onPress: () => {
+                      deleteComment(_post, _id);
+                    },
+                  },
+                ]);
+              }}
+            >
+              <Text>{state === 'visitor' ? '답글' : '삭제'}</Text>
+            </ChoiceButton>
           </TouchableOpacity>
         </TopContainer>
         <BottomContainer>
-          <CommentText>{props.text}</CommentText>
+          <CommentText>{isDeleted ? '삭제된 댓글입니다.' : text}</CommentText>
         </BottomContainer>
       </CommentContainer>
     </Container>

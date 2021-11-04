@@ -77,6 +77,11 @@ const MindlePost = ({ route, navigation }) => {
     }
   }, [data, commentLoaded]);
 
+  useEffect(() => {
+    setCommentLoaded(true);
+    console.log(comments);
+  }, [comments]);
+
   const getComment = async (page) => {
     const maxPost = 10;
     await axios
@@ -141,6 +146,26 @@ const MindlePost = ({ route, navigation }) => {
       });
   };
 
+  const deleteComment = async (postId, commentId) => {
+    //:postId/comment/delete/:commentId
+    setCommentLoaded(false);
+    await axios
+      .delete(`${postId}/comment/delete/${commentId}`)
+      .then((res) => {
+        if (res.data.message === 'SUCCESS' && res.data.message === '댓글을 삭제하였습니다.') {
+          console.log(res.data.message);
+          const filtered = comments.filter((item) => item._id !== commentId);
+          console.log(filtered);
+          setComments(filtered);
+        } else {
+          console.log(res.data.message);
+        }
+      })
+
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
   const renderItem = ({ item }) => (
     <Comment
       key={item._id}
@@ -156,6 +181,7 @@ const MindlePost = ({ route, navigation }) => {
         _post: item._post,
         __v: item.__v,
         isDeleted: item.isDeleted,
+        deleteComment: deleteComment,
       }}
     />
   );
@@ -185,7 +211,11 @@ const MindlePost = ({ route, navigation }) => {
             setRefresh={route.params.setRefresh}
             navigation={navigation}
           />
-
+          {!commentLoaded && (
+            <View style={{ flex: 1, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator size="large" color="0000ff" />
+            </View>
+          )}
           {commentLoaded && (
             <FlatList
               style={{
