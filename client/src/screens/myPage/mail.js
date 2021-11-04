@@ -14,6 +14,7 @@ const renderItem = ({ item }) => {
         date: item.date,
         text: item.text,
         src: test_image[item.src],
+        id: item.id,
       }}
     />
   );

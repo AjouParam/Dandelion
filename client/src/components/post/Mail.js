@@ -38,7 +38,7 @@ const Mail = ({ navigation, props, click }) => {
   return (
     <TouchableWithoutFeedback
       onPress={() =>
-        click && navigation.navigate('PostContainer', { title: props.name, props, type: 'detail', state: 'mindle' })
+        click && navigation.navigate('Channel', { title: props.name, props, type: 'channel', state: 'mindle' })
       }
     >
       <Container>
