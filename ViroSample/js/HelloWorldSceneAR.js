@@ -46,18 +46,12 @@ export default class HelloWorldSceneAR extends Component {
           position={[0, 0, -5]}
           style={styles.helloWorldTextStyle}
         />
-        <ViroImage
-          position={this.state.points}
-          source={require('./res/arrow.png')}
-          rotation={[-90, 30, 0]}
-          renderingOrder={-1}
-        />
         <Viro3DObject
           source={require('./res/3DArrow.obj')}
-          materials={['black']}
-          position={[0, 0, 0]}
+          materials={['arrowDiff']}
+          position={this.state.points}
           scale={[0.001, 0.001, 0.001]}
-          rotation={[0, 0, 0]}
+          rotation={[-90, 30, 0]}
           type="OBJ"
         />
         {/* <ViroButton
@@ -99,7 +93,7 @@ export default class HelloWorldSceneAR extends Component {
   }
   _trackingCamera(cameraTransform) {
     this.setState({
-      points: [cameraTransform.position[0], -1, cameraTransform.position[2] - 1],
+      points: [cameraTransform.position[0], 0, cameraTransform.position[2] - 1],
     });
   }
   _onCreateArrow(destPosition) {
@@ -181,6 +175,9 @@ ViroMaterials.createMaterials({
   },
   black: {
     diffuseColor: '#000000',
+  },
+  arrowDiff: {
+    diffuseColor: '#f3d737',
   },
 });
 
