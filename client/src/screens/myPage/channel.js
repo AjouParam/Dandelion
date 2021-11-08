@@ -5,6 +5,12 @@ import { GiftedChat, Send } from 'react-native-gifted-chat';
 import { tester1, tester2, tester3, tester4, tester5, profile } from '../../assets/index';
 const test_image = [tester1, tester2, tester3, tester4, tester5];
 
+const SendText = styled.Text`
+  color: #efb233;
+  font-size: 18px;
+  font-weight: 700;
+`;
+
 const SendButton = (props) => {
   return (
     <Send
@@ -17,7 +23,9 @@ const SendButton = (props) => {
         justifyContent: 'center',
         marginHorizontal: 4,
       }}
-    ></Send>
+    >
+      <SendText>전송</SendText>
+    </Send>
   );
 };
 const channel = ({ navigation, props }) => {

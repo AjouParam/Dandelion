@@ -25,7 +25,6 @@ MailImage.defaultProps = {
 };
 
 MailImage.propTypes = {
-  url: PropTypes.string,
   imageStyle: PropTypes.object,
   rounded: PropTypes.bool,
 };
