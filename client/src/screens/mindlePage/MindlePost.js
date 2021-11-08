@@ -42,8 +42,10 @@ const Divider = styled.View`
 // `;
 
 const MindlePost = ({ route, navigation }) => {
+  const [rerender, setRerender] = useState(false);
   const { mindleId, postId } = route.params;
   const userName = useRecoilValue(userState.nameState);
+  console.log('안녕', userName);
   const jwtToken = useRecoilValue(userState.uidState);
   const [loaded, setLoaded] = useState(false);
   const [commentLoaded, setCommentLoaded] = useState(false);
@@ -99,6 +101,7 @@ const MindlePost = ({ route, navigation }) => {
         } else {
           console.log('댓글 불러오기 실패');
         }
+        SUCCESS;
       })
       .then((res) => {
         setCommentLoaded(true);
@@ -117,7 +120,7 @@ const MindlePost = ({ route, navigation }) => {
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          console.log(res.data.message);
+          console.log('조준', res.data.message);
           /**{
               "status": "SUCCESS",
               "message": "댓글을 작성하였습니다.",
@@ -133,11 +136,21 @@ const MindlePost = ({ route, navigation }) => {
                   "__v": 0
               }
           } */
-          setComments((prev) => [...prev, res.data.data]);
+          const resData = res.data.data._user;
+          const newComment = {
+            ...res.data.data,
+            _user: {
+              _id: resData,
+              userName: userName,
+            },
+          };
+          console.log(newComment);
+          setComments((prev) => [res.data.data, ...prev]);
           setInputText('');
+          setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
           return true;
         } else {
-          console.log(res.data.message);
+          console.log('일단', res.data.message);
           return false;
         }
       })
@@ -167,23 +180,27 @@ const MindlePost = ({ route, navigation }) => {
       });
   };
   const renderItem = ({ item }) => (
-    <Comment
-      key={item._id}
-      depth={item.depth}
-      props={{
-        name: item.name,
-        state: item.state,
-        text: item.text,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        _id: item._id,
-        _user: item._user,
-        _post: item._post,
-        __v: item.__v,
-        isDeleted: item.isDeleted,
-        deleteComment: deleteComment,
-      }}
-    />
+    console.log(item),
+    (
+      <Comment
+        key={item._id}
+        depth={item.depth}
+        props={{
+          name: item.name,
+          state: item.state,
+          text: item.text,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          _id: item._id,
+          _user: item._user,
+          _post: item._post,
+          __v: item.__v,
+          isDeleted: item.isDeleted,
+          deleteComment: deleteComment,
+          state: userName === item._user.name ? 'administrator' : 'visitor',
+        }}
+      />
+    )
   );
 
   return (
