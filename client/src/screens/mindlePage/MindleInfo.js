@@ -5,8 +5,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import ProfileModal from '@components/Modal';
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import userState from '@contexts/userState';
+import commentState from '@contexts/commentState';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -56,7 +57,7 @@ const MindleInfo = ({ navigation, props }) => {
   const jwtToken = useRecoilValue(userState.uidState);
   const [noData, setNoData] = useState(false);
   const [refresh, setRefresh] = useState(false);
-
+  const [commentsState, setCommentsState] = useRecoilState(commentState);
   const CONTENT_NUM = 5;
 
   useEffect(() => {
@@ -94,6 +95,13 @@ const MindleInfo = ({ navigation, props }) => {
       fetchData(mindleKey, 1);
     }
   }, [refresh]);
+
+  useEffect(() => {
+    if (commentsState) {
+      setRefresh(true);
+      setCommentsState(false);
+    }
+  }, [commentsState]);
 
   const fetchData = async (mindleId, page) => {
     const dataList = await axios
