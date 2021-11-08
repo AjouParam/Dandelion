@@ -5,62 +5,95 @@ const StyledText = styled.Text`
   font-size: 16px;
   font-weight: 600;
 `;
-const styles = StyleSheet.create({
-  panel: {
-    padding: 15,
-    backgroundColor: '#ffffff',
-  },
 
-  header: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: { width: -1, height: -3 },
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
-    // elevation: 5,
-    paddingTop: 15,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  panelHeader: {
-    alignItems: 'center',
-  },
-  panelHandle: {
-    width: 40,
-    height: 6,
-    borderRadius: 4,
-    backgroundColor: '#00000040',
-    marginBottom: 5,
-  },
-});
+const HeaderContainer = styled.View`
+  height: 130px;
+  padding: 5px 25px;
+  background-color: #ffffff;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+`;
+const HeaderHandle = styled.View`
+  width: 100%;
+  height: 15px;
+  background-color: #ffffff;
+  align-items: center;
+  justify-content: center;
+`;
+const HeaderHandleBar = styled.View`
+  width: 26px;
+  height: 4px;
+  background-color: #e2e2e2;
+`;
+const MindleTitleContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 5px 0;
+`;
+const MindleTitle = styled.Text`
+  font-weight: 800;
+  font-size: 20px;
+`;
+const MindleCreater = styled.Text`
+  margin-left: 25px;
+  font-weight: 400;
+  font-size: 13px;
+`;
+
+const VisitorContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+`;
+const InfoText = styled.Text`
+  font-weight: 500;
+  font-size: 13px;
+  margin-right: 25px;
+`;
+const CumulativeVisitors = styled.Text`
+  font-weight: 600;
+  font-size: 13px;
+  color: #efb233;
+`;
+const CurrentVisitors = styled.Text`
+  font-weight: 600;
+  font-size: 13px;
+  color: #87c548;
+`;
+const DescriptionContainer = styled.View`
+  margin-bottom: 10px;
+`;
+const MindleDescription = styled.Text`
+  font-weight: 400;
+  font-size: 13;
+`;
+
 const MapsRenderHeader = ({ clickedMindleInfo }) => {
   return (
     <>
-      <View style={styles.header}>
-        <View style={styles.panelHeader}>
-          <View style={styles.panelHandle} />
-        </View>
-      </View>
-      <View style={styles.panel}>
-        <View style={{ display: 'flex', flexDirection: 'row', marginBottom: 15 }}>
-          <View style={{ marginRight: 15 }}>
-            <StyledText>{clickedMindleInfo.name}</StyledText>
-          </View>
-          <Text>made by {clickedMindleInfo.madeby}</Text>
-        </View>
-        <View style={{ display: 'flex', flexDirection: 'row', marginTop: 5, marginBottom: 5 }}>
-          <View style={{ marginRight: 15 }}>
-            <Text>누적 방문자 {clickedMindleInfo.visitCount}</Text>
-          </View>
-          <View style={{ marginLeft: 15 }}>
-            <Text>실시간 {clickedMindleInfo.current}</Text>
-          </View>
-        </View>
+      <HeaderContainer>
+        <HeaderHandle>
+          <HeaderHandleBar />
+        </HeaderHandle>
+        <MindleTitleContainer>
+          <MindleTitle>{clickedMindleInfo.name}</MindleTitle>
+          <MindleCreater>made by {clickedMindleInfo.madeby}</MindleCreater>
+        </MindleTitleContainer>
+        <VisitorContainer>
+          <InfoText>
+            누적 방문자 <CumulativeVisitors>{clickedMindleInfo.visitCount}</CumulativeVisitors>
+          </InfoText>
+          <InfoText>
+            실시간 <CurrentVisitors>{clickedMindleInfo.current}</CurrentVisitors>
+          </InfoText>
+        </VisitorContainer>
 
-        <View style={{ marginRight: 10 }}>
-          <Text>{clickedMindleInfo.description}</Text>
-        </View>
-      </View>
+        <DescriptionContainer>
+          <MindleDescription>{clickedMindleInfo.description}</MindleDescription>
+        </DescriptionContainer>
+      </HeaderContainer>
     </>
   );
 };

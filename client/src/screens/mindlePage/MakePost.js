@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Alert } from 'react-native';
 import styled from 'styled-components/native';
-import { StackActions } from '@react-navigation/native';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
@@ -45,15 +44,20 @@ const SelectPhotoButton = styled.TouchableOpacity``;
 const PostButton = styled.TouchableOpacity``;
 
 const MakePost = ({ navigation, route }) => {
+  const {
+    mindleId,
+    latitude,
+    longitude,
+    modifyMode = false,
+    setRefresh = () => {},
+    postContent = { postId: '', title: '', bodyText: '', images: [] },
+  } = route.params;
   const titleRef = useRef();
   const bodyTextRef = useRef();
   const submitRef = useRef();
   const [title, setTitle] = useState('');
   const [bodyText, setBodyText] = useState('');
   const [images, setImages] = useState([]);
-  const [mindleId, setMindleId] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
   const jwtToken = useRecoilValue(userState.uidState);
   const name = useRecoilValue(userState.nameState);
   useEffect(() => {
@@ -61,10 +65,44 @@ const MakePost = ({ navigation, route }) => {
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-    setMindleId(route.params.mindleId);
-    setLatitude(route.params.latitude);
-    setLongitude(route.params.longitude);
+    if (modifyMode) {
+      setTitle(postContent.title);
+      setBodyText(postContent.bodyText);
+      setImages(postContent.images);
+    }
   }, []);
+
+  const modifyPost = async () => {
+    const data = {
+      title: title,
+      text: bodyText,
+      images: images,
+    };
+
+    await axios.patch(`/${mindleId}/post/update/${postContent.postId}`, data).then((res) => {
+      if (res.data.status === 'SUCCESS') {
+        Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+          {
+            text: '확인',
+            onPress: () => {
+              setRefresh(true);
+              navigation.goBack();
+            },
+          },
+        ]);
+      } else {
+        Alert.alert('게시글 수정', '오류가 발생했습니다.', [
+          {
+            text: '확인',
+            onPress: () => {
+              setRefresh(true);
+              navigation.goBack();
+            },
+          },
+        ]);
+      }
+    });
+  };
 
   const setPost = async () => {
     const data = {
@@ -150,7 +188,11 @@ const MakePost = ({ navigation, route }) => {
           <Text
             ref={submitRef}
             onPress={() => {
-              setPost();
+              if (modifyMode) {
+                modifyPost();
+              } else {
+                setPost();
+              }
             }}
           >
             완료

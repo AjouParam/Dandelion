@@ -6,11 +6,11 @@ import Maps from './Maps';
 import HotSpot from './HotSpot';
 import Settings from './Settings';
 import Mypage from './Mypage';
-import MindleInfo from './MindleInfo';
-import MindlePreview from './MindlePreview';
+import MindleInfo from './mindlePage/MindleInfo';
+import MindlePreview from './mindlePage/MindlePreview';
 import MypageList from './MypageList';
-import MindlePost from './MindlePost';
-import MakePost from './MakePost';
+import MindlePost from './mindlePage/MindlePost';
+import MakePost from './mindlePage/MakePost';
 import PostContainer from './PostContainer';
 export {
   Login,

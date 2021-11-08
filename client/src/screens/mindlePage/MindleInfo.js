@@ -5,9 +5,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import ProfileModal from '@components/Modal';
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import userState from '@contexts/userState';
-import { baseProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlers';
+import commentState from '@contexts/commentState';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -27,7 +27,7 @@ const ImageContainer = styled.View`
   display: flex;
   flex-direction: row;
   flex-flow: row wrap;
-  margin-top: 20px;
+  margin: 10px 0px;
 `;
 
 const Image = styled.View`
@@ -41,8 +41,8 @@ const Tab = styled.View`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 50px;
-  padding: 5px;
+  height: 40px;
+  padding: 0px 5px;
   justify-content: space-evenly;
 `;
 
@@ -57,7 +57,7 @@ const MindleInfo = ({ navigation, props }) => {
   const jwtToken = useRecoilValue(userState.uidState);
   const [noData, setNoData] = useState(false);
   const [refresh, setRefresh] = useState(false);
-
+  const [commentsState, setCommentsState] = useRecoilState(commentState);
   const CONTENT_NUM = 5;
 
   useEffect(() => {
@@ -96,6 +96,13 @@ const MindleInfo = ({ navigation, props }) => {
     }
   }, [refresh]);
 
+  useEffect(() => {
+    if (commentsState) {
+      setRefresh(true);
+      setCommentsState(false);
+    }
+  }, [commentsState]);
+
   const fetchData = async (mindleId, page) => {
     const dataList = await axios
       .get(`/${mindleId}/post/`, {
@@ -108,7 +115,7 @@ const MindleInfo = ({ navigation, props }) => {
         if (res.data.status === 'SUCCESS') {
           console.log(res.data.data);
           console.log(res.data.message);
-          return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          return res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         } else if (res.data.status === 'FAILED') {
           console.log(res.data.message);
           return 'FAILED';
@@ -160,27 +167,14 @@ const MindleInfo = ({ navigation, props }) => {
   const renderItem = useCallback(({ item }) => {
     if (data)
       return (
-        <View
-          style={{
-            padding: 10,
-            maxHeight: 400,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 1,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 1.41,
-
-            elevation: 2,
-          }}
-        >
+        <>
           <BoardContent
             mindleId={mindleKey}
             postId={item._id}
             userPhoto={null} //TODO : thumbnail
             name={item._user.name}
             date={item.createdAt}
+            updatedAt={item.updatedAt}
             title={item.title}
             text={item.text}
             images={item.images}
@@ -199,7 +193,7 @@ const MindleInfo = ({ navigation, props }) => {
             isInMindle={true}
             setRefresh={setRefresh}
           />
-        </View>
+        </>
       );
   });
 
@@ -232,10 +226,18 @@ const MindleInfo = ({ navigation, props }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '50%',
-                backgroundColor: tabIndex === 0 ? '#bdbdbd' : '#fefefe',
+                backgroundColor: '#fff',
+                borderBottomWidth: 2,
+                borderBottomColor: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text>게시글</Text>
+              <Text
+                style={{
+                  color: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
+                }}
+              >
+                게시글
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -245,14 +247,21 @@ const MindleInfo = ({ navigation, props }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 width: '50%',
-                backgroundColor: tabIndex === 0 ? '#fefefe' : '#bdbdbd',
+                backgroundColor: '#fff',
+                borderBottomWidth: 2,
+                borderBottomColor: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text>이벤트</Text>
+              <Text
+                style={{
+                  color: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
+                }}
+              >
+                이벤트
+              </Text>
             </TouchableOpacity>
           </Tab>
 
-          <Divider />
           {overlap && (
             <TouchableOpacity
               style={{

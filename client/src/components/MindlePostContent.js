@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
-import MenuModal from '@components/Modal';
+import { Dimensions, Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
+import DeleteModal from '@components/Modal';
 import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
 import axios from 'axios';
+import ModalDropdown from 'react-native-modal-dropdown';
+
+const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const BoardContainer = styled.View`
-  width: 100%;
-  min-height: 150px;
+  background-color: #ffffff;
+  max-width: ${DEVICE_WIDTH}px;
   padding: 5px 5px;
-  justify-content: flex-start;
+  elevation: 2;
+  margin: 5px 5px;
 `;
 const BoardUserInfo = styled.View`
   width: 100%;
@@ -69,12 +73,67 @@ const BoardTipContainer = styled.View`
   justify-content: space-between;
 `;
 
+const DropdownButton = styled.TouchableOpacity`
+  flex: 1;
+  flex-direction: row;
+  padding: 5px;
+  width: 102px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DeleteContainer = styled.View`
+  padding: 24px;
+  height: 160px;
+  width: 290px;
+`;
+const DeleteAlertTitle = styled.Text`
+  font-weight: 600;
+  font-size: 19px;
+  color: #424242;
+`;
+const AlertMessageContainer = styled.View`
+  margin-top: 15px;
+`;
+const DeleteAlertMessage = styled.Text`
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #424242;
+`;
+const DeleteBtnContainer = styled.View`
+  height: 30px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-self: flex-end;
+  margin-top: 10px;
+`;
+const ModalButton = styled.TouchableOpacity`
+  height: 20px;
+  width: 40px;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 5px;
+`;
+
+const DeleteCancelText = styled.Text`
+  font-size: 13px;
+  color: #bdbdbd;
+`;
+const DeleteConfirmText = styled.Text`
+  font-size: 13px;
+  color: #efb233;
+`;
+
 const MindlePostContent = ({
   mindleId,
   postId,
   userPhoto,
   name,
   date,
+  updatedAt,
   title,
   text,
   images,
@@ -87,112 +146,97 @@ const MindlePostContent = ({
   setRefresh = () => {},
   navigation = null,
 }) => {
-  const [menu, setMenu] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const userName = useRecoilValue(userState.nameState);
   const jwtToken = useRecoilValue(userState.uidState);
 
   axios.defaults.baseURL = 'http://10.0.2.2:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+  const checkUpdate = () => {
+    const created = new Date(date).getTime();
+    const updated = new Date(updatedAt).getTime();
+    if (Math.abs(updated - created) <= 20000) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+  const modifyPost = () => {
+    navigation.navigate('MakePost', {
+      mindleId: mindleId,
+      modifyMode: true,
+      postContent: { postId: postId, title: title, bodyText: text, images: images },
+      setRefresh: setRefresh,
+    });
+  };
+
+  const deletePost = () => {
+    axios.delete(`/${mindleId}/post/delete/${postId}`).then((res) => {
+      if (res.data.status === 'SUCCESS') {
+        Alert.alert('완료', '게시글이 삭제되었습니다', [
+          {
+            text: '닫기',
+            onPress: () => {
+              setMenu(false);
+
+              if (isInPost) {
+                setRefresh(true);
+                navigation.navigate('Main');
+              } else {
+                onDeletePost(postId);
+              }
+            },
+          },
+        ]);
+      } else if (res.data.status === 'FAILED') {
+        Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
+          {
+            text: '닫기',
+          },
+        ]);
+      }
+    });
+  };
+
+  const RowComponentDeletePost = () => (
+    <DropdownButton
+      onPress={() => {
+        setDeleteModal(true);
+        // Alert.alert(
+        //   '게시글 삭제',
+        //   `${mindleId}, ${postId}게시글을 삭제하시면 되돌릴 수 없습니다.\n그래도 삭제하시겠습니까?`,
+        //   [
+        //     { text: '취소', style: 'cancel' },
+        //     {
+        //       text: '확인',
+        //      ,
+        //     },
+        //   ],
+        //   {
+        //     cancelable: true,
+        //   },
+        // );
+      }}
+    >
+      <Text style={{ color: '#EFB233' }}>ㅁ </Text>
+      <Text style={{ fontSize: 13, fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
+    </DropdownButton>
+  );
+  const RowComponentModifyPost = () => {
+    return (
+      <DropdownButton onPress={() => modifyPost()}>
+        <Text>ㅁ </Text>
+        <Text style={{ fontSize: 13, fontWeight: '400' }}>게시글 수정</Text>
+      </DropdownButton>
+    );
+  };
+
   if (mindleId && postId)
     return (
       <>
-        {userName === name && (
-          <MenuModal width="300px" height="150px" modalVisible={menu} setModalVisible={setMenu}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  padding: 5,
-                  width: 300,
-                  borderBottomWidth: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  //TODO : 게시글 삭제 로직
-                  Alert.alert(
-                    '게시글 삭제',
-                    `${mindleId}, ${postId}게시글을 삭제하시면 되돌릴 수 없습니다.\n그래도 삭제하시겠습니까?`,
-                    [
-                      { text: '취소', style: 'cancel' },
-                      {
-                        text: '확인',
-                        onPress: () => {
-                          axios.delete(`/${mindleId}/post/delete/${postId}`).then((res) => {
-                            if (res.data.status === 'SUCCESS') {
-                              Alert.alert('완료', '게시글이 삭제되었습니다', [
-                                {
-                                  text: '닫기',
-                                  onPress: () => {
-                                    setMenu(false);
-
-                                    if (isInPost) {
-                                      setRefresh(true);
-                                      navigation.navigate('Main');
-                                    } else {
-                                      onDeletePost(postId);
-                                    }
-                                  },
-                                },
-                              ]);
-                            } else if (res.data.status === 'FAILED') {
-                              Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
-                                {
-                                  text: '닫기',
-                                },
-                              ]);
-                            }
-                          });
-                        },
-                      },
-                    ],
-                    {
-                      cancelable: true,
-                    },
-                  );
-                }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '500' }}>게시글 삭제</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  padding: 5,
-                  width: 300,
-                  borderBottomWidth: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onPress={() => {
-                  setMenu(false);
-                }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '500' }}>게시글 수정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{ flex: 1, padding: 5, width: 300, alignItems: 'center', justifyContent: 'center' }}
-                onPress={() => {
-                  setMenu(false);
-                }}
-              >
-                <Text style={{ color: 'red', fontSize: 16, fontWeight: '500' }}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </MenuModal>
-        )}
-        <BoardContainer
-          style={{
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}
-        >
+        <BoardContainer>
           <BoardUserInfo>
             <BoardUserImageContainer
               onPress={() => {
@@ -215,7 +259,7 @@ const MindlePostContent = ({
               >
                 {name}
               </BoardUserName>
-              <Text>{date}</Text>
+              {checkUpdate() ? <Text>{date}</Text> : <Text>{updatedAt} (수정됨)</Text>}
             </View>
             {userName === name && (
               <View
@@ -228,13 +272,22 @@ const MindlePostContent = ({
                   height: 30,
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    setMenu(true);
+                <ModalDropdown
+                  options={['수정', '삭제']}
+                  dropdownStyle={{ height: 78 }}
+                  dropdownTextStyle={{ fontWeight: '600' }}
+                  renderRow={(item, idx, isSelected) => {
+                    if (item === '수정') return <RowComponentModifyPost />;
+                    else if (item === '삭제') return <RowComponentDeletePost />;
+                    console.log(isSelected);
                   }}
+                  onSelect={(index, value) => {
+                    ModalDropdown.hide();
+                  }}
+                  saveScrollPosition={false}
                 >
                   <Text style={{ fontSize: 16 }}>...</Text>
-                </TouchableOpacity>
+                </ModalDropdown>
               </View>
             )}
           </BoardUserInfo>
@@ -249,6 +302,7 @@ const MindlePostContent = ({
                       userPhoto: userPhoto,
                       name: name,
                       date: date,
+                      updatedAt: updatedAt,
                       title: title,
                       text: text,
                       images: images,
@@ -274,6 +328,7 @@ const MindlePostContent = ({
                       userPhoto: userPhoto,
                       name: name,
                       date: date,
+                      updatedAt: updatedAt,
                       title: title,
                       text: text,
                       images: images,
@@ -311,6 +366,25 @@ const MindlePostContent = ({
             </BoardTipContainer>
           </BoardContents>
         </BoardContainer>
+        {deleteModal && (
+          <DeleteModal width="300px" height="160px" modalVisible={deleteModal} setModalVisible={setDeleteModal}>
+            <DeleteContainer>
+              <DeleteAlertTitle>게시글 삭제</DeleteAlertTitle>
+              <AlertMessageContainer>
+                <DeleteAlertMessage>게시글을 삭제하시면 되돌릴 수 없습니다.</DeleteAlertMessage>
+                <DeleteAlertMessage>그래도 삭제하시겠습니까?</DeleteAlertMessage>
+              </AlertMessageContainer>
+              <DeleteBtnContainer>
+                <ModalButton onPress={() => setDeleteModal(false)}>
+                  <DeleteCancelText>취소</DeleteCancelText>
+                </ModalButton>
+                <ModalButton onPress={() => deletePost()}>
+                  <DeleteConfirmText>삭제</DeleteConfirmText>
+                </ModalButton>
+              </DeleteBtnContainer>
+            </DeleteContainer>
+          </DeleteModal>
+        )}
       </>
     );
 };

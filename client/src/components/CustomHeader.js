@@ -13,6 +13,7 @@ const Header = styled.View`
   border-bottom-width: 1;
   border-color: 'rgba(158, 150, 150, .5)';
   font-weight: bold;
+  background-color: #ffffff;
 `;
 
 const BackButton = styled.Image`
@@ -25,7 +26,10 @@ const OuterButton = styled.TouchableOpacity`
   left: 0px;
 `;
 
-const Title = styled.Text``;
+const Title = styled.Text`
+  font-size: 20px;
+  font-weight: 500;
+`;
 
 const CustomHeader = ({ navigation, title }) => {
   return (
