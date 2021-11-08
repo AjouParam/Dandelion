@@ -29,6 +29,7 @@ const MainStack = () => {
       <Stack.Screen name="MypageList" component={MypageList} options={{ headerShown: false }} />
       <Stack.Screen name="HotSpot" component={PostContainer} options={{ headerShown: false }} />
       <Stack.Screen name="Post" component={PostContainer} options={{ headerShown: false }} />
+      <Stack.Screen name="Channel" component={PostContainer} options={{ headerShown: false }} />
       <Stack.Screen name="Mindle" component={PostContainer} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
