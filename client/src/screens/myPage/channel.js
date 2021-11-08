@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
-import { GiftedChat, Send } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import { tester1, tester2, tester3, tester4, tester5, profile } from '../../assets/index';
 const test_image = [tester1, tester2, tester3, tester4, tester5];
 
@@ -26,6 +26,57 @@ const SendButton = (props) => {
     >
       <SendText>전송</SendText>
     </Send>
+  );
+};
+
+const BubbleStyle = (props) => {
+  return (
+    <Bubble
+      {...props}
+      textStyle={{
+        right: {
+          color: '#424242',
+          fontFamily: 'CerebriSans-Book',
+        },
+        left: {
+          color: '#424242',
+          fontFamily: 'CerebriSans-Book',
+        },
+      }}
+      wrapperStyle={{
+        left: {
+          backgroundColor: '#FFFFFF',
+          borderWidth: 1,
+          borderColor: '#E2E2E2',
+          borderBottomRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 0,
+        },
+        right: {
+          backgroundColor: '#F6F6F6',
+          borderWidth: 1,
+          borderColor: '#E2E2E2',
+          borderBottomRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderTopRightRadius: 0,
+          borderTopLeftRadius: 20,
+        },
+      }}
+    />
+  );
+};
+const renderInputToolbar = (props) => {
+  return (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        backgroundColor: 'white',
+        borderTopColor: '#E8E8E8',
+        borderTopWidth: 1,
+        padding: 8,
+      }}
+    />
   );
 };
 const channel = ({ navigation, props }) => {
@@ -74,10 +125,11 @@ const channel = ({ navigation, props }) => {
         textContentType: 'none', // iOS only
         underlineColorAndroid: 'transparent', // Android only
       }}
-      multiline={false}
+      multiline={true}
       renderUsernameOnMessage={true}
       scrollToBottom={true}
       renderSend={(props) => <SendButton {...props} />}
+      renderBubble={(props) => <BubbleStyle {...props} />}
     />
   );
 };
