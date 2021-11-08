@@ -4,7 +4,6 @@ import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
 import mapCtrl from '@controller/mapCtrl';
 const jwtToken = useRecoilValue(userState.uidState);
-
 const levelToRadius = (num) => (num == 1 || num == 2 ? 30 : num == 3 ? 40 : 50);
 
 //level별 민들레 이미지

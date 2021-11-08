@@ -21,7 +21,7 @@ const SendButton = (props) => {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 4,
+        marginHorizontal: 3,
       }}
     >
       <SendText>전송</SendText>
@@ -66,7 +66,7 @@ const BubbleStyle = (props) => {
     />
   );
 };
-const renderInputToolbar = (props) => {
+const RenderInput = (props) => {
   return (
     <InputToolbar
       {...props}
@@ -74,12 +74,12 @@ const renderInputToolbar = (props) => {
         backgroundColor: 'white',
         borderTopColor: '#E8E8E8',
         borderTopWidth: 1,
-        padding: 8,
+        padding: 2,
       }}
     />
   );
 };
-const channel = ({ navigation, props }) => {
+const channel = ({ props }) => {
   const [messages, setMessages] = useState([]);
   const onSend = useCallback((messages = []) => {
     setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
@@ -121,7 +121,7 @@ const channel = ({ navigation, props }) => {
       alwaysShowSend={true}
       textInputProps={{
         autoCapitalize: 'none',
-        autoCorrect: false,
+        autoCorrect: true,
         textContentType: 'none', // iOS only
         underlineColorAndroid: 'transparent', // Android only
       }}
@@ -130,6 +130,7 @@ const channel = ({ navigation, props }) => {
       scrollToBottom={true}
       renderSend={(props) => <SendButton {...props} />}
       renderBubble={(props) => <BubbleStyle {...props} />}
+      renderInputToolbar={(props) => <RenderInput {...props} />}
     />
   );
 };

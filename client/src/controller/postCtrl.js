@@ -8,6 +8,7 @@ import Mail from '../screens/myPage/mail';
 import Detail from '../screens/detailPage/detail';
 import Comment from '../components/post/comment';
 import Channel from '../screens/myPage/channel';
+import Event from '../screens/myPage/Event';
 export const PostModule = {
   //   hotSpot: <HotSpot />,
   detail: function () {
@@ -27,6 +28,9 @@ export const PostModule = {
   },
   channel: function () {
     return <Channel navigation={this.navigation} props={this.props} />;
+  },
+  event: function () {
+    return <Event navigation={this.navigation} props={this.props} />;
   },
 };
 

@@ -88,6 +88,10 @@ const Mypage = ({ navigation }) => {
         <Text>쪽지</Text>
       </Container>
 
+      <Container onPress={() => navigation.navigate('PostContainer', { title: '권한 설정', type: 'event' })}>
+        <Text>이벤트</Text>
+      </Container>
+
       <Container onPress={() => navigation.navigate('PostContainer', { title: '권한 설정' })}>
         <Text>권한 설정</Text>
       </Container>
