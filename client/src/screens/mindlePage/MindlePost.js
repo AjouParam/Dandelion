@@ -110,7 +110,7 @@ const MindlePost = ({ route, navigation }) => {
     getComment(page);
   };
 
-  const addComment = async (text) => {
+  const addComment = async (text, setInputText) => {
     return await axios
       .post(`/${postId}/comment/create`, {
         text: text,
@@ -134,6 +134,7 @@ const MindlePost = ({ route, navigation }) => {
               }
           } */
           setComments((prev) => [...prev, res.data.data]);
+          setInputText('');
           return true;
         } else {
           console.log(res.data.message);

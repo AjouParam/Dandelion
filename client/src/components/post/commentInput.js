@@ -32,6 +32,7 @@ const CommentInput = ({ navigation, functionCall }) => {
   const { addComment } = functionCall;
   const [addHeight, setAddHeight] = useState(utilConstant.defaultKeyboardHeight);
   const [inputText, setInputText] = useState('');
+  const [isPosted, setIsPosted] = useState(false);
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => {
@@ -40,15 +41,28 @@ const CommentInput = ({ navigation, functionCall }) => {
     Keyboard.addListener('keyboardDidHide', () => {
       setAddHeight(utilConstant.defaultKeyboardHeight);
     });
+    return () => {
+      setInputText('');
+    };
   }, []);
+
+  useEffect(() => {
+    if (isPosted) {
+      console.log('댓글 인풋 사라져랏');
+      console.log(inputText);
+      setIsPosted(false);
+    }
+  }, [isPosted]);
 
   return (
     <Container style={{ marginBottom: addHeight }}>
       <ProfileImg source={level1} />
       <Input
-        onSubmitEditing={() => {
-          addComment(inputText);
-          setInputText('');
+        value={inputText}
+        onSubmitEditing={async () => {
+          // setInputText('');
+          setIsPosted(checkPost);
+          const checkPost = await addComment(inputText, setInputText);
         }}
         onChangeText={(text) => setInputText(text)}
         placeholder="아무거나 입력해주세요."
