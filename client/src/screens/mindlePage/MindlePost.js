@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator, Alert, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import userState from '@contexts/userState';
-
+import commentState from '../../contexts/commentState';
 import utilConstant from '../../utils/utilConstant';
 
 import { FlatList } from 'react-native-gesture-handler';
@@ -51,7 +51,7 @@ const MindlePost = ({ route, navigation }) => {
   const [data, setData] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
-
+  const [commentsState, setCommentState] = useRecoilState(commentState);
   axios.defaults.baseURL = 'http://10.0.2.2:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -79,7 +79,7 @@ const MindlePost = ({ route, navigation }) => {
 
   useEffect(() => {
     setCommentLoaded(true);
-    console.log(comments);
+    console.log('comments loaded!');
   }, [comments]);
 
   const getComment = async (page) => {
@@ -148,20 +148,19 @@ const MindlePost = ({ route, navigation }) => {
 
   const deleteComment = async (postId, commentId) => {
     //:postId/comment/delete/:commentId
-    setCommentLoaded(false);
     await axios
       .delete(`${postId}/comment/delete/${commentId}`)
       .then((res) => {
-        if (res.data.message === 'SUCCESS' && res.data.message === '댓글을 삭제하였습니다.') {
+        if (res.data.status === 'SUCCESS') {
           console.log(res.data.message);
           const filtered = comments.filter((item) => item._id !== commentId);
-          console.log(filtered);
           setComments(filtered);
+          setData((prev) => ({ ...prev, comments: filtered.length }));
+          setCommentState(true);
         } else {
           console.log(res.data.message);
         }
       })
-
       .catch((err) => {
         console.log(err.message);
       });
@@ -211,25 +210,25 @@ const MindlePost = ({ route, navigation }) => {
             setRefresh={route.params.setRefresh}
             navigation={navigation}
           />
+
+          <FlatList
+            style={{
+              maxHeight: Dimensions.get('window').height - 180,
+              paddingTop: 10,
+              marginBottom: utilConstant.postMarginHeight + 40,
+              backgroundColor: '#ffffff',
+            }}
+            data={comments}
+            renderItem={renderItem}
+            keyExtractor={(item) => String(item._id)}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.8}
+          />
+
           {!commentLoaded && (
             <View style={{ flex: 1, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size="large" color="0000ff" />
             </View>
-          )}
-          {commentLoaded && (
-            <FlatList
-              style={{
-                maxHeight: Dimensions.get('window').height - 180,
-                paddingTop: 10,
-                marginBottom: utilConstant.postMarginHeight + 40,
-                backgroundColor: '#ffffff',
-              }}
-              data={comments}
-              renderItem={renderItem}
-              keyExtractor={(item) => String(item._id)}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.8}
-            />
           )}
           <CommentInput functionCall={{ addComment }} />
         </>
