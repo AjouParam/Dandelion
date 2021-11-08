@@ -7,4 +7,5 @@ import SmallButton from './SmallButton';
 import ImageButton from './ImageButton';
 import Mindle from './Mindle';
 import MapsRenderHeader from './MapsRenderHeader';
-export { Image, Input, Button, SignupInput, SmallButton, ImageButton, MapsRenderHeader, Mindle, Spinner };
+import MailImage from './MailImage';
+export { Image, Input, Button, SignupInput, SmallButton, ImageButton, MailImage, MapsRenderHeader, Mindle, Spinner };
