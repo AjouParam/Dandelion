@@ -7,7 +7,7 @@ const distance = (mindlePOS, currnetPOS) => {
     Math.sqrt(
       Math.pow(mindlePOS.location.latitude - currnetPOS.latitude, 2) +
         Math.pow(mindlePOS.location.longitude - currnetPOS.longitude, 2),
-    ) <
+    ) <=
     0.00001 * dandelionCtrl.levelToRadius(mindlePOS.level)
   );
 };

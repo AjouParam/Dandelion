@@ -19,10 +19,10 @@ const ImageContainer = styled.View`
   flex: 2;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding-top: 80px;
 `;
 const Logo = styled.Image`
-  width: 107px;
+  width: 130px;
   height: 142px;
 `;
 const Container = styled.View`
@@ -57,11 +57,11 @@ const ResetPasswordContainer = styled.View`
   margin-top: -20px;
 `;
 const JoinContainer = styled.View`
-  flex: 1;
+  flex: 2;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 const Login = ({ navigation }) => {
@@ -126,8 +126,8 @@ const Login = ({ navigation }) => {
     }
   };
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }} extraScrollHeight={20}>
-      <Container insets={insets}>
+    <Container insets={insets} contentContainerStyle={{ flex: 1 }}>
+      <KeyboardAwareScrollView extraScrollHeight={20}>
         <ImageContainer>
           <Logo source={logo} resizeMode="contain" />
         </ImageContainer>
@@ -165,8 +165,10 @@ const Login = ({ navigation }) => {
           <Button title="로그인" onPress={_handleLoginButtonPress} radius="25px" ifFilled={true} width="300px" />
           <GoogleLoginButton />
         </LoginButtonContainer>
-        <JoinContainer>
-          <Text>아직 민들레 회원이 아니신가요?</Text>
+      </KeyboardAwareScrollView>
+      <JoinContainer>
+        <Text>
+          아직 민들레 회원이 아니신가요?
           <Button
             title="회원가입"
             onPress={() => navigation.navigate('Signup')}
@@ -174,9 +176,9 @@ const Login = ({ navigation }) => {
             width="100px"
             height="16px"
           />
-        </JoinContainer>
-      </Container>
-    </KeyboardAwareScrollView>
+        </Text>
+      </JoinContainer>
+    </Container>
   );
 };
 export default Login;

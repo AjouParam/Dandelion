@@ -4,7 +4,7 @@ import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
 import { TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native';
-import { profile, button } from '../assets/index';
+import { profile, tester1, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
@@ -96,12 +96,15 @@ const Maps = ({ navigation }) => {
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
         <MapView
           style={[styles.map, { width: mapWidth }]}
+          loadingEnabled={true}
+          loadingIndicatorColor={'#F3D737'}
           provider={PROVIDER_GOOGLE}
           showsUserLocation={true}
           showsMyLocationButton={true}
           region={currentMapCoord}
           maxZoomLevel={19}
           minZoomLevel={17}
+          toolbarEnabled={false}
           onMapReady={() => {
             updateMapStyle();
           }}
@@ -177,7 +180,7 @@ const Maps = ({ navigation }) => {
           }}
         >
           {/* 현재 ../asset/index.js에 있는 profile 이미지로 버튼 생성 rounded 값으로 둥근 형태 */}
-          <ImageButton src={profile} onPress={() => navigation.navigate('Mypage')} rounded />
+          <ImageButton src={tester1} onPress={() => navigation.navigate('Mypage')} rounded />
         </View>
         <View
           style={{

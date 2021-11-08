@@ -7,7 +7,7 @@ import Mindle from '../screens/myPage/mindle';
 import Mail from '../screens/myPage/mail';
 import Detail from '../screens/detailPage/detail';
 import Comment from '../components/post/comment';
-
+import Channel from '../screens/myPage/channel';
 export const PostModule = {
   //   hotSpot: <HotSpot />,
   detail: function () {
@@ -24,6 +24,9 @@ export const PostModule = {
   },
   hotSpot: function () {
     return <HotSpot navigation={this.navigation} props={this.props} />;
+  },
+  channel: function () {
+    return <Channel navigation={this.navigation} props={this.props} />;
   },
 };
 

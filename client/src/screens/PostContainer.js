@@ -10,10 +10,8 @@ const PostContainer = ({ navigation, route }) => {
 
   return (
     <>
-      <View>
-        <CustomHeader navigation={navigation} title={title} />
-        {PostModule[type]?.call({ navigation, props, state })}
-      </View>
+      <CustomHeader navigation={navigation} title={title} />
+      {PostModule[type]?.call({ navigation, props, state })}
     </>
   );
 };
