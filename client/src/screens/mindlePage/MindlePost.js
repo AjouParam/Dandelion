@@ -54,7 +54,7 @@ const MindlePost = ({ route, navigation }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [commentsState, setCommentState] = useRecoilState(commentState);
-  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 

@@ -37,7 +37,7 @@ const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) =
   const [description, setDescription] = useState('');
 
   useEffect(() => {
-    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.baseURL = 'http://3.35.45.177:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
   }, []);
