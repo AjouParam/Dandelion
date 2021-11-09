@@ -25,7 +25,7 @@ export default class HelloWorldSceneAR extends Component {
     this.state = {
       text: 'Initializing AR...',
       points: [0, 0, 0],
-      rotations: '',
+      target: [0, 0, 0],
       arrowRot: [-90, 0, 0],
     };
 
@@ -36,6 +36,7 @@ export default class HelloWorldSceneAR extends Component {
     this._onCreatePost = this._onCreatePost.bind(this);
     this._onCreateARPost = this._onCreateARPost.bind(this);
     this._trackingCamera = this._trackingCamera.bind(this);
+    this._LookAtTarget = this._LookAtTarget.bind(this);
   }
 
   render() {
@@ -52,7 +53,7 @@ export default class HelloWorldSceneAR extends Component {
           materials={['arrowDiff']}
           position={this.state.points}
           scale={[0.001, 0.001, 0.001]}
-          rotation={[-90, 30, 0]}
+          rotation={this.state.arrowRot}
           type="OBJ"
         />
         {/* <ViroButton
@@ -64,10 +65,10 @@ export default class HelloWorldSceneAR extends Component {
           animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
         /> */}
-        {this._onCreatePost([7, 0, -5], [7, 0, -5])}
-        {this._onCreatePost([3, 0, -5], [3, 0, -5])}
-        {this._onCreatePost([-3, 0, -2], [-3, 0, -2])}
-        {this._onCreatePost([-2, 0, -7], [-2, 0, -7])}
+        {/* {this._onCreatePost([7, 0, -5], [7, 0, -5])} */}
+        {this._onCreatePost([3, 0, -1], [3, 0, -1])}
+        {/* {this._onCreatePost([-3, 0, -2], [-3, 0, -2])}
+        {this._onCreatePost([-2, 0, -7], [-2, 0, -7])} */}
         {this._onCreateARPost(
           this.props.arSceneNavigator.viroAppProps.arshow,
           this.props.arSceneNavigator.viroAppProps.artext,
@@ -98,9 +99,12 @@ export default class HelloWorldSceneAR extends Component {
     positionX += cameraTransform.position[0];
     var positionZ = Math.cos(Euler) * -1;
     positionZ += cameraTransform.position[2];
+
     this.setState({
       points: [positionX, 0, positionZ],
     });
+    var target = [3, 0, -1];
+    this._LookAtTarget(this.state.points, target);
   }
   _onCreateArrow(destPosition) {
     var model = [];
@@ -157,6 +161,15 @@ export default class HelloWorldSceneAR extends Component {
       </ViroNode>,
     );
     return model;
+  }
+  _LookAtTarget(targetP, destP) {
+    var lengthZ = destP[2] - targetP[2];
+    var lengthX = destP[0] - targetP[0];
+    var tangent = Math.atan(lengthX / lengthZ);
+    tangent = (tangent * 180) / Math.PI;
+    this.setState({
+      arrowRot: [-90, tangent, 0],
+    });
   }
   // _onCreateArrow(cameraTransform){
   //   var model = [];
