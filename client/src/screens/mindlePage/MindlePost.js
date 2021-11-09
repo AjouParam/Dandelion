@@ -42,7 +42,7 @@ const Divider = styled.View`
 // `;
 
 const MindlePost = ({ route, navigation }) => {
-  const { mindleId, postId } = route.params;
+  const { mindleId, postId, setLikesList } = route.params;
   const userName = useRecoilValue(userState.nameState);
   const jwtToken = useRecoilValue(userState.uidState);
   const [loaded, setLoaded] = useState(false);
@@ -67,6 +67,7 @@ const MindlePost = ({ route, navigation }) => {
       images: route.params.images,
       likes: route.params.likes,
       comments: route.params.comments,
+      userLike: route.params.userLike,
     });
     getComment(page);
   }, []);
@@ -133,7 +134,16 @@ const MindlePost = ({ route, navigation }) => {
                   "__v": 0
               }
           } */
-          setComments((prev) => [...prev, res.data.data]);
+          const resData = res.data.data._user;
+          const newComment = {
+            ...res.data.data,
+            _user: {
+              _id: resData,
+              userName: userName,
+            },
+          };
+          console.log(newComment);
+          setComments((prev) => [res.data.data, ...prev]);
           setInputText('');
           return true;
         } else {
@@ -166,6 +176,7 @@ const MindlePost = ({ route, navigation }) => {
         console.log(err.message);
       });
   };
+
   const renderItem = ({ item }) => (
     <Comment
       key={item._id}
@@ -205,6 +216,8 @@ const MindlePost = ({ route, navigation }) => {
             images={data.images}
             likes={data.likes}
             comments={data.comments}
+            userLike={data.userLike}
+            setLikeList={setLikesList}
             isInMindle={true}
             isInPost={true}
             setMenuOpen={setMenuOpen}

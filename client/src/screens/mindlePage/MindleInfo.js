@@ -159,12 +159,13 @@ const MindleInfo = ({ navigation, props }) => {
                   ],
                   "likes": 0,
                   "comments": 0
+                  "userLike":true,
               }
           ]
       } 
    */
 
-  const renderItem = useCallback(({ item }) => {
+  const renderItem = ({ item }) => {
     if (data)
       return (
         <>
@@ -180,7 +181,29 @@ const MindleInfo = ({ navigation, props }) => {
             images={item.images}
             likes={item.likes}
             comments={item.comments}
+            userLike={item.userLike}
             setMenuOpen={setMenuOpen}
+            setLikesList={(like, likeNum, postId) => {
+              setData((prev) => {
+                const newData = prev.map((item) => {
+                  if (postId === item._id) {
+                    console.log('find!');
+                    console.log(like, likeNum);
+                    const obj = {
+                      ...item,
+                      likes: like ? likeNum + 1 : likeNum - 1,
+                      userLike: like,
+                    };
+                    console.log(obj);
+                    return obj;
+                  } else {
+                    return item;
+                  }
+                });
+                console.log(newData[0]);
+                return newData;
+              });
+            }}
             onDeletePost={(deletedId) => {
               const toDeleteIdx = data.findIndex((item) => item._id === deletedId);
               if (toDeleteIdx > -1) {
@@ -195,7 +218,7 @@ const MindleInfo = ({ navigation, props }) => {
           />
         </>
       );
-  });
+  };
 
   const handleLoadMore = () => {
     console.log('load more');
