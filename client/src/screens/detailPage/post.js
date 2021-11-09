@@ -26,11 +26,11 @@ const MessageContainer = styled.ScrollView`
 const PostSubPage = ({ navigation, props }) => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([
-    <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
-    <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
-    <Comment depth={1} props={{ name: '피치', date: '07 09 01:55', state: 'admin', text: '네엡' }} />,
-    <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
-    <Comment depth={0} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
+    <Comment depth={1} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
+    <Comment depth={1} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
+    <Comment depth={2} props={{ name: '피치', date: '07 09 01:55', state: 'admin', text: '네엡' }} />,
+    <Comment depth={1} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
+    <Comment depth={1} props={{ name: '라이언', date: '07 09 01:55', state: 'visitor', text: '잘 보고 갑니다.' }} />,
   ]);
 
   const addComment = (text) => setMessages((v) => setComment(text, v));
