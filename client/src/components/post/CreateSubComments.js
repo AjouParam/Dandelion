@@ -92,6 +92,7 @@ const CreateSubComment = ({ modalVisible, setModalVisible, setSubComments, comme
             title="확인"
             onPress={() => {
               createMindle();
+              modalClose();
             }}
             width="100px"
           />

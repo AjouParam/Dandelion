@@ -101,7 +101,7 @@ const Comment = ({ navigation, props, depth }) => {
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
           console.log(res.data.message);
-          const filtered = comments.filter((item) => item._id !== subcommentId);
+          const filtered = comments.filter((item) => item._id !== commentId);
           setSubComments(filtered);
           setSubCommentState(true);
         } else {
@@ -128,7 +128,8 @@ const Comment = ({ navigation, props, depth }) => {
         _post: item._post,
         __v: item.__v,
         isDeleted: item.isDeleted,
-        deleteComment: deleteSubComment,
+        _parentComment: item._parentComment,
+        deleteSubComment: deleteSubComment,
       }}
     />
   );
@@ -154,7 +155,7 @@ const Comment = ({ navigation, props, depth }) => {
                     {
                       text: '확인',
                       onPress: () => {
-                        addSubComment();
+                        deleteComment(_post, _id);
                       },
                     },
                   ]);

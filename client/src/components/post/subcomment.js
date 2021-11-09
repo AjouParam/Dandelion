@@ -32,7 +32,20 @@ const ChoiceButton = styled.TouchableOpacity`
 const CommentText = styled.Text``;
 
 const SubComment = ({ navigation, props, depth }) => {
-  const { name, state, text, createdAt, updatedAt, _id, _user, _post, __v, isDeleted, deleteComment } = props;
+  const {
+    name,
+    state,
+    text,
+    createdAt,
+    updatedAt,
+    _id,
+    _user,
+    _post,
+    __v,
+    isDeleted,
+    deleteSubComment,
+    _parentComment,
+  } = props;
   return (
     <Container style={{ marginLeft: (depth - 1) * 50 }}>
       <ProfileImg source={level1} />
@@ -49,7 +62,7 @@ const SubComment = ({ navigation, props, depth }) => {
                   {
                     text: '확인',
                     onPress: () => {
-                      deleteComment(_post, _id);
+                      deleteSubComment(_parentComment, _id);
                     },
                   },
                 ]);
