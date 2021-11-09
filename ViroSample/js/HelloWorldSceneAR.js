@@ -25,6 +25,7 @@ export default class HelloWorldSceneAR extends Component {
     this.state = {
       text: 'Initializing AR...',
       points: [0, 0, 0],
+      rotations: '',
       arrowRot: [-90, 0, 0],
     };
 
@@ -44,6 +45,12 @@ export default class HelloWorldSceneAR extends Component {
           text={this.state.text}
           scale={[0.5, 0.5, 0.5]}
           position={[0, 0, -5]}
+          style={styles.helloWorldTextStyle}
+        />
+        <ViroText
+          text={this.state.text}
+          scale={[0.5, 0.5, 0.5]}
+          position={[0, 0, 5]}
           style={styles.helloWorldTextStyle}
         />
         <Viro3DObject
@@ -92,8 +99,10 @@ export default class HelloWorldSceneAR extends Component {
     });
   }
   _trackingCamera(cameraTransform) {
+    var rotationSTR = cameraTransform.rotation[1] + '';
     this.setState({
       points: [cameraTransform.position[0], 0, cameraTransform.position[2] - 1],
+      text: rotationSTR,
     });
   }
   _onCreateArrow(destPosition) {
