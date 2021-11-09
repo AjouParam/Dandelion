@@ -39,11 +39,12 @@ const SubComment = ({ navigation, props, depth }) => {
       <CommentContainer>
         <TopContainer>
           <User>{name}</User>
-          <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
+          {/* <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date> */}
+          <Date>{createdAt}</Date>
           <TouchableOpacity>
             <ChoiceButton
               onPress={() => {
-                Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
+                Alert.alert('답글 삭제', '답글을 삭제하시겠습니까?', [
                   { text: '취소', style: 'cancel' },
                   {
                     text: '확인',
