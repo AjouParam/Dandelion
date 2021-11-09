@@ -101,7 +101,7 @@ const Comment = ({ navigation, props, depth }) => {
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
           console.log(res.data.message);
-          const filtered = comments.filter((item) => item._id !== commentId);
+          const filtered = subcomments.filter((item) => item._id !== commentId);
           setSubComments(filtered);
           setSubCommentState(true);
         } else {
