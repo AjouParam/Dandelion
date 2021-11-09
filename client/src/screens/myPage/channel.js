@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
-import { GiftedChat, Send, Bubble, InputToolbar } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Bubble, InputToolbar, Time } from 'react-native-gifted-chat';
 import { tester1, tester2, tester3, tester4, tester5, profile } from '../../assets/index';
 const test_image = [tester1, tester2, tester3, tester4, tester5];
 
@@ -79,6 +79,21 @@ const RenderInput = (props) => {
     />
   );
 };
+const RenderTime = (props) => {
+  return (
+    <Time
+      {...props}
+      timeTextStyle={{
+        left: {
+          color: 'grey',
+        },
+        right: {
+          color: 'grey',
+        },
+      }}
+    />
+  );
+};
 const channel = ({ props }) => {
   const [messages, setMessages] = useState([]);
   const onSend = useCallback((messages = []) => {
@@ -89,7 +104,7 @@ const channel = ({ props }) => {
     setMessages([
       {
         _id: 1,
-        text: '안녕 병희야',
+        text: '안녕 병희',
         createdAt: new Date(),
         user: {
           _id: props.id,
@@ -131,6 +146,7 @@ const channel = ({ props }) => {
       renderSend={(props) => <SendButton {...props} />}
       renderBubble={(props) => <BubbleStyle {...props} />}
       renderInputToolbar={(props) => <RenderInput {...props} />}
+      renderTime={(props) => <RenderTime {...props} />}
     />
   );
 };
