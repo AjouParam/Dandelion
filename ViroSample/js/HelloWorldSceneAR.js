@@ -47,12 +47,6 @@ export default class HelloWorldSceneAR extends Component {
           position={[0, 0, -5]}
           style={styles.helloWorldTextStyle}
         />
-        <ViroText
-          text={this.state.text}
-          scale={[0.5, 0.5, 0.5]}
-          position={[0, 0, 5]}
-          style={styles.helloWorldTextStyle}
-        />
         <Viro3DObject
           source={require('./res/3DArrow.obj')}
           materials={['arrowDiff']}
@@ -99,10 +93,13 @@ export default class HelloWorldSceneAR extends Component {
     });
   }
   _trackingCamera(cameraTransform) {
-    var rotationSTR = cameraTransform.rotation[1] + '';
+    var Euler = (cameraTransform.rotation[1] / 180) * Math.PI;
+    var positionX = Math.sin(Euler) * -1;
+    positionX += cameraTransform.position[0];
+    var positionZ = Math.cos(Euler) * -1;
+    positionZ += cameraTransform.position[2];
     this.setState({
-      points: [cameraTransform.position[0], 0, cameraTransform.position[2] - 1],
-      text: rotationSTR,
+      points: [positionX, 0, positionZ],
     });
   }
   _onCreateArrow(destPosition) {
