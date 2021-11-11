@@ -17,6 +17,18 @@ const PostSubPage = ({ navigation, click = true }) => {
           message: 23,
         }}
       />
+
+      <Post //type setting
+        click={click}
+        navigation={navigation}
+        props={{
+          name: '드라큘라',
+          date: '2021.10.26',
+          text: '할로윈데이 까지 5일 남았습니다',
+          like: 999,
+          message: 60,
+        }}
+      />
       {/* <Post />
       <Post /> */}
     </>
