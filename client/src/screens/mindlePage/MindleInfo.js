@@ -127,7 +127,9 @@ const MindleInfo = ({ navigation, props }) => {
       if (dataList.length === 0 && page === 1) setNoData(true);
       // setDataList(dataList);
 
-      setData((prev) => [...prev, ...dataList]);
+      setData((prev) =>
+        [...prev, ...dataList].filter((item, idx, self) => self.findIndex((e) => e._id === item._id) === idx),
+      );
     }
     setRefresh(false);
   };
@@ -165,7 +167,7 @@ const MindleInfo = ({ navigation, props }) => {
       } 
    */
 
-  const renderItem = ({ item }) => {
+  const renderItem = useCallback(({ item }) => {
     if (data)
       return (
         <>
@@ -218,7 +220,7 @@ const MindleInfo = ({ navigation, props }) => {
           />
         </>
       );
-  };
+  }, []);
 
   const handleLoadMore = () => {
     console.log('load more');
