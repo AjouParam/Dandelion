@@ -4,7 +4,7 @@ import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
 import { TouchableOpacity, View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
-import { profile,tester1, button } from '../assets/index';
+import { profile, tester1, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
 import CreateMindle from '@components/CreateMindle';
@@ -13,6 +13,7 @@ import MindleInfo from '@screens/mindlePage/MindleInfo';
 import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
+import axios from 'axios';
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -74,6 +75,7 @@ const Maps = ({ navigation }) => {
       setMindles,
     );
   }, []);
+
   return (
     <Container>
       <CreateMindle
@@ -222,6 +224,20 @@ const Maps = ({ navigation }) => {
             />
           </View>
         )}
+        <View
+          style={{
+            position: 'absolute',
+            top: '10%',
+            alignSelf: 'center',
+          }}
+        >
+          <Text>카카오 API</Text>
+          <Button
+            onPress={async () => {
+              console.log(await dandelionCtrl.coord2regioncode(location));
+            }}
+          />
+        </View>
       </Animated.View>
     </Container>
   );

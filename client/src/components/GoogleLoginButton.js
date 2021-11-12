@@ -28,7 +28,7 @@ const GoogleLoginButton = () => {
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
       try {
-        await axios.post('http://10.0.2.2:3000/account/google', { idToken: userInfo.idToken }).then((res) => {
+        await axios.post('http://3.35.45.177:3000/account/google', { idToken: userInfo.idToken }).then((res) => {
           if (res.data.status === 'SUCCESS') {
             try {
               AsyncStorage.setItem('token', res.data.accessToken);

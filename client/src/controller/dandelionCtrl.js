@@ -88,4 +88,23 @@ const CompData = async (Target, currentPOS, setCurrentMindle, setBtnToggle, setM
   }
 };
 
-export default { isCollision, getData, CompData, levelToRadius, levelToIMG };
+//좌표 값으로 지명 위치 가져오기
+const coord2regioncode = async (location) => {
+  const { longitude, latitude } = location;
+  await axios
+    .get('https://dapi.kakao.com/v2/local/geo/coord2address.json', {
+      headers: { Authorization: 'KakaoAK 49044b35e7697c7ed1c41e61f9482595' },
+      params: {
+        x: longitude,
+        y: latitude,
+      },
+    })
+    .then((res) => {
+      const temp = JSON.parse(res.request._response)['documents'];
+      console.log('KAKAO', temp);
+
+      return temp;
+    })
+    .catch((err) => console.log('udonPeople error : ' + err));
+};
+export default { isCollision, getData, CompData, levelToRadius, levelToIMG, coord2regioncode };
