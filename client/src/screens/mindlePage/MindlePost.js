@@ -6,7 +6,7 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import userState from '@contexts/userState';
 import commentState from '../../contexts/commentState';
 import utilConstant from '../../utils/utilConstant';
-
+import decode from 'jwt-decode';
 import { FlatList } from 'react-native-gesture-handler';
 import Post from '@components/MindlePostContent';
 import ProfileModal from '@components/Modal';
@@ -45,6 +45,8 @@ const MindlePost = ({ route, navigation }) => {
   const [rerender, setRerender] = useState(false);
   const { mindleId, postId } = route.params;
   const userName = useRecoilValue(userState.nameState);
+  const token = useRecoilValue(userState.uidState);
+  const userId = decode(token)._id;
   console.log('안녕', userName);
   const jwtToken = useRecoilValue(userState.uidState);
   const [loaded, setLoaded] = useState(false);
@@ -102,7 +104,6 @@ const MindlePost = ({ route, navigation }) => {
         } else {
           console.log('댓글 불러오기 실패');
         }
-        SUCCESS;
       })
       .then((res) => {
         setCommentLoaded(true);
@@ -282,7 +283,31 @@ const MindlePost = ({ route, navigation }) => {
             <TouchableOpacity
               style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
               onPress={() => {
-                Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
+                /**
+                 * {
+                    name: item.name,
+                    date: item.date,
+                    text: item.text,
+                    src: test_image[item.src],
+                    id: item.id,
+                  }
+                 */
+                console.log(decode(token));
+                console.log(userId);
+                const messageProps = {
+                  id: userId,
+                  name: data.name,
+                  date: new Date().toISOString(),
+                  src: 11,
+                  text: '테스트',
+                };
+                console.log(messageProps);
+                navigation.navigate('Channel', {
+                  title: data.name,
+                  props: messageProps,
+                  type: 'channel',
+                  state: 'mindle',
+                });
               }}
             >
               <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
