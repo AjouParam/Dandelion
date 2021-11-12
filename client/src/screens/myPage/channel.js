@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
 import decode from 'jwt-decode';
-import { GiftedChat, Send, Bubble, InputToolbar } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Bubble, InputToolbar, Time } from 'react-native-gifted-chat';
 import { tester1, tester2, tester3, tester4, tester5, profile } from '../../assets/index';
 import axios from 'axios';
 // const test_image = [tester1, tester2, tester3, tester4, tester5];
@@ -111,8 +111,7 @@ const channel = ({ navigation, props }) => {
   const userName = decode(token).name;
   const userId = decode(token)._id;
   const [messages, setMessages] = useState([]);
-
-  const roomId = props.roomId,
+  const roomId = props.roomId;
   const audienceName = props.name;
   const audienceProfile = props.src;
   const onSend = useCallback((messages = []) => {

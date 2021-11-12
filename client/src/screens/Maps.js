@@ -13,7 +13,7 @@ import MindleInfo from '@screens/mindlePage/MindleInfo';
 import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
-import axios from 'axios';
+import { coord2address } from '@utils/common';
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -234,8 +234,8 @@ const Maps = ({ navigation }) => {
         >
           <Text>카카오 API</Text>
           <Button
-            onPress={async () => {
-              console.log(await dandelionCtrl.coord2regioncode(location));
+            onPress={() => {
+              coord2address(location);
             }}
           />
         </View>
