@@ -217,7 +217,7 @@ const MindlePost = ({ route, navigation }) => {
             likes={data.likes}
             comments={data.comments}
             userLike={data.userLike}
-            setLikeList={setLikesList}
+            setLikeList={route.params.setLikesList}
             isInMindle={true}
             isInPost={true}
             setMenuOpen={setMenuOpen}

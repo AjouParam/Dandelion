@@ -195,7 +195,7 @@ const MindlePostContent = ({
           {
             text: '닫기',
             onPress: () => {
-              setMenu(false);
+              setMenuOpen(false);
 
               if (isInPost) {
                 setRefresh(true);
