@@ -95,10 +95,9 @@ const channel = ({ navigation, props }) => {
   const token = useRecoilValue(userState.uidState);
   const userName = decode(token).name;
   const userId = decode(token)._id;
-  const 
   const [messages, setMessages] = useState([]);
 
-
+  const roomId = props.roomId,
   const audienceName = props.name;
   const audienceProfile = props.src;
   const onSend = useCallback((messages = []) => {
@@ -113,15 +112,17 @@ const channel = ({ navigation, props }) => {
     /** TODO : Get messages api */
 
     const loadMessages = async (roomId) => {
-      await axios.post('/mail/loadDetail', {
-        _id : 'testid' //roomId
-      }).then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          setMessages(res.data.data);
-        } else {
-          console.log('쪽지 기록 불러오기 실패');
-        }
-      });
+      await axios
+        .post('/mail/loadDetail', {
+          _id: 'testid', //roomId
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            setMessages(res.data.data);
+          } else {
+            console.log('쪽지 기록 불러오기 실패');
+          }
+        });
     };
 
     //loadMessages();
