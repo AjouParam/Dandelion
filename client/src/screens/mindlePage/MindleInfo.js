@@ -75,7 +75,7 @@ const MindleInfo = ({ navigation, props }) => {
   }, [mindleKey]);
 
   useEffect(() => {
-    if (page === 1 && data.length > 0) {
+    if (page === 1 && data.length >= 0) {
       setNoData(false);
       setLoading(false);
       setListLoading(false);
