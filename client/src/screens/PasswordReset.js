@@ -80,7 +80,7 @@ const PasswordReset = ({ navigation }) => {
   const sendEmail = async () => {
     try {
       await axios
-        .post('http://10.0.2.2:3000/account/auth', { email: email })
+        .post('http://3.35.45.177:3000/account/auth', { email: email })
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             setEmailSent(true);
