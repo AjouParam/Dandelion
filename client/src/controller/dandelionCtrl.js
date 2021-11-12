@@ -25,7 +25,7 @@ const isCollision = (element, list) => {
   }, false);
 };
 const getData = async (TargetPOS) => {
-  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
   //초기 메인 버튼을 민들레 심기로 설정

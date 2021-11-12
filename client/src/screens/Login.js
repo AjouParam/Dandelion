@@ -95,7 +95,7 @@ const Login = ({ navigation }) => {
       //spinner.start();
       //API request
       await axios
-        .post('http://10.0.2.2:3000/account/signin', { email: emailInput, password: password })
+        .post('http://3.35.45.177:3000/account/signin', { email: emailInput, password: password })
         .then(async (res) => {
           console.log(res.data);
           if (res.data.status === 'SUCCESS') {

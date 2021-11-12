@@ -184,7 +184,7 @@ const Signup = ({ navigation }) => {
   const checkEmailDuplicate = async () => {
     //TODO : API request
     await axios
-      .post('http://10.0.2.2:3000/account/checkEmail', { email: email })
+      .post('http://3.35.45.177:3000/account/checkEmail', { email: email })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
           setEmailButton(true); //사용가능한경우 disable=true 버튼 블락 / disabled=false 버튼 활성화
@@ -205,7 +205,7 @@ const Signup = ({ navigation }) => {
   const checkNameDuplicate = async () => {
     //TODO : API request
     await axios
-      .post('http://10.0.2.2:3000/account/checkName', { name: name })
+      .post('http://3.35.45.177:3000/account/checkName', { name: name })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
           Alert.alert('닉네임 중복 확인', '사용 가능한 닉네임입니다.');
@@ -225,7 +225,7 @@ const Signup = ({ navigation }) => {
 
   const signUp = async (email, password, name) => {
     await axios
-      .post('http://10.0.2.2:3000/account/signup/', {
+      .post('http://3.35.45.177:3000/account/signup/', {
         name: name,
         email: email,
         password: password,

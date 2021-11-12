@@ -42,8 +42,10 @@ const Divider = styled.View`
 // `;
 
 const MindlePost = ({ route, navigation }) => {
-  const { mindleId, postId, setLikesList } = route.params;
+  const [rerender, setRerender] = useState(false);
+  const { mindleId, postId } = route.params;
   const userName = useRecoilValue(userState.nameState);
+  console.log('안녕', userName);
   const jwtToken = useRecoilValue(userState.uidState);
   const [loaded, setLoaded] = useState(false);
   const [commentLoaded, setCommentLoaded] = useState(false);
@@ -52,7 +54,7 @@ const MindlePost = ({ route, navigation }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [commentsState, setCommentState] = useRecoilState(commentState);
-  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
@@ -100,6 +102,7 @@ const MindlePost = ({ route, navigation }) => {
         } else {
           console.log('댓글 불러오기 실패');
         }
+        SUCCESS;
       })
       .then((res) => {
         setCommentLoaded(true);
@@ -118,7 +121,7 @@ const MindlePost = ({ route, navigation }) => {
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          console.log(res.data.message);
+          console.log('조준', res.data.message);
           /**{
               "status": "SUCCESS",
               "message": "댓글을 작성하였습니다.",
@@ -145,9 +148,10 @@ const MindlePost = ({ route, navigation }) => {
           console.log(newComment);
           setComments((prev) => [res.data.data, ...prev]);
           setInputText('');
+          setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
           return true;
         } else {
-          console.log(res.data.message);
+          console.log('일단', res.data.message);
           return false;
         }
       })
@@ -178,23 +182,27 @@ const MindlePost = ({ route, navigation }) => {
   };
 
   const renderItem = ({ item }) => (
-    <Comment
-      key={item._id}
-      depth={item.depth}
-      props={{
-        name: item.name,
-        state: item.state,
-        text: item.text,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        _id: item._id,
-        _user: item._user,
-        _post: item._post,
-        __v: item.__v,
-        isDeleted: item.isDeleted,
-        deleteComment: deleteComment,
-      }}
-    />
+    console.log(item),
+    (
+      <Comment
+        key={item._id}
+        depth={item.depth}
+        props={{
+          name: item.name,
+          state: item.state,
+          text: item.text,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          _id: item._id,
+          _user: item._user,
+          _post: item._post,
+          __v: item.__v,
+          isDeleted: item.isDeleted,
+          deleteComment: deleteComment,
+          state: userName === item._user.name ? 'administrator' : 'visitor',
+        }}
+      />
+    )
   );
 
   return (
