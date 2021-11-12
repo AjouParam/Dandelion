@@ -4,6 +4,7 @@ const express = require('express');
 const { upload } = require('../config/upload');
 const router = express.Router();
 
+const mail = require('./controller/mailControl');
 const account = require('./controller/accountControl');
 const dandelion = require('./controller/mainControl');
 const post = require('./controller/postControl');
@@ -36,6 +37,11 @@ router.get('/account/regenerateToken', verifyToken, account.regenerateToken);
 router.post('/dandelion/create', verifyToken, dandelion.create);
 //좌표 범위 내의 민들레 불러오기
 router.post('/dandelion/get', verifyToken, dandelion.get);
+
+router.post('/mail/create', mail.create);
+router.post('/mail/load', mail.load);
+router.post('/mail/loadDetail', mail.loadDetail);
+router.post('/mail/save', mail.save);
 
 //민들레 성장, 실시간 방문자 수 부분
 
