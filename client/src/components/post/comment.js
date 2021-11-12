@@ -150,15 +150,17 @@ const Comment = ({ navigation, props, depth }) => {
             <TouchableOpacity>
               <ChoiceButton
                 onPress={() => {
-                  Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
-                    { text: '취소', style: 'cancel' },
-                    {
-                      text: '확인',
-                      onPress: () => {
-                        deleteComment(_post, _id);
-                      },
-                    },
-                  ]);
+                  state === 'visitor'
+                    ? setModalVisible(true)
+                    : Alert.alert('댓글 삭제', '댓글을 삭제하시겠습니까?', [
+                        { text: '취소', style: 'cancel' },
+                        {
+                          text: '확인',
+                          onPress: () => {
+                            deleteComment(_post, _id);
+                          },
+                        },
+                      ]);
                 }}
               >
                 <Text>{state === 'visitor' ? '답글' : '삭제'}</Text>
@@ -167,15 +169,6 @@ const Comment = ({ navigation, props, depth }) => {
           </TopContainer>
           <BottomContainer>
             <CommentText>{isDeleted ? '삭제된 댓글입니다.' : text}</CommentText>
-            <TouchableOpacity>
-              <ChoiceButton
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                <Text>답글</Text>
-              </ChoiceButton>
-            </TouchableOpacity>
           </BottomContainer>
         </CommentContainer>
         <FlatList

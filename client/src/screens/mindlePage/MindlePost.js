@@ -144,7 +144,7 @@ const MindlePost = ({ route, navigation }) => {
               userName: userName,
             },
           };
-          console.log(newComment);
+          console.log('new comment', newComment);
           setComments((prev) => [res.data.data, ...prev]);
           setInputText('');
           setData((prev) => ({ ...prev, comments: prev.comments + 1 }));

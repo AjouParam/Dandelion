@@ -54,23 +54,25 @@ const SubComment = ({ navigation, props, depth }) => {
           <User>{name}</User>
           {/* <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date> */}
           <Date>{createdAt}</Date>
-          <TouchableOpacity>
-            <ChoiceButton
-              onPress={() => {
-                Alert.alert('답글 삭제', '답글을 삭제하시겠습니까?', [
-                  { text: '취소', style: 'cancel' },
-                  {
-                    text: '확인',
-                    onPress: () => {
-                      deleteSubComment(_parentComment, _id);
+          {!state && (
+            <TouchableOpacity>
+              <ChoiceButton
+                onPress={() => {
+                  Alert.alert('답글 삭제', '답글을 삭제하시겠습니까?', [
+                    { text: '취소', style: 'cancel' },
+                    {
+                      text: '확인',
+                      onPress: () => {
+                        deleteSubComment(_parentComment, _id);
+                      },
                     },
-                  },
-                ]);
-              }}
-            >
-              <Text>{state === 'visitor' ? '답글' : '삭제'}</Text>
-            </ChoiceButton>
-          </TouchableOpacity>
+                  ]);
+                }}
+              >
+                <Text> 삭제</Text>
+              </ChoiceButton>
+            </TouchableOpacity>
+          )}
         </TopContainer>
         <BottomContainer>
           <CommentText>{isDeleted ? '삭제된 댓글입니다.' : text}</CommentText>
