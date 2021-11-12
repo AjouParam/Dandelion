@@ -67,7 +67,7 @@ const DescriptionContainer = styled.View`
 `;
 const MindleDescription = styled.Text`
   font-weight: 400;
-  font-size: 13;
+  font-size: 13px;
 `;
 
 const MapsRenderHeader = ({ clickedMindleInfo }) => {

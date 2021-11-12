@@ -133,6 +133,7 @@ const Maps = ({ navigation }) => {
             } else {
               return (
                 <Mindle
+                  key={String(index)}
                   props={props}
                   onPress={() => {
                     MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);

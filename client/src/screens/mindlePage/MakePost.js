@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
+
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -26,11 +28,12 @@ const Body = styled.View`
   height: 80%;
   padding: 15px 5px;
   border-bottom-width: 1px;
+  justify-content: space-between;
+  align-items: flex-start;
 `;
 const BodyInput = styled.TextInput`
   flex-shrink: 1;
 `;
-
 const Footer = styled.View`
   padding: 15px 10px;
   display: flex;
@@ -42,7 +45,22 @@ const Footer = styled.View`
 `;
 const SelectPhotoButton = styled.TouchableOpacity``;
 const PostButton = styled.TouchableOpacity``;
-
+const ImageList = styled.View`
+  display: flex;
+  height: 90px;
+  width: ${Dimensions.get('window').width - 20}px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  background-color: #fff;
+  background-color: #fefefe;
+  elevation: 1;
+`;
+const ImageElement = styled.Image`
+  width: 80px;
+  height: 80px;
+  margin: 5px;
+`;
 const MakePost = ({ navigation, route }) => {
   const {
     mindleId,
@@ -61,9 +79,9 @@ const MakePost = ({ navigation, route }) => {
   const jwtToken = useRecoilValue(userState.uidState);
   const name = useRecoilValue(userState.nameState);
   useEffect(() => {
-    axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+    axios.defaults.baseURL = 'http://3.35.45.177:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
     if (modifyMode) {
       setTitle(postContent.title);
@@ -79,82 +97,142 @@ const MakePost = ({ navigation, route }) => {
       images: images,
     };
 
-    await axios.patch(`/${mindleId}/post/update/${postContent.postId}`, data).then((res) => {
-      if (res.data.status === 'SUCCESS') {
-        Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
-          {
-            text: '확인',
-            onPress: () => {
-              setRefresh(true);
-              navigation.goBack();
+    await axios
+      .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          return res.data.data;
+        } else {
+          Alert.alert('게시글 수정', '오류가 발생했습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
             },
-          },
-        ]);
-      } else {
-        Alert.alert('게시글 수정', '오류가 발생했습니다.', [
-          {
-            text: '확인',
-            onPress: () => {
-              setRefresh(true);
-              navigation.goBack();
-            },
-          },
-        ]);
-      }
-    });
+          ]);
+        }
+      })
+      .then((data) => {
+        console.log(data._id);
+        if (data) {
+          let formData = new FormData();
+          formData.append('images', images);
+          formData.append('postId', data._id);
+
+          axios
+            .post(`/dandelion/images/post`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            })
+            .then((res) => {
+              if (res.data.status === 'SUCCESS') {
+                console.log(res);
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
+                data.images = res.data.data;
+                console.log(data);
+                Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+                  {
+                    text: '확인',
+                    onPress: () => {
+                      setRefresh(true);
+                      navigation.goBack();
+                    },
+                  },
+                ]);
+                // setRefresh(true);
+                // route.params.onGoBack(data);
+                // navigation.goBack();
+              } else {
+                console.log('이미지 업로드 실패');
+              }
+            })
+            .catch((err) => console.log(err.message));
+        } else {
+          console.log('게시글 작성 실패');
+          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+        }
+      });
   };
 
   const setPost = async () => {
     const data = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       title: title,
       text: bodyText,
       location: {
         longitude: longitude,
         latitude: latitude,
       },
-      images: images,
+      // images: images,
     };
 
-    await axios.post(`/${mindleId}/post/create`, data).then((res) => {
-      /**{
+    await axios
+      .post(`/${mindleId}/post/create`, data)
+      .then((res) => {
+        /**{
         "status": "SUCCESS",
         "message": "게시글을 작성하였습니다.",
-        "data": {
-            "createdAt": "2021-10-04T08:50:51.405Z",
-            "updatedAt": "2021-10-04T08:50:45.717Z",
-            "likes": 0,
-            "images": [
-                "test1.jpg",
-                "test2.jpg"
-            ],
-            "comments": 0,
-            "_id": "615ac06b37a3bd4cc0c2f91c",
-            "_user": "61365d8cd4e22a2dd4df2a6f",
-            "_dandelion": "614c4ae99aa99a08e0d57c30",
-            "location": {
-                "type": "Point",
-                "coordinates": [
-                    127.04275784194242,
-                    37.28335975273373
-                ]
-            },
-            "title": "test2에 첫게시글",
-            "text": "블라블라",
-            "__v": 0
-          }
+        data:{ ... },
         } 
       */
-      if (res.data.status === 'SUCCESS') {
-        console.log(res.data.message);
-        const userId = res.data.data._user;
-        res.data.data._user = { _id: userId, name: name };
-        route.params.onGoBack(res.data.data);
-        navigation.goBack();
-      } else {
-        console.log('Failed to post');
+        if (res.data.status === 'SUCCESS') {
+          console.log(res.data.message);
+          return res.data.data;
+        } else {
+          console.log('Failed to post');
+          return null;
+        }
+      })
+      .then((data) => {
+        console.log(data._id);
+        if (data) {
+          let formData = new FormData();
+          formData.append('images', images);
+          formData.append('postId', data._id);
+
+          axios
+            .post(`/dandelion/images/post`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            })
+            .then((res) => {
+              if (res.data.status === 'SUCCESS') {
+                console.log(res);
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
+                data.images = res.data.data;
+                console.log(data);
+                setRefresh(true);
+                route.params.onGoBack(data);
+                navigation.goBack();
+              } else {
+                console.log('이미지 업로드 실패');
+              }
+            })
+            .catch((err) => console.log(err.message));
+        } else {
+          console.log('게시글 작성 실패');
+          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
+
+  const pickImage = () => {
+    launchImageLibrary({}, (response) => {
+      if (response.didCancel) {
+        console.log('이미지 불러오기 취소');
+      } else if (response.assets && !images.find((item) => item === response.uri)) {
+        console.log('이미지 로드');
+        //console.log(response.assets[0]);
+        setImages((prev) => [...prev, ...response.assets]);
       }
     });
   };
+
   return (
     <Container>
       <TitleContainer>
@@ -178,10 +256,19 @@ const MakePost = ({ navigation, route }) => {
           }}
           multiline={true}
         ></BodyInput>
+        <ImageList>
+          {images.map((item) => (
+            <ImageElement source={{ uri: item.uri }} />
+          ))}
+        </ImageList>
       </Body>
       <Footer>
-        <SelectPhotoButton>
-          <Text>사진</Text>
+        <SelectPhotoButton
+          onPress={() => {
+            pickImage();
+          }}
+        >
+          <Text>사진 불러오기</Text>
         </SelectPhotoButton>
         {/* TODO : Replace to navigation header button */}
         <PostButton>

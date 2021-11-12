@@ -139,20 +139,36 @@ const MindlePostContent = ({
   images,
   likes,
   comments,
+  userLike,
   isInMindle = false,
   isInPost = false,
   setMenuOpen = () => {},
   onDeletePost = () => {},
   setRefresh = () => {},
+  setLikesList = () => {},
   navigation = null,
 }) => {
+  const [likesNum, setLikesNum] = useState(likes);
+  const [like, setLike] = useState(userLike);
   const [deleteModal, setDeleteModal] = useState(false);
   const userName = useRecoilValue(userState.nameState);
   const jwtToken = useRecoilValue(userState.uidState);
 
-  axios.defaults.baseURL = 'http://10.0.2.2:3000/';
+  axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+  const toggleLike = async () => {
+    // /:dandelionId/:postId/like
+    await axios.post(`${mindleId}/${postId}/like`).then((res) => {
+      if (res.data.status === 'SUCCESS') {
+        console.log(res.data.message, res.data.data.currentLikeStatus);
+        setLike(res.data.data.currentLikeStatus);
+        setLikesNum((prev) => (res.data.data.currentLikeStatus ? prev + 1 : prev - 1));
+        setLikesList(res.data.data.currentLikeStatus, likesNum, postId);
+      }
+    });
+  };
 
   const checkUpdate = () => {
     const created = new Date(date).getTime();
@@ -163,6 +179,7 @@ const MindlePostContent = ({
       return true;
     }
   };
+
   const modifyPost = () => {
     navigation.navigate('MakePost', {
       mindleId: mindleId,
@@ -179,7 +196,7 @@ const MindlePostContent = ({
           {
             text: '닫기',
             onPress: () => {
-              setMenu(false);
+              setMenuOpen(false);
 
               if (isInPost) {
                 setRefresh(true);
@@ -204,31 +221,17 @@ const MindlePostContent = ({
     <DropdownButton
       onPress={() => {
         setDeleteModal(true);
-        // Alert.alert(
-        //   '게시글 삭제',
-        //   `${mindleId}, ${postId}게시글을 삭제하시면 되돌릴 수 없습니다.\n그래도 삭제하시겠습니까?`,
-        //   [
-        //     { text: '취소', style: 'cancel' },
-        //     {
-        //       text: '확인',
-        //      ,
-        //     },
-        //   ],
-        //   {
-        //     cancelable: true,
-        //   },
-        // );
       }}
     >
       <Text style={{ color: '#EFB233' }}>ㅁ </Text>
-      <Text style={{ fontSize: 13, fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
+      <Text style={{ fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
     </DropdownButton>
   );
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
         <Text>ㅁ </Text>
-        <Text style={{ fontSize: 13, fontWeight: '400' }}>게시글 수정</Text>
+        <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
       </DropdownButton>
     );
   };
@@ -306,13 +309,15 @@ const MindlePostContent = ({
                       title: title,
                       text: text,
                       images: images,
-                      likes: likes,
+                      likes: likesNum,
                       comments: comments,
+                      userLike: like,
                       isInPost: true,
                       onDeletePost: onDeletePost,
                       isInMindle: isInMindle,
                       setMenuOpen: setMenuOpen,
                       setRefresh: setRefresh,
+                      setLikesList: setLikesList,
                       navigation: navigation,
                     });
                 }}
@@ -332,13 +337,15 @@ const MindlePostContent = ({
                       title: title,
                       text: text,
                       images: images,
-                      likes: likes,
+                      likes: likesNum,
                       comments: comments,
+                      userLike: like,
                       isInPost: true,
                       onDeletePost: onDeletePost,
                       isInMindle: isInMindle,
                       setMenuOpen: setMenuOpen,
                       setRefresh: setRefresh,
+                      setLikesList: setLikesList,
                       navigation: navigation,
                     });
                 }}
@@ -357,8 +364,14 @@ const MindlePostContent = ({
                 )
               : null}
             <BoardTipContainer>
-              <TouchableOpacity>
-                <Text>Like {likes}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  toggleLike();
+                }}
+              >
+                <Text>
+                  {like ? 'like' : 'unlike'} {likesNum}
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Text>Comments {comments}</Text>

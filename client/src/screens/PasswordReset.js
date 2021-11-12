@@ -102,7 +102,7 @@ const PasswordReset = ({ navigation }) => {
     //TODO : /account/verifyCode
     try {
       await axios
-        .post('http://10.0.2.2:3000/account/verifyCode', { email: email, verifyCode: verifyCode })
+        .post('http://3.35.45.177:3000/account/verifyCode', { email: email, verifyCode: verifyCode })
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             Alert.alert('인증코드 확인', '인증코드가 확인되었습니다. 새로운 비밀번호를 입력해주세요', [
@@ -145,7 +145,7 @@ const PasswordReset = ({ navigation }) => {
     //TODO : /account/resetPwd
     try {
       await axios
-        .post('http://10.0.2.2:3000/account/resetPwd', { email: email, password: passwordConfirm })
+        .post('http://3.35.45.177:3000/account/resetPwd', { email: email, password: passwordConfirm })
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             Alert.alert('비밀번호 재설정', '비밀번호를 재설정하였습니다. 로그인을 해주세요.', [
