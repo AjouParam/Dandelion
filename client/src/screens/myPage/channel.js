@@ -97,7 +97,7 @@ const channel = ({ navigation, props }) => {
   const userId = decode(token)._id;
   const [messages, setMessages] = useState([]);
 
-  const roomId = props.roomId,
+  const roomId = props.roomId;
   const audienceName = props.name;
   const audienceProfile = props.src;
   const onSend = useCallback((messages = []) => {

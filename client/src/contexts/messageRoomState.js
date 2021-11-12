@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 const messageRoomState = {
   roomIdState: atom({
     key: 'roomIdState',
-    default: '',
+    default: [],
   }),
   audienceNameState: atom({
     key: 'audienceNameState',
