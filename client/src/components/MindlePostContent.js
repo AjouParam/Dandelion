@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Dimensions, Platform, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import DeleteModal from '@components/Modal';
 import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
@@ -10,6 +10,10 @@ const DefaultProfile = require('../assets/profile/profile_default.png');
 const Unlike = require('../assets/post/like_unclicked.png');
 const Like = require('../assets/post/like_clicked.png');
 const CommentImage = require('../assets/post/comment.png');
+const MenuImage = require('../assets/post/post_menu.png');
+const PostEditImage = require('../assets/post/post_menu_edit.png');
+const PostDeleteImage = require('../assets/post/post_delete.png');
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const BoardContainer = styled.View`
@@ -251,17 +255,42 @@ const MindlePostContent = ({
         setDeleteModal(true);
       }}
     >
-      <Text style={{ color: '#EFB233' }}>ㅁ </Text>
+      <Image source={PostDeleteImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
       <Text style={{ fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
     </DropdownButton>
   );
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
-        <Text>ㅁ </Text>
+        <Image source={PostEditImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
         <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
       </DropdownButton>
     );
+  };
+
+  const goMindlePost = () => {
+    if (isInMindle && !isInPost)
+      navigation.navigate('MindlePost', {
+        mindleId: mindleId,
+        postId: postId,
+        userPhoto: userPhoto,
+        name: name,
+        date: date,
+        updatedAt: updatedAt,
+        title: title,
+        text: text,
+        images: images,
+        likes: likesNum,
+        comments: comments,
+        userLike: like,
+        isInPost: true,
+        onDeletePost: onDeletePost,
+        isInMindle: isInMindle,
+        setMenuOpen: setMenuOpen,
+        setRefresh: setRefresh,
+        setLikesList: setLikesList,
+        navigation: navigation,
+      });
   };
 
   if (mindleId && postId)
@@ -319,7 +348,9 @@ const MindlePostContent = ({
                   }}
                   saveScrollPosition={false}
                 >
-                  <Text style={{ fontSize: 16 }}>...</Text>
+                  <View>
+                    <Image source={MenuImage} style={{ width: 40, height: 70, marginBottom: -25, marginTop: -20 }} />
+                  </View>
                 </ModalDropdown>
               </View>
             )}
@@ -328,56 +359,14 @@ const MindlePostContent = ({
             <BoardContentTextContainer>
               <Title
                 onPress={() => {
-                  if (isInMindle && !isInPost)
-                    navigation.navigate('MindlePost', {
-                      mindleId: mindleId,
-                      postId: postId,
-                      userPhoto: userPhoto,
-                      name: name,
-                      date: date,
-                      updatedAt: updatedAt,
-                      title: title,
-                      text: text,
-                      images: images,
-                      likes: likesNum,
-                      comments: comments,
-                      userLike: like,
-                      isInPost: true,
-                      onDeletePost: onDeletePost,
-                      isInMindle: isInMindle,
-                      setMenuOpen: setMenuOpen,
-                      setRefresh: setRefresh,
-                      setLikesList: setLikesList,
-                      navigation: navigation,
-                    });
+                  goMindlePost();
                 }}
               >
                 {title}
               </Title>
               <Text
                 onPress={() => {
-                  if (isInMindle && !isInPost)
-                    navigation.navigate('MindlePost', {
-                      mindleId: mindleId,
-                      postId: postId,
-                      userPhoto: userPhoto,
-                      name: name,
-                      date: date,
-                      updatedAt: updatedAt,
-                      title: title,
-                      text: text,
-                      images: images,
-                      likes: likesNum,
-                      comments: comments,
-                      userLike: like,
-                      isInPost: true,
-                      onDeletePost: onDeletePost,
-                      isInMindle: isInMindle,
-                      setMenuOpen: setMenuOpen,
-                      setRefresh: setRefresh,
-                      setLikesList: setLikesList,
-                      navigation: navigation,
-                    });
+                  goMindlePost();
                 }}
               >
                 {text}
@@ -403,7 +392,11 @@ const MindlePostContent = ({
                 <LikeText>{likes}</LikeText>
               </LikeButton>
 
-              <CommentContainer>
+              <CommentContainer
+                onPress={() => {
+                  goMindlePost();
+                }}
+              >
                 <CommentIcon source={CommentImage} />
                 <CommentText>{comments}</CommentText>
               </CommentContainer>
