@@ -213,10 +213,7 @@ const MindlePost = ({ route, navigation }) => {
           <Post
             mindleId={mindleId}
             postId={postId}
-            userPhoto={
-              data.userPhoto ||
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png'
-            }
+            userPhoto={data.userPhoto}
             name={data.name}
             date={data.date}
             updatedAt={data.updatedAt}

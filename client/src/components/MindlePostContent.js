@@ -6,6 +6,9 @@ import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
 import axios from 'axios';
 import ModalDropdown from 'react-native-modal-dropdown';
+const DefaultProfile = require('../assets/profile/profile_default.png');
+const Unlike = require('../assets/post/like_unclicked.png');
+const Like = require('../assets/post/like_clicked.png');
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -18,19 +21,19 @@ const BoardContainer = styled.View`
 `;
 const BoardUserInfo = styled.View`
   width: 100%;
+  padding: 0px 10px;
   display: flex;
   flex-direction: row;
 `;
 const BoardUserImageContainer = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
-  padding: 5px 5px;
   align-items: center;
   justify-content: center;
 `;
 const BoardUserImage = styled.Image`
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
 `;
 const BoardUserName = styled.Text`
   font-size: 14px;
@@ -39,9 +42,10 @@ const BoardUserName = styled.Text`
 `;
 const BoardContents = styled.View`
   margin-top: 5px;
-  padding-left: 55px;
+  padding: 5px;
 `;
 const BoardContentTextContainer = styled.View`
+  padding: 0px 15px;
   min-height: 60px;
   max-height: 100px;
   justify-content: flex-start;
@@ -65,14 +69,29 @@ const BoardContentImage = styled.Image`
   margin-right: 10px;
 `;
 const BoardTipContainer = styled.View`
-  height: 30px;
-  padding-top: 5px;
+  height: 35px;
   padding-right: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
+const LikeContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+const LikeText = styled.Text``;
+const LikeButton = styled.TouchableOpacity`
+  width: 50px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+`;
+const LikeButtonImage = styled.Image`
+  width: 55px;
+  height: 55px;
+`;
 const DropdownButton = styled.TouchableOpacity`
   flex: 1;
   flex-direction: row;
@@ -246,13 +265,15 @@ const MindlePostContent = ({
                 if (isInMindle) setMenuOpen(true);
               }}
             >
-              <BoardUserImage
-                source={{
-                  uri:
-                    userPhoto ||
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-                }}
-              />
+              {userPhoto ? (
+                <BoardUserImage
+                  source={{
+                    uri: userPhoto,
+                  }}
+                />
+              ) : (
+                <BoardUserImage source={DefaultProfile} />
+              )}
             </BoardUserImageContainer>
             <View style={{ flex: 1, padding: 5 }}>
               <BoardUserName
@@ -364,15 +385,16 @@ const MindlePostContent = ({
                 )
               : null}
             <BoardTipContainer>
-              <TouchableOpacity
-                onPress={() => {
-                  toggleLike();
-                }}
-              >
-                <Text>
-                  {like ? 'like' : 'unlike'} {likesNum}
-                </Text>
-              </TouchableOpacity>
+              <LikeContainer>
+                <LikeButton
+                  onPress={() => {
+                    toggleLike();
+                  }}
+                >
+                  <LikeButtonImage source={like ? Like : Unlike} />
+                </LikeButton>
+                <LikeText>{likes}</LikeText>
+              </LikeContainer>
               <TouchableOpacity>
                 <Text>Comments {comments}</Text>
               </TouchableOpacity>
