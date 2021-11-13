@@ -9,7 +9,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 const DefaultProfile = require('../assets/profile/profile_default.png');
 const Unlike = require('../assets/post/like_unclicked.png');
 const Like = require('../assets/post/like_clicked.png');
-
+const CommentImage = require('../assets/post/comment.png');
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const BoardContainer = styled.View`
@@ -77,21 +77,30 @@ const BoardTipContainer = styled.View`
   align-items: center;
 `;
 
-const LikeContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-const LikeText = styled.Text``;
 const LikeButton = styled.TouchableOpacity`
+  flex-direction: row;
   width: 50px;
   height: 35px;
   align-items: center;
   justify-content: center;
 `;
 const LikeButtonImage = styled.Image`
-  width: 55px;
+  width: 35px;
   height: 55px;
 `;
+const LikeText = styled.Text``;
+
+const CommentContainer = styled.TouchableOpacity`
+  height: 35px;
+  width: 50px;
+  flex-direction: row;
+  align-items: center;
+`;
+const CommentIcon = styled.Image`
+  width: 35px;
+  height: 55px;
+`;
+const CommentText = styled.Text``;
 const DropdownButton = styled.TouchableOpacity`
   flex: 1;
   flex-direction: row;
@@ -385,19 +394,19 @@ const MindlePostContent = ({
                 )
               : null}
             <BoardTipContainer>
-              <LikeContainer>
-                <LikeButton
-                  onPress={() => {
-                    toggleLike();
-                  }}
-                >
-                  <LikeButtonImage source={like ? Like : Unlike} />
-                </LikeButton>
+              <LikeButton
+                onPress={() => {
+                  toggleLike();
+                }}
+              >
+                <LikeButtonImage source={like ? Like : Unlike} />
                 <LikeText>{likes}</LikeText>
-              </LikeContainer>
-              <TouchableOpacity>
-                <Text>Comments {comments}</Text>
-              </TouchableOpacity>
+              </LikeButton>
+
+              <CommentContainer>
+                <CommentIcon source={CommentImage} />
+                <CommentText>{comments}</CommentText>
+              </CommentContainer>
             </BoardTipContainer>
           </BoardContents>
         </BoardContainer>
