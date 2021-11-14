@@ -376,7 +376,7 @@ const MindlePostContent = ({
                   <BoardContentImageContainer>
                     {images.map((item, idx) => (
                       //<BoardContentImage source={{ uri: item }} />
-                      <Image key={idx} source={{ uri: item.uri }} style={{ width: 90, height: 90 }} />
+                      <Image key={idx} source={{ uri: item }} style={{ width: 90, height: 90 }} />
                     ))}
                   </BoardContentImageContainer>
                 )

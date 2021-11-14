@@ -1,9 +1,10 @@
-import React, { useContext, useMemo, useLayoutEffect } from 'react';
+import React, { useContext, useMemo, useLayoutEffect, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import decode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import messageRoomState from '@contexts/messageRoomState';
 import AuthStack from './AuthStack';
 import { Spinner } from '@components/index';
 import { ProgressContext } from '@contexts/Progress';
@@ -16,6 +17,7 @@ const Navigation = () => {
   const [email, setEmail] = useRecoilState(userState.emailState);
   const [uid, setUid] = useRecoilState(userState.uidState);
   const [name, setName] = useRecoilState(userState.nameState);
+  const [messageRoomData, setMessageRoomData] = useRecoilState(messageRoomState.roomIdState);
 
   useLayoutEffect(() => {
     const _loadInitialState = async () => {
@@ -68,7 +70,15 @@ const Navigation = () => {
     };
     _loadInitialState();
   }, []);
-
+  useEffect(async () => {
+    if (uid === null) return;
+    const result = await axios.post('http://10.0.2.2:4000/mail/load/', { user: 'A' });
+    if (result.data.status === 'SUCCESS') setMessageRoomData(result.data.data);
+    console.log('이거맞냐', result.data);
+  }, [uid]);
+  useEffect(() => {
+    console.log('좋다', messageRoomData);
+  }, [messageRoomData]);
   return (
     <NavigationContainer>
       {uid && email ? <MainStack /> : <AuthStack />}

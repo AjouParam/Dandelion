@@ -9,7 +9,10 @@ const Container = styled.ScrollView`
   height: ${Dimensions.get('window').height - 60}px;
   background-color: #ffffff;
 `;
-const MindleSubPage = ({ navigation }) => {
+
+const MindleSubPage = ({ navigation, props }) => {
+  console.log('HotSpot props', props);
+
   return (
     <Container>
       <Mindle //type setting

@@ -210,12 +210,12 @@ const MakePost = ({ navigation, route }) => {
             })
             .then((res) => {
               if (res.data.status === 'SUCCESS') {
-                console.log(res.data.data.map((item) => item.fileUrl));
+                console.log(res.data.data.map((item) => item));
                 const userId = data._user;
                 data._user = { _id: userId, name: name };
                 data.images = [
                   ...res.data.data.map((item) => {
-                    return { uri: item.fileUrl };
+                    return item.fileUrl;
                   }),
                 ];
                 console.log(data);
