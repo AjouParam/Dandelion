@@ -10,19 +10,17 @@ const headers = {
 const jwtToken = useRecoilValue(userState.uidState);
 axios.defaults.baseURL = 'http://3.35.45.177:3000/';
 axios.defaults.headers.common['x-access-token'] = jwtToken;
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const getData = async () => {
   const data = await axios
     .get('/dandelion/post/get/mine', {
-      query: {
-        page: 0,
+      params: {
+        page: 1,
         maxPost: 4,
       },
     })
     .then((res) => console.log(res));
-  console.log('이건가', data);
   return data;
 };
 

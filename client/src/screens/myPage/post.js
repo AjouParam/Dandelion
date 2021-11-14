@@ -1,11 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Header } from 'react-native';
 import Post from '../../components/post/Post';
 import postService from '../../service/post';
+import { useRecoilValue } from 'recoil';
+import userState from '@contexts/userState';
+import axios from 'axios';
 
 const PostSubPage = ({ navigation, click = true }) => {
+  const [mypost, setMypost] = useState();
+  const jwtToken = useRecoilValue(userState.uidState);
+
   useEffect(() => {
-    postService.getData();
+    setMypost(postService.getData());
   }, []);
   return (
     <>
