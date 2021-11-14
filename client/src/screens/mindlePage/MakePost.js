@@ -252,7 +252,7 @@ const MakePost = ({ navigation, route }) => {
       } else if (response.assets && !images.find((item) => item === response.uri)) {
         console.log('이미지 로드');
         //console.log(response.assets[0]);
-        setImages(response.assets);
+        setImages((prev) => [...prev, ...response.assets]);
         const newImages = response.assets.map((item) => {
           const newImage = {
             uri: item.uri,
