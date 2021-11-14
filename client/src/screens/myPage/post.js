@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Header } from 'react-native';
+import { View, Text, Header, FlatList, ScrollView } from 'react-native';
 import Post from '../../components/post/Post';
 import postService from '../../service/post';
 import { useRecoilValue } from 'recoil';
@@ -11,36 +11,40 @@ const PostSubPage = ({ navigation, click = true }) => {
   const jwtToken = useRecoilValue(userState.uidState);
 
   useEffect(() => {
-    setMypost(postService.getData());
+    postService.getData(setMypost);
+    // console.log('mypost', mypost);
   }, []);
+  const renderItem = ({ item }) => {
+    <Post //type setting
+      click={click}
+      navigation={navigation}
+      props={{
+        name: item._user.name,
+        date: item.createdAt,
+        text: item.text,
+        like: item.likes,
+        message: item.comments,
+        images: item.images,
+      }}
+    />;
+  };
   return (
-    <>
-      <Post //type setting
-        click={click}
-        navigation={navigation}
-        props={{
-          name: '아무개',
-          date: '2021.07.19',
-          text: '많아요~',
-          like: 6,
-          message: 23,
-        }}
-      />
-
-      <Post //type setting
-        click={click}
-        navigation={navigation}
-        props={{
-          name: '드라큘라',
-          date: '2021.10.26',
-          text: '할로윈데이 까지 5일 남았습니다',
-          like: 999,
-          message: 60,
-        }}
-      />
-      {/* <Post />
-      <Post /> */}
-    </>
+    <ScrollView>
+      {mypost?.map((item) => (
+        <Post //type setting
+          click={click}
+          navigation={navigation}
+          props={{
+            name: item._user.name,
+            date: item.createdAt,
+            text: item.text,
+            like: item.likes,
+            message: item.comments,
+            images: item.images,
+          }}
+        />
+      ))}
+    </ScrollView>
   );
 };
 
