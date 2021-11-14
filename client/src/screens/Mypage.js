@@ -40,6 +40,7 @@ const UserInfo = styled.View`
   width: 100%;
   flex-direction: row;
   align-items: center;
+  margin-left: 10px;
 `;
 const UserContentsContainer = styled.View`
   flex-direction: row;
@@ -68,9 +69,10 @@ const ListSection = styled.View`
 `;
 const Profile = styled.Image`
   border-radius: 100;
-  width: 110px;
-  height: 110px;
-  margin-left: 10px;
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+  margin-left: 20px;
 `;
 
 const NameText = styled.Text`

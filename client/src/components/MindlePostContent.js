@@ -36,8 +36,8 @@ const BoardUserImageContainer = styled.TouchableOpacity`
   justify-content: center;
 `;
 const BoardUserImage = styled.Image`
-  width: 60px;
-  height: 60px;
+  width: 45px;
+  height: 45px;
 `;
 const BoardUserName = styled.Text`
   font-size: 14px;
