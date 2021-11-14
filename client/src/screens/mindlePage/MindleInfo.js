@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import ProfileModal from '@components/Modal';
+
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
@@ -54,7 +54,7 @@ const Tab = styled.View`
 
 const MindleInfo = ({ navigation, props }) => {
   const { mindleKey, name, position, overlap, route } = props;
-  const [menuOpen, setMenuOpen] = useState(false);
+
   const [page, setPage] = useState(1);
   const [tabIndex, setTabIndex] = useState(0);
   const [data, setData] = useState([]);
@@ -190,7 +190,6 @@ const MindleInfo = ({ navigation, props }) => {
             likes={item.likes}
             comments={item.comments}
             userLike={item.userLike}
-            setMenuOpen={setMenuOpen}
             setLikesList={(like, likeNum, postId) => {
               setData((prev) => {
                 const newData = prev.map((item) => {
@@ -375,58 +374,6 @@ const MindleInfo = ({ navigation, props }) => {
               <ActivityIndicator size="large" color="0000ff" />
             </View>
           )}
-
-          <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
-            <View
-              style={{
-                width: '100%',
-                height: '100%',
-                justifyContent: 'space-evenly',
-                padding: 5,
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  borderTopLeftRadius: 20,
-                  borderTopRightRadius: 20,
-                  width: '100%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <TouchableOpacity
-                  style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
-                  onPress={() => {
-                    Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
-                  }}
-                >
-                  <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
-                </TouchableOpacity>
-              </View>
-              <Divider />
-              <View
-                style={{
-                  flex: 1,
-                  borderBottomLeftRadius: 20,
-                  borderBottomRightRadius: 20,
-                  width: '100%',
-                  marginTop: 5,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    setMenuOpen(false);
-                  }}
-                  style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
-                >
-                  <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </ProfileModal>
         </Container>
       </>
     );
