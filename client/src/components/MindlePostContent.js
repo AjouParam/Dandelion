@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, Platform, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Dimensions, Platform, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import DeleteModal from '@components/Modal';
 import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
 import axios from 'axios';
 import ModalDropdown from 'react-native-modal-dropdown';
+const DefaultProfile = require('../assets/profile/profile_default.png');
+const Unlike = require('../assets/post/like_unclicked.png');
+const Like = require('../assets/post/like_clicked.png');
+const CommentImage = require('../assets/post/comment.png');
+const MenuImage = require('../assets/post/post_menu.png');
+const PostEditImage = require('../assets/post/post_menu_edit.png');
+const PostDeleteImage = require('../assets/post/post_delete.png');
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -18,19 +25,19 @@ const BoardContainer = styled.View`
 `;
 const BoardUserInfo = styled.View`
   width: 100%;
+  padding: 0px 10px;
   display: flex;
   flex-direction: row;
 `;
 const BoardUserImageContainer = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
-  padding: 5px 5px;
   align-items: center;
   justify-content: center;
 `;
 const BoardUserImage = styled.Image`
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
 `;
 const BoardUserName = styled.Text`
   font-size: 14px;
@@ -39,9 +46,10 @@ const BoardUserName = styled.Text`
 `;
 const BoardContents = styled.View`
   margin-top: 5px;
-  padding-left: 55px;
+  padding: 5px;
 `;
 const BoardContentTextContainer = styled.View`
+  padding: 0px 15px;
   min-height: 60px;
   max-height: 100px;
   justify-content: flex-start;
@@ -65,14 +73,38 @@ const BoardContentImage = styled.Image`
   margin-right: 10px;
 `;
 const BoardTipContainer = styled.View`
-  height: 30px;
-  padding-top: 5px;
+  height: 35px;
   padding-right: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
+const LikeButton = styled.TouchableOpacity`
+  flex-direction: row;
+  width: 50px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+`;
+const LikeButtonImage = styled.Image`
+  width: 35px;
+  height: 55px;
+`;
+const LikeText = styled.Text``;
+
+const CommentContainer = styled.TouchableOpacity`
+  height: 35px;
+  width: 50px;
+  flex-direction: row;
+  align-items: center;
+`;
+const CommentIcon = styled.Image`
+  width: 35px;
+  height: 55px;
+`;
+const CommentText = styled.Text``;
 const DropdownButton = styled.TouchableOpacity`
   flex: 1;
   flex-direction: row;
@@ -223,17 +255,42 @@ const MindlePostContent = ({
         setDeleteModal(true);
       }}
     >
-      <Text style={{ color: '#EFB233' }}>ㅁ </Text>
+      <Image source={PostDeleteImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
       <Text style={{ fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
     </DropdownButton>
   );
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
-        <Text>ㅁ </Text>
+        <Image source={PostEditImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
         <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
       </DropdownButton>
     );
+  };
+
+  const goMindlePost = () => {
+    if (isInMindle && !isInPost)
+      navigation.navigate('MindlePost', {
+        mindleId: mindleId,
+        postId: postId,
+        userPhoto: userPhoto,
+        name: name,
+        date: date,
+        updatedAt: updatedAt,
+        title: title,
+        text: text,
+        images: images,
+        likes: likesNum,
+        comments: comments,
+        userLike: like,
+        isInPost: true,
+        onDeletePost: onDeletePost,
+        isInMindle: isInMindle,
+        setMenuOpen: setMenuOpen,
+        setRefresh: setRefresh,
+        setLikesList: setLikesList,
+        navigation: navigation,
+      });
   };
 
   if (mindleId && postId)
@@ -246,13 +303,15 @@ const MindlePostContent = ({
                 if (isInMindle) setMenuOpen(true);
               }}
             >
-              <BoardUserImage
-                source={{
-                  uri:
-                    userPhoto ||
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png',
-                }}
-              />
+              {userPhoto ? (
+                <BoardUserImage
+                  source={{
+                    uri: userPhoto,
+                  }}
+                />
+              ) : (
+                <BoardUserImage source={DefaultProfile} />
+              )}
             </BoardUserImageContainer>
             <View style={{ flex: 1, padding: 5 }}>
               <BoardUserName
@@ -289,7 +348,9 @@ const MindlePostContent = ({
                   }}
                   saveScrollPosition={false}
                 >
-                  <Text style={{ fontSize: 16 }}>...</Text>
+                  <View>
+                    <Image source={MenuImage} style={{ width: 40, height: 70, marginBottom: -25, marginTop: -20 }} />
+                  </View>
                 </ModalDropdown>
               </View>
             )}
@@ -298,56 +359,14 @@ const MindlePostContent = ({
             <BoardContentTextContainer>
               <Title
                 onPress={() => {
-                  if (isInMindle && !isInPost)
-                    navigation.navigate('MindlePost', {
-                      mindleId: mindleId,
-                      postId: postId,
-                      userPhoto: userPhoto,
-                      name: name,
-                      date: date,
-                      updatedAt: updatedAt,
-                      title: title,
-                      text: text,
-                      images: images,
-                      likes: likesNum,
-                      comments: comments,
-                      userLike: like,
-                      isInPost: true,
-                      onDeletePost: onDeletePost,
-                      isInMindle: isInMindle,
-                      setMenuOpen: setMenuOpen,
-                      setRefresh: setRefresh,
-                      setLikesList: setLikesList,
-                      navigation: navigation,
-                    });
+                  goMindlePost();
                 }}
               >
                 {title}
               </Title>
               <Text
                 onPress={() => {
-                  if (isInMindle && !isInPost)
-                    navigation.navigate('MindlePost', {
-                      mindleId: mindleId,
-                      postId: postId,
-                      userPhoto: userPhoto,
-                      name: name,
-                      date: date,
-                      updatedAt: updatedAt,
-                      title: title,
-                      text: text,
-                      images: images,
-                      likes: likesNum,
-                      comments: comments,
-                      userLike: like,
-                      isInPost: true,
-                      onDeletePost: onDeletePost,
-                      isInMindle: isInMindle,
-                      setMenuOpen: setMenuOpen,
-                      setRefresh: setRefresh,
-                      setLikesList: setLikesList,
-                      navigation: navigation,
-                    });
+                  goMindlePost();
                 }}
               >
                 {text}
@@ -364,18 +383,23 @@ const MindlePostContent = ({
                 )
               : null}
             <BoardTipContainer>
-              <TouchableOpacity
+              <LikeButton
                 onPress={() => {
                   toggleLike();
                 }}
               >
-                <Text>
-                  {like ? 'like' : 'unlike'} {likesNum}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text>Comments {comments}</Text>
-              </TouchableOpacity>
+                <LikeButtonImage source={like ? Like : Unlike} />
+                <LikeText>{likes}</LikeText>
+              </LikeButton>
+
+              <CommentContainer
+                onPress={() => {
+                  goMindlePost();
+                }}
+              >
+                <CommentIcon source={CommentImage} />
+                <CommentText>{comments}</CommentText>
+              </CommentContainer>
             </BoardTipContainer>
           </BoardContents>
         </BoardContainer>

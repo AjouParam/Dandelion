@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Header } from 'react-native';
-
 import Post from '../../components/post/Post';
+import postService from '../../service/post';
 
 const PostSubPage = ({ navigation, click = true }) => {
+  useEffect(() => {
+    postService.getData();
+  }, []);
   return (
     <>
       <Post //type setting
