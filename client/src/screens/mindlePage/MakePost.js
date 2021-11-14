@@ -76,12 +76,13 @@ const MakePost = ({ navigation, route }) => {
   const [title, setTitle] = useState('');
   const [bodyText, setBodyText] = useState('');
   const [images, setImages] = useState([]);
+  const [sendImages, setSendImages] = useState([]);
   const jwtToken = useRecoilValue(userState.uidState);
   const name = useRecoilValue(userState.nameState);
   useEffect(() => {
     axios.defaults.baseURL = 'http://3.35.45.177:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
-    // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
     if (modifyMode) {
       setTitle(postContent.title);
@@ -101,6 +102,7 @@ const MakePost = ({ navigation, route }) => {
       .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
+          console.log('게시글 작성');
           return res.data.data;
         } else {
           Alert.alert('게시글 수정', '오류가 발생했습니다.', [
@@ -122,9 +124,7 @@ const MakePost = ({ navigation, route }) => {
           formData.append('postId', data._id);
 
           axios
-            .post(`/dandelion/images/post`, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            })
+            .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
             .then((res) => {
               if (res.data.status === 'SUCCESS') {
                 console.log(res);
@@ -148,19 +148,23 @@ const MakePost = ({ navigation, route }) => {
                 console.log('이미지 업로드 실패');
               }
             })
-            .catch((err) => console.log(err.message));
+            .catch((err) => {
+              console.log(err);
+              console.log('이미지 에러');
+            });
         } else {
           console.log('게시글 작성 실패');
           Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
         }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        console.log('게시글 오류');
       });
   };
 
   const setPost = async () => {
     const data = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
       title: title,
       text: bodyText,
       location: {
@@ -169,7 +173,8 @@ const MakePost = ({ navigation, route }) => {
       },
       // images: images,
     };
-
+    console.log(data);
+    console.log('setPost');
     await axios
       .post(`/${mindleId}/post/create`, data)
       .then((res) => {
@@ -179,31 +184,40 @@ const MakePost = ({ navigation, route }) => {
         data:{ ... },
         } 
       */
+        console.log('send');
         if (res.data.status === 'SUCCESS') {
-          console.log(res.data.message);
+          console.log('게시글 작성');
           return res.data.data;
         } else {
           console.log('Failed to post');
           return null;
         }
       })
-      .then((data) => {
+      .then(async (data) => {
         console.log(data._id);
-        if (data) {
+        data.comments = 0;
+        data.likes = 0;
+        if (data && sendImages.length > 0) {
+          console.log(sendImages);
           let formData = new FormData();
-          formData.append('images', images);
+          sendImages.forEach((item) => formData.append('images', item));
+
           formData.append('postId', data._id);
 
-          axios
+          await axios
             .post(`/dandelion/images/post`, formData, {
               headers: { 'Content-Type': 'multipart/form-data' },
             })
             .then((res) => {
               if (res.data.status === 'SUCCESS') {
-                console.log(res);
+                console.log(res.data.data.map((item) => item.fileUrl));
                 const userId = data._user;
                 data._user = { _id: userId, name: name };
-                data.images = res.data.data;
+                data.images = [
+                  ...res.data.data.map((item) => {
+                    return { uri: item.fileUrl };
+                  }),
+                ];
                 console.log(data);
                 setRefresh(true);
                 route.params.onGoBack(data);
@@ -212,13 +226,23 @@ const MakePost = ({ navigation, route }) => {
                 console.log('이미지 업로드 실패');
               }
             })
-            .catch((err) => console.log(err.message));
+            .catch((err) => {
+              console.log('이미지 작성 에러');
+              console.log(err);
+            });
         } else {
-          console.log('게시글 작성 실패');
-          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+          console.log('이미지 없음');
+          setRefresh(true);
+          route.params.onGoBack(data);
+          navigation.goBack();
+          // console.log('게시글 작성 실패');
+          // Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
         }
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => {
+        console.log('게시글 작성 에러');
+        console.log(err.message);
+      });
   };
 
   const pickImage = () => {
@@ -229,6 +253,16 @@ const MakePost = ({ navigation, route }) => {
         console.log('이미지 로드');
         //console.log(response.assets[0]);
         setImages((prev) => [...prev, ...response.assets]);
+        const newImages = response.assets.map((item) => {
+          const newImage = {
+            uri: item.uri,
+            type: 'multipart/form-data',
+            name: response.assets.toString(),
+          };
+          return newImage;
+        });
+
+        setSendImages((prev) => [...prev, ...newImages]);
       }
     });
   };

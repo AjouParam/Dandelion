@@ -60,8 +60,7 @@ const Title = styled.Text`
   margin-bottom: 5px;
 `;
 const BoardContentImageContainer = styled.View`
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin: 15px;
   height: 55px;
   display: flex;
   flex-direction: row;
@@ -377,7 +376,7 @@ const MindlePostContent = ({
                   <BoardContentImageContainer>
                     {images.map((item, idx) => (
                       //<BoardContentImage source={{ uri: item }} />
-                      <Text key={idx}>{item} </Text>
+                      <Image key={idx} source={{ uri: item.uri }} style={{ width: 90, height: 90 }} />
                     ))}
                   </BoardContentImageContainer>
                 )
