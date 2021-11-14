@@ -8,6 +8,12 @@ import axios from 'axios';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import userState from '@contexts/userState';
 import commentState from '@contexts/commentState';
+// import { AddPostImage } from '../../assets/index';
+const AddPostImage = require('../../assets/post/post_add.png');
+// import { SvgCssUri } from 'react-native-svg';
+// import { PostMenuImage, PostMenuEditImage, CommentImage, UnlikeImage } from '../../assets/index';
+// import AddPostImage from '../../assets/post/AddPostImage';
+// import AddPostIcon from '../../assets/post/post_add.svg';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -37,6 +43,10 @@ const Image = styled.View`
   margin: 5px;
 `;
 
+const AddPostIcon = styled.Image`
+  height: 50px;
+  width: 50px;
+`;
 const Tab = styled.View`
   display: flex;
   flex-direction: row;
@@ -291,8 +301,8 @@ const MindleInfo = ({ navigation, props }) => {
             <TouchableOpacity
               style={{
                 zIndex: 1,
-                width: 60,
-                height: 60,
+                width: 65,
+                height: 65,
                 position: 'absolute',
                 top: '90%',
                 right: '5%',
@@ -300,7 +310,8 @@ const MindleInfo = ({ navigation, props }) => {
                 borderWidth: 1,
                 borderRadius: 50,
                 justifyContent: 'center',
-                backgroundColor: '#dbdbdb',
+                alignItems: 'center',
+                backgroundColor: '#421C0B',
               }}
               onPress={() => {
                 navigation.navigate('MakePost', {
@@ -314,7 +325,10 @@ const MindleInfo = ({ navigation, props }) => {
                 });
               }}
             >
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text>
+              {/* <AddPostImage /> */}
+              {/* <AddPostIcon /> */}
+              <AddPostIcon source={AddPostImage} />
+              {/* <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text> */}
             </TouchableOpacity>
           )}
           {overlap && !noData && (
