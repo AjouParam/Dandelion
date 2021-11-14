@@ -14,20 +14,7 @@ const PostSubPage = ({ navigation, click = true }) => {
     postService.getData(setMypost);
     // console.log('mypost', mypost);
   }, []);
-  const renderItem = ({ item }) => {
-    <Post //type setting
-      click={click}
-      navigation={navigation}
-      props={{
-        name: item._user.name,
-        date: item.createdAt,
-        text: item.text,
-        like: item.likes,
-        message: item.comments,
-        images: item.images,
-      }}
-    />;
-  };
+
   return (
     <ScrollView>
       {mypost?.map((item) => (
@@ -35,12 +22,14 @@ const PostSubPage = ({ navigation, click = true }) => {
           click={click}
           navigation={navigation}
           props={{
-            name: item._user.name,
-            date: item.createdAt,
-            text: item.text,
-            like: item.likes,
-            message: item.comments,
-            images: item.images,
+            // name: item._user.name,
+            // date: item.createdAt,
+            // text: item.text,
+            // like: item.likes,
+            // title: item.title,
+            // message: item.comments,
+            // images: item.images,
+            ...item,
           }}
         />
       ))}
