@@ -143,11 +143,12 @@ const MindlePost = ({ route, navigation }) => {
             ...res.data.data,
             _user: {
               _id: resData,
-              userName: userName,
+              name: userName,
             },
           };
           console.log('new comment', newComment);
-          setComments((prev) => [res.data.data, ...prev]);
+
+          setComments((prev) => [newComment, ...prev]);
           setInputText('');
           setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
           return true;
@@ -190,7 +191,6 @@ const MindlePost = ({ route, navigation }) => {
         depth={item.depth}
         props={{
           name: item.name,
-          state: item.state,
           text: item.text,
           createdAt: item.createdAt,
           updatedAt: item.updatedAt,
