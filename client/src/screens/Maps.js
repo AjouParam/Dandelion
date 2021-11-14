@@ -16,6 +16,7 @@ import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 import { coord2address } from '@utils/common';
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
+const DefaultProfileImage = require('../assets/profile/profile_default.png');
 
 const Container = styled.View`
   flex: 1;
@@ -187,7 +188,7 @@ const Maps = ({ navigation }) => {
           }}
         >
           {/* 현재 ../asset/index.js에 있는 profile 이미지로 버튼 생성 rounded 값으로 둥근 형태 */}
-          <ImageButton src={tester1} onPress={() => navigation.navigate('Mypage')} rounded />
+          <ImageButton src={DefaultProfileImage} onPress={() => navigation.navigate('Mypage')} rounded />
         </View>
         <View
           style={{
