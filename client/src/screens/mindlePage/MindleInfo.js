@@ -8,12 +8,8 @@ import axios from 'axios';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import userState from '@contexts/userState';
 import commentState from '@contexts/commentState';
-// import { AddPostImage } from '../../assets/index';
+
 const AddPostImage = require('../../assets/post/post_add.png');
-// import { SvgCssUri } from 'react-native-svg';
-// import { PostMenuImage, PostMenuEditImage, CommentImage, UnlikeImage } from '../../assets/index';
-// import AddPostImage from '../../assets/post/AddPostImage';
-// import AddPostIcon from '../../assets/post/post_add.svg';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -68,7 +64,7 @@ const MindleInfo = ({ navigation, props }) => {
   const [noData, setNoData] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [commentsState, setCommentsState] = useRecoilState(commentState);
-  const CONTENT_NUM = 5;
+  const CONTENT_NUM = 8;
 
   useEffect(() => {
     axios.defaults.baseURL = 'http://3.35.45.177:3000/';
@@ -319,6 +315,7 @@ const MindleInfo = ({ navigation, props }) => {
                   latitude: position.latitude,
                   longitude: position.longitude,
                   onGoBack: (newPost) => {
+                    console.log(newPost);
                     setListLoading(true);
                     setData((prev) => [newPost, ...prev]);
                   },
