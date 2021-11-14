@@ -9,7 +9,6 @@ import utilConstant from '../../utils/utilConstant';
 import decode from 'jwt-decode';
 import { FlatList } from 'react-native-gesture-handler';
 import Post from '@components/MindlePostContent';
-import ProfileModal from '@components/Modal';
 import Comment from '@components/post/comment';
 import CommentInput from '@components/post/commentInput';
 
@@ -53,7 +52,6 @@ const MindlePost = ({ route, navigation }) => {
   const [commentLoaded, setCommentLoaded] = useState(false);
   const [comments, setComments] = useState([]);
   const [data, setData] = useState({});
-  const [menuOpen, setMenuOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [commentsState, setCommentState] = useRecoilState(commentState);
   axios.defaults.baseURL = 'http://3.35.45.177:3000/';
@@ -226,7 +224,6 @@ const MindlePost = ({ route, navigation }) => {
             setLikeList={route.params.setLikesList}
             isInMindle={true}
             isInPost={true}
-            setMenuOpen={setMenuOpen}
             setRefresh={route.params.setRefresh}
             navigation={navigation}
           />
@@ -258,81 +255,6 @@ const MindlePost = ({ route, navigation }) => {
           <ActivityIndicator size="large" color="0000ff" />
         </PostLoadingContainer>
       )}
-      <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            justifyContent: 'space-evenly',
-            padding: 5,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <TouchableOpacity
-              style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
-              onPress={() => {
-                /**
-                 * {
-                    name: item.name,
-                    date: item.date,
-                    text: item.text,
-                    src: test_image[item.src],
-                    id: item.id,
-                  }
-                 */
-                console.log(decode(token));
-                console.log(userId);
-                const messageProps = {
-                  id: userId,
-                  name: data.name,
-                  date: new Date().toISOString(),
-                  src: 11,
-                  text: '테스트',
-                };
-                console.log(messageProps);
-                navigation.navigate('Channel', {
-                  title: data.name,
-                  props: messageProps,
-                  type: 'channel',
-                  state: 'mindle',
-                });
-              }}
-            >
-              <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
-            </TouchableOpacity>
-          </View>
-          <Divider />
-          <View
-            style={{
-              flex: 1,
-              borderBottomLeftRadius: 20,
-              borderBottomRightRadius: 20,
-              width: '100%',
-              marginTop: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                setMenuOpen(false);
-              }}
-              style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
-            >
-              <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ProfileModal>
     </Container>
   );
 };

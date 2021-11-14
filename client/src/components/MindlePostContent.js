@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Platform, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import DeleteModal from '@components/Modal';
+import ProfileModal from '@components/Modal';
 import userState from '@contexts/userState';
 import { useRecoilValue } from 'recoil';
 import axios from 'axios';
 import ModalDropdown from 'react-native-modal-dropdown';
+import decode from 'jwt-decode';
 const DefaultProfile = require('../assets/profile/profile_default.png');
 const Unlike = require('../assets/post/like_unclicked.png');
 const Like = require('../assets/post/like_clicked.png');
@@ -36,8 +38,8 @@ const BoardUserImageContainer = styled.TouchableOpacity`
   justify-content: center;
 `;
 const BoardUserImage = styled.Image`
-  width: 60px;
-  height: 60px;
+  width: 45px;
+  height: 45px;
 `;
 const BoardUserName = styled.Text`
   font-size: 14px;
@@ -173,7 +175,6 @@ const MindlePostContent = ({
   userLike,
   isInMindle = false,
   isInPost = false,
-  setMenuOpen = () => {},
   onDeletePost = () => {},
   setRefresh = () => {},
   setLikesList = () => {},
@@ -184,6 +185,8 @@ const MindlePostContent = ({
   const [deleteModal, setDeleteModal] = useState(false);
   const userName = useRecoilValue(userState.nameState);
   const jwtToken = useRecoilValue(userState.uidState);
+  const userId = decode(jwtToken)._id;
+  const [menuOpen, setMenuOpen] = useState(false);
 
   axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
@@ -285,7 +288,7 @@ const MindlePostContent = ({
         isInPost: true,
         onDeletePost: onDeletePost,
         isInMindle: isInMindle,
-        setMenuOpen: setMenuOpen,
+
         setRefresh: setRefresh,
         setLikesList: setLikesList,
         navigation: navigation,
@@ -420,6 +423,74 @@ const MindlePostContent = ({
               </DeleteBtnContainer>
             </DeleteContainer>
           </DeleteModal>
+        )}
+        {menuOpen && (
+          <ProfileModal width="180px" height="100px" modalVisible={menuOpen} setModalVisible={setMenuOpen}>
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                justifyContent: 'space-evenly',
+                padding: 5,
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  borderTopLeftRadius: 20,
+                  borderTopRightRadius: 20,
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <TouchableOpacity
+                  style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
+                  onPress={() => {
+                    // Alert.alert('쪽지 보내기', '쪽지 보내기 화면으로 이동');
+                    const messageProps = {
+                      id: userId,
+                      name: name,
+                      date: new Date().toISOString(),
+                      src: 11,
+                      text: '테스트',
+                    };
+                    console.log(messageProps);
+                    setMenuOpen(false);
+                    navigation.navigate('Channel', {
+                      title: name,
+                      props: messageProps,
+                      type: 'channel',
+                      state: 'mindle',
+                    });
+                  }}
+                >
+                  <Text style={{ fontSize: 16 }}>쪽지 보내기</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{
+                  flex: 1,
+                  borderBottomLeftRadius: 20,
+                  borderBottomRightRadius: 20,
+                  width: '100%',
+                  marginTop: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setMenuOpen(false);
+                  }}
+                  style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}
+                >
+                  <Text style={{ fontSize: 16, color: 'red' }}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ProfileModal>
         )}
       </>
     );

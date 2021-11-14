@@ -36,7 +36,7 @@ const Navigation = () => {
           } else if (expUTC - todayUTC <= 864000 && expUTC - todayUTC > 0) {
             // token refresh
             await axios
-              .get('http:/10.0.2.2:3000/account/regenerateToken', {
+              .get('http:/3.35.45.177:3000/account/regenerateToken', {
                 headers: {
                   'x-access-token': value,
                 },
