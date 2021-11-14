@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
 import decode from 'jwt-decode';
-import { GiftedChat, Send, Bubble, InputToolbar } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Bubble, InputToolbar, Time } from 'react-native-gifted-chat';
 import { tester1, tester2, tester3, tester4, tester5, profile } from '../../assets/index';
 import axios from 'axios';
 // const test_image = [tester1, tester2, tester3, tester4, tester5];
@@ -26,7 +26,7 @@ const SendButton = (props, sendMessage) => {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 4,
+        marginHorizontal: 3,
       }}
     >
       <SendBtn
@@ -78,7 +78,7 @@ const BubbleStyle = (props) => {
     />
   );
 };
-const renderInputToolbar = (props) => {
+const RenderInput = (props) => {
   return (
     <InputToolbar
       {...props}
@@ -86,7 +86,22 @@ const renderInputToolbar = (props) => {
         backgroundColor: 'white',
         borderTopColor: '#E8E8E8',
         borderTopWidth: 1,
-        padding: 8,
+        padding: 2,
+      }}
+    />
+  );
+};
+const RenderTime = (props) => {
+  return (
+    <Time
+      {...props}
+      timeTextStyle={{
+        left: {
+          color: 'grey',
+        },
+        right: {
+          color: 'grey',
+        },
       }}
     />
   );
@@ -96,8 +111,7 @@ const channel = ({ navigation, props }) => {
   const userName = decode(token).name;
   const userId = decode(token)._id;
   const [messages, setMessages] = useState([]);
-
-  const roomId = props.roomId,
+  const roomId = props.roomId;
   const audienceName = props.name;
   const audienceProfile = props.src;
   const onSend = useCallback((messages = []) => {
@@ -168,7 +182,7 @@ const channel = ({ navigation, props }) => {
       alwaysShowSend={true}
       textInputProps={{
         autoCapitalize: 'none',
-        autoCorrect: false,
+        autoCorrect: true,
         textContentType: 'none', // iOS only
         underlineColorAndroid: 'transparent', // Android only
       }}
@@ -177,6 +191,8 @@ const channel = ({ navigation, props }) => {
       scrollToBottom={true}
       renderSend={(props) => <SendButton {...props} sendMessage={sendMessage} />}
       renderBubble={(props) => <BubbleStyle {...props} />}
+      renderInputToolbar={(props) => <RenderInput {...props} />}
+      renderTime={(props) => <RenderTime {...props} />}
     />
   );
 };
