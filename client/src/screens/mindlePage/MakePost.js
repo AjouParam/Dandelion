@@ -24,6 +24,7 @@ const TitleContainer = styled.View`
 const TitleInput = styled.TextInput`
   height: 80px;
 `;
+const EventSettings = styled.View``;
 const Body = styled.View`
   height: 80%;
   padding: 15px 5px;
@@ -66,6 +67,7 @@ const MakePost = ({ navigation, route }) => {
     mindleId,
     latitude,
     longitude,
+    type,
     modifyMode = false,
     setRefresh = () => {},
     postContent = { postId: '', title: '', bodyText: '', images: [] },
@@ -83,7 +85,8 @@ const MakePost = ({ navigation, route }) => {
     axios.defaults.baseURL = 'http://3.35.45.177:3000/';
     axios.defaults.headers.common['x-access-token'] = jwtToken;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
+    console.log(type);
+    navigation.setOptions({ title: type === 'Post' ? '게시글 작성' : '이벤트 생성' });
     if (modifyMode) {
       setTitle(postContent.title);
       setBodyText(postContent.bodyText);
@@ -245,6 +248,10 @@ const MakePost = ({ navigation, route }) => {
       });
   };
 
+  const setEvent = async () => {
+    await axios.post();
+  };
+
   const pickImage = () => {
     launchImageLibrary({}, (response) => {
       if (response.didCancel) {
@@ -270,15 +277,18 @@ const MakePost = ({ navigation, route }) => {
   return (
     <Container>
       <TitleContainer>
-        <TitleInput
-          ref={titleRef}
-          placeholder={'제목'}
-          value={title}
-          onChangeText={(text) => {
-            setTitle(text);
-          }}
-          onSubmitEditing={() => bodyTextRef.current.focus()}
-        ></TitleInput>
+        {type === 'Post' && (
+          <TitleInput
+            ref={titleRef}
+            placeholder={'제목'}
+            value={title}
+            onChangeText={(text) => {
+              setTitle(text);
+            }}
+            onSubmitEditing={() => bodyTextRef.current.focus()}
+          ></TitleInput>
+        )}
+        {type === 'Event' && <EventSettings></EventSettings>}
       </TitleContainer>
       <Body>
         <BodyInput

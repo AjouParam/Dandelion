@@ -315,6 +315,7 @@ const MindleInfo = ({ navigation, props }) => {
                   mindleId: mindleKey,
                   latitude: position.latitude,
                   longitude: position.longitude,
+                  type: type,
                   onGoBack: (newPost) => {
                     console.log(newPost);
                     setListLoading(true);
