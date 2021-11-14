@@ -14,6 +14,8 @@ import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 import { coord2address } from '@utils/common';
+import userState from '@contexts/userState';
+import { useRecoilState } from 'recoil';
 
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const DefaultProfileImage = require('../assets/profile/profile_default.png');
@@ -38,6 +40,7 @@ const Maps = ({ navigation }) => {
 
   //현재 사용자 위치
   const [location, setLocation] = useState(MapData.location);
+  const [userlocation, setUserlocation] = useRecoilState(userState.userlocation);
 
   //지도에서 현재 기준으로 삼고 있는 위치
   const [currentMapCoord, setCurrentMapCoord] = useState(MapData.currentMapCoord);
@@ -69,6 +72,7 @@ const Maps = ({ navigation }) => {
   useEffect(() => {
     mapCtrl.getUserLocation(
       setLocation,
+      setUserlocation,
       currentMapCoord,
       setCurrentMapCoord,
       setBtnToggle,
@@ -128,7 +132,7 @@ const Maps = ({ navigation }) => {
             );
           }}
         >
-          {mindles.map((props, index) => {
+          {mindles?.map((props, index) => {
             if (props.visible === false) {
               console.log('무야호');
             } else {
@@ -226,20 +230,6 @@ const Maps = ({ navigation }) => {
             />
           </View>
         )}
-        <View
-          style={{
-            position: 'absolute',
-            top: '10%',
-            alignSelf: 'center',
-          }}
-        >
-          <Text>카카오 API</Text>
-          <Button
-            onPress={() => {
-              coord2address(location);
-            }}
-          />
-        </View>
       </Animated.View>
     </Container>
   );

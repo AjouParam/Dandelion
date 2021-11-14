@@ -26,13 +26,13 @@ const MessageContainer = styled.View`
 `;
 
 const PostSubPage = ({ navigation, props }) => {
-  const { postId } = props;
   const [inputText, setInputText] = useState('');
   const [page, setPage] = useState(1);
   const [comments, setComments] = useState([]);
   const [commentLoaded, setCommentLoaded] = useState(false);
   const jwtToken = useRecoilValue(userState.uidState);
   const userName = useRecoilValue(userState.nameState);
+  const [commentscount, setCommentsCount] = useState(props.comments);
   axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -100,9 +100,9 @@ const PostSubPage = ({ navigation, props }) => {
               name: userName,
             },
           };
-          console.log('new comment', newComment);
 
           setComments((prev) => [newComment, ...prev]);
+          setCommentsCount(commentscount + 1);
           setInputText('');
           setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
           return true;
@@ -125,6 +125,7 @@ const PostSubPage = ({ navigation, props }) => {
           console.log(res.data.message);
           const filtered = comments.filter((item) => item._id !== commentId);
           setComments(filtered);
+          setCommentsCount(commentscount - 1);
           setData((prev) => ({ ...prev, comments: filtered.length }));
           setCommentState(true);
         } else {
@@ -163,6 +164,7 @@ const PostSubPage = ({ navigation, props }) => {
         click={false}
         navigation={navigation}
         props={props}
+        commentscount={commentscount}
       />
       <MessageContainer>
         {/* {messages.map((element) => element)} */}

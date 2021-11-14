@@ -3,7 +3,7 @@ import React from 'react';
 // import HotSpot from '../screens/HotSpot';
 import HotSpot from '../screens/HotSpot';
 import Post from '../screens/myPage/post';
-import Mindle from '../screens/myPage/mindle';
+import Mymindle from '../screens/myPage/mymindle';
 import Mail from '../screens/myPage/mail';
 import Detail from '../screens/detailPage/detail';
 import Comment from '../components/post/comment';
@@ -21,7 +21,7 @@ export const PostModule = {
     return <Post navigation={this.navigation} props={this.props} />;
   },
   mindle: function () {
-    return <Mindle navigation={this.navigation} props={this.props} />;
+    return <Mymindle navigation={this.navigation} props={this.props} />;
   },
   hotSpot: function () {
     return <HotSpot navigation={this.navigation} props={this.props} />;

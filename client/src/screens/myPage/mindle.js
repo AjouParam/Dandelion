@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 
 import Mindle from '../../components/post/Mindle';
-
+import axios from 'axios';
 const Container = styled.ScrollView`
   height: ${Dimensions.get('window').height - 60}px;
   background-color: #ffffff;
