@@ -174,7 +174,6 @@ const MindlePostContent = ({
   comments,
   userLike,
   isInMindle = false,
-  isInPost = false,
   onDeletePost = () => {},
   setRefresh = () => {},
   setLikesList = () => {},
@@ -231,8 +230,7 @@ const MindlePostContent = ({
             text: '닫기',
             onPress: () => {
               setMenuOpen(false);
-
-              if (isInPost) {
+              if (!isInMindle) {
                 setRefresh(true);
                 navigation.navigate('Main');
               } else {
@@ -264,14 +262,14 @@ const MindlePostContent = ({
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
-        <Image source={PostEditImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
+        <Image source={PostEditImage} style={{ width: 32, height: 32 }} />
         <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
       </DropdownButton>
     );
   };
 
   const goMindlePost = () => {
-    if (isInMindle && !isInPost)
+    if (isInMindle)
       navigation.navigate('MindlePost', {
         mindleId: mindleId,
         postId: postId,
@@ -285,10 +283,8 @@ const MindlePostContent = ({
         likes: likesNum,
         comments: comments,
         userLike: like,
-        isInPost: true,
         onDeletePost: onDeletePost,
-        isInMindle: isInMindle,
-
+        isInMindle: false,
         setRefresh: setRefresh,
         setLikesList: setLikesList,
         navigation: navigation,
@@ -302,7 +298,7 @@ const MindlePostContent = ({
           <BoardUserInfo>
             <BoardUserImageContainer
               onPress={() => {
-                if (isInMindle) setMenuOpen(true);
+                if (userName !== name) setMenuOpen(true);
               }}
             >
               {userPhoto ? (
@@ -318,7 +314,7 @@ const MindlePostContent = ({
             <View style={{ flex: 1, padding: 5 }}>
               <BoardUserName
                 onPress={() => {
-                  if (isInMindle) setMenuOpen(true);
+                  if (userName !== name) setMenuOpen(true);
                 }}
               >
                 {name}

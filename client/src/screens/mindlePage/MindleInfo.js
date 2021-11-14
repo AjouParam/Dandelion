@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
