@@ -69,6 +69,7 @@ const requestPermission = async () => {
 
 const getUserLocation = async (
   setLocation,
+  setUserlocation,
   currentMapCoord,
   setCurrentMapCoord,
   setBtnToggle,
@@ -85,6 +86,7 @@ const getUserLocation = async (
         async (position) => {
           //변화된 사용자 좌표 location 변수에 최신화
           setLocation(position.coords);
+          setUserlocation(position.coords);
           if (currentMapCoord.latitude == 0 && currentMapCoord.longitude == 0) {
             setCurrentMapCoord({
               latitude: position.coords.latitude,
@@ -110,4 +112,4 @@ const getUserLocation = async (
     }
   });
 };
-export default { distance, onRegionChange, getUserLocation };
+export default { distance, getDistance, onRegionChange, getUserLocation };

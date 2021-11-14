@@ -21,7 +21,8 @@ export const removeWhitespace = (text) => {
 };
 
 //좌표 값으로 지명 위치 가져오기
-export const coord2address = async (location) => {
+export const coord2address = async (location, setAddress) => {
+  console.log('coord2address location', location);
   const { longitude, latitude } = location;
   await axios
     .get('https://dapi.kakao.com/v2/local/geo/coord2address.json', {
@@ -32,9 +33,9 @@ export const coord2address = async (location) => {
       },
     })
     .then((res) => {
-      const temp = JSON.parse(res.request._response)['documents'];
-      console.log('KAKAO', temp);
-
+      const temp = JSON.parse(res.request._response)['documents'][0].address.address_name;
+      // console.log('KAKAO', temp);
+      setAddress(temp);
       return temp;
     })
     .catch((err) => console.log('udonPeople error : ' + err));

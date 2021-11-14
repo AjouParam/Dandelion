@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Header, Image, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
-
+import axios from 'axios';
 const Container = styled.View`
   display: flex;
   flex-direction: column;
@@ -45,10 +45,14 @@ const ImageList = styled.ScrollView`
 const LikeContainer = styled.View`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 const MessageContainer = styled.View`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
 const ProfileImg = styled.Image`
   width: 40px;
@@ -79,11 +83,49 @@ const PostDate = styled.Text`
   font-size: 13px;
 `;
 const PostText = styled.Text``;
+const PostTitle = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+`;
 
-const Like = styled.Text``;
 const Message = styled.Text``;
 
+const LikeButtonImage = styled.Image`
+  width: 35px;
+  height: 55px;
+`;
+const CommentIcon = styled.Image`
+  width: 35px;
+  height: 55px;
+`;
+const CommentText = styled.Text``;
+const LikeText = styled.Text``;
+const Unlike = require('../../assets/post/like_unclicked.png');
+const Like = require('../../assets/post/like_clicked.png');
+const CommentImage = require('../../assets/post/comment.png');
+const LikeButton = styled.TouchableOpacity`
+  flex-direction: row;
+  width: 50px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+`;
 const Post = ({ navigation, props, click }) => {
+  // console.log('innerPost', props);
+  const [likesNum, setLikesNum] = useState(props.likes);
+  const [like, setLike] = useState(props.userLike);
+  const toggleLike = async () => {
+    // /:dandelionId/:postId/like
+    await axios.post(`${props._dandelion}/${props._id}/like`).then((res) => {
+      if (res.data.status === 'SUCCESS') {
+        console.log(res.data.message, res.data.data.currentLikeStatus);
+        setLike(res.data.data.currentLikeStatus);
+        setLikesNum((prev) => (res.data.data.currentLikeStatus ? prev + 1 : prev - 1));
+        setLikesList(res.data.data.currentLikeStatus, likesNum, postId);
+      }
+    });
+  };
   return (
     <TouchableWithoutFeedback
       onPress={() => click && navigation.navigate('Post', { title: props.name, props, type: 'detail', state: 'post' })}
@@ -92,11 +134,12 @@ const Post = ({ navigation, props, click }) => {
         <TopView>
           <ProfileImg source={level1} />
           <PostFrontView>
-            <UserName>{props.name}</UserName>
-            <PostDate>{props.date}</PostDate>
+            <UserName>{props._user.name}</UserName>
+            <PostDate>{props.createdAt}</PostDate>
           </PostFrontView>
         </TopView>
         <MidView>
+          <PostTitle>{props.title}</PostTitle>
           <PostText>{props.text}</PostText>
           <ImageList horizontal={true}>
             {props.images.map(
@@ -109,12 +152,18 @@ const Post = ({ navigation, props, click }) => {
         </MidView>
         <BottomView>
           <LikeContainer>
-            <LikeImage source={level2} />
-            <Like>{props.like}</Like>
+            <LikeButton
+              onPress={() => {
+                toggleLike();
+              }}
+            >
+              <LikeButtonImage source={like ? Like : Unlike} />
+              <LikeText>{props.likes}</LikeText>
+            </LikeButton>
           </LikeContainer>
           <MessageContainer>
-            <MessageImage source={level3} />
-            <Message>{props.message}</Message>
+            <CommentIcon source={CommentImage} />
+            <CommentText>{props.comments}</CommentText>
           </MessageContainer>
         </BottomView>
       </Container>
