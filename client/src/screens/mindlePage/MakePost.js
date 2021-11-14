@@ -348,12 +348,9 @@ const MakePost = ({ navigation, route }) => {
                   }),
                 ];
                 console.log(data);
-                //setRefresh(true);
-                //route.params.onGoBack(data);
-                /**
-                 * setEventRefresh(true);
-                 * route.params.onGoEventBack(data);
-                 */
+                setRefresh(true);
+                route.params.onGoBack(data);
+
                 navigation.goBack();
               } else {
                 console.log('이미지 업로드 실패');
@@ -365,9 +362,8 @@ const MakePost = ({ navigation, route }) => {
             });
         } else {
           console.log('이미지 없음');
-          //setEventRefresh(true);
-          //route.params.onGoEventBack(data);
-          //route.params.onGoBack(data);
+          setRefresh(true);
+          route.params.onGoBack(data);
           navigation.goBack();
         }
       })
