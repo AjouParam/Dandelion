@@ -52,6 +52,7 @@ const Tab = styled.View`
 `;
 
 const MindleInfo = ({ navigation, props }) => {
+  const [type, setType] = useState('Post');
   const { mindleKey, name, position, overlap, route } = props;
 
   const [page, setPage] = useState(1);
@@ -249,6 +250,7 @@ const MindleInfo = ({ navigation, props }) => {
           <Tab>
             <TouchableOpacity
               onPress={() => {
+                setType('Post');
                 setTabIndex(0);
               }}
               style={{
@@ -270,6 +272,7 @@ const MindleInfo = ({ navigation, props }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                setType('Event');
                 setTabIndex(1);
               }}
               style={{

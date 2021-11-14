@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import decode from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import socket from '../service/socket';
 import messageRoomState from '@contexts/messageRoomState';
 import AuthStack from './AuthStack';
 import { Spinner } from '@components/index';
@@ -70,14 +70,20 @@ const Navigation = () => {
     };
     _loadInitialState();
   }, []);
+
   useEffect(async () => {
     if (uid === null) return;
     const result = await axios.post('http://10.0.2.2:4000/mail/load/', { user: 'A' });
     if (result.data.status === 'SUCCESS') setMessageRoomData(result.data.data);
     console.log('이거맞냐', result.data);
+    console.log('소켓', socket);
   }, [uid]);
+
   useEffect(() => {
     console.log('좋다', messageRoomData);
+    messageRoomData.map((element) => {
+      socket.emit('joinRoom', element._id, 'A', (res) => console.log('나와라', res));
+    });
   }, [messageRoomData]);
   return (
     <NavigationContainer>
