@@ -99,9 +99,12 @@ const Post = ({ navigation, props, click }) => {
         <MidView>
           <PostText>{props.text}</PostText>
           <ImageList horizontal={true}>
-            {[level1, level2, level3, level4, level1, level2].map((element) => (
-              <PostImage source={element} />
-            ))}
+            {props.images.map(
+              (element) => (
+                <PostImage source={{ uri: element }} />
+              ),
+              // console.log(element);
+            )}
           </ImageList>
         </MidView>
         <BottomView>

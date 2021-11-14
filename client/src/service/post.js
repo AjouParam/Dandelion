@@ -12,7 +12,7 @@ axios.defaults.baseURL = 'http://3.35.45.177:3000/';
 axios.defaults.headers.common['x-access-token'] = jwtToken;
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const getData = async () => {
+const getData = async (setMypost) => {
   const data = await axios
     .get('/dandelion/post/get/mine', {
       params: {
@@ -20,8 +20,7 @@ const getData = async () => {
         maxPost: 4,
       },
     })
-    .then((res) => console.log(res));
-  return data;
+    .then((res) => setMypost(res.data.data));
 };
 
 export default { getData };
