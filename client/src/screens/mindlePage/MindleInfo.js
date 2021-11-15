@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { Dimensions, View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
@@ -9,12 +9,13 @@ import userState from '@contexts/userState';
 import commentState from '@contexts/commentState';
 
 const AddPostImage = require('../../assets/post/post_add.png');
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 
-const Container = styled.SafeAreaView`
+const Container = styled.View`
   flex: 1;
   display: flex;
   padding: 15px 15px;
-  height: 100%;
+  height: ${DEVICE_HEIGHT}px;
   background-color: #ffffff;
   justify-content: flex-start;
 `;
@@ -316,6 +317,10 @@ const MindleInfo = ({ navigation, props }) => {
             images={item.images}
             likes={item.likes}
             comments={item.comments}
+            isEvent={true}
+            rewards={item.rewards}
+            startDate={item.startDate}
+            firstComeNum={item.firstComeNum}
             userLike={item.userLike}
             setLikesList={(like, likeNum, postId) => {
               setData((prev) => {
@@ -364,135 +369,131 @@ const MindleInfo = ({ navigation, props }) => {
     );
   if (mindleKey && !loading)
     return (
-      <>
-        <Container>
-          {/* <Header /> */}
+      <Container>
+        {/* <Header /> */}
 
-          <Tab>
-            <TouchableOpacity
-              onPress={() => {
-                setType('Post');
-                setTabIndex(0);
-              }}
+        <Tab>
+          <TouchableOpacity
+            onPress={() => {
+              setType('Post');
+              setTabIndex(0);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '50%',
+              backgroundColor: '#fff',
+              borderBottomWidth: 2,
+              borderBottomColor: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
+            }}
+          >
+            <Text
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '50%',
-                backgroundColor: '#fff',
-                borderBottomWidth: 2,
-                borderBottomColor: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
+                color: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text
-                style={{
-                  color: tabIndex === 0 ? '#EFB233' : '#CCCCCC',
-                }}
-              >
-                게시글
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setType('Event');
-                setTabIndex(1);
-              }}
+              게시글
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setType('Event');
+              setTabIndex(1);
+            }}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '50%',
+              backgroundColor: '#fff',
+              borderBottomWidth: 2,
+              borderBottomColor: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
+            }}
+          >
+            <Text
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '50%',
-                backgroundColor: '#fff',
-                borderBottomWidth: 2,
-                borderBottomColor: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
+                color: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
               }}
             >
-              <Text
-                style={{
-                  color: tabIndex === 1 ? '#EFB233' : '#CCCCCC',
-                }}
-              >
-                이벤트
-              </Text>
-            </TouchableOpacity>
-          </Tab>
+              이벤트
+            </Text>
+          </TouchableOpacity>
+        </Tab>
 
-          {overlap && (
-            <TouchableOpacity
-              style={{
-                zIndex: 1,
-                width: 65,
-                height: 65,
-                position: 'absolute',
-                top: '90%',
-                right: '5%',
-                alignSelf: 'flex-end',
-                borderWidth: 1,
-                borderRadius: 50,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#421C0B',
-              }}
-              onPress={() => {
-                navigation.navigate('MakePost', {
-                  mindleId: mindleKey,
-                  latitude: position.latitude,
-                  longitude: position.longitude,
-                  type: type,
-                  onGoBack: (newPost) => {
-                    console.log(newPost);
-                    setListLoading(true);
-                    if (type === 'Post') setData((prev) => [newPost, ...prev]);
-                    else setEventData((prev) => [newPost, ...prev]);
-                  },
-                });
-              }}
-            >
-              {/* <AddPostImage /> */}
-              {/* <AddPostIcon /> */}
-              <AddPostIcon source={AddPostImage} />
-              {/* <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text> */}
-            </TouchableOpacity>
-          )}
-          {overlap && !noData && (
-            <>
-              <FlatList
-                data={tabIndex === 0 ? data : eventData}
-                renderItem={tabIndex === 0 ? renderItem : renderEventItem}
-                keyExtractor={(item, idx) => String(item._id)}
-                onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.1}
-                ListHeaderComponent={() => (
-                  <>
-                    {tabIndex === 0 && (
-                      <ImageContainer>
-                        {/* TODO : 데이터리스트에서 랜덤 이미지 7개 가져오기 */}
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                        <Image></Image>
-                      </ImageContainer>
-                    )}
-                  </>
+        {overlap && (
+          <TouchableOpacity
+            style={{
+              zIndex: 1,
+              width: 65,
+              height: 65,
+              position: 'absolute',
+              top: '90%',
+              right: '5%',
+              alignSelf: 'flex-end',
+              borderWidth: 1,
+              borderRadius: 50,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#421C0B',
+            }}
+            onPress={() => {
+              navigation.navigate('MakePost', {
+                mindleId: mindleKey,
+                latitude: position.latitude,
+                longitude: position.longitude,
+                type: type,
+                onGoBack: (newPost) => {
+                  console.log(newPost);
+                  setListLoading(true);
+                  if (type === 'Post') setData((prev) => [newPost, ...prev]);
+                  else setEventData((prev) => [newPost, ...prev]);
+                },
+              });
+            }}
+          >
+            {/* <AddPostImage /> */}
+            {/* <AddPostIcon /> */}
+            <AddPostIcon source={AddPostImage} />
+            {/* <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text> */}
+          </TouchableOpacity>
+        )}
+        {overlap && !noData && (
+          <FlatList
+            data={tabIndex === 0 ? data : eventData}
+            renderItem={tabIndex === 0 ? renderItem : renderEventItem}
+            keyExtractor={(item, idx) => String(item._id)}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.4}
+            ListHeaderComponent={() => (
+              <>
+                {tabIndex === 0 && (
+                  <ImageContainer>
+                    {/* TODO : 데이터리스트에서 랜덤 이미지 7개 가져오기 */}
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                    <Image></Image>
+                  </ImageContainer>
                 )}
-              />
-            </>
-          )}
-          {overlap && noData && (
-            <View style={{ alignItems: 'center' }}>
-              <Text>게시글이 없습니다.</Text>
-            </View>
-          )}
+              </>
+            )}
+          />
+        )}
+        {overlap && noData && (
+          <View style={{ alignItems: 'center' }}>
+            <Text>게시글이 없습니다.</Text>
+          </View>
+        )}
 
-          {listLoading && (
-            <View style={{ justifySelf: 'flex-end', justifyContent: 'center', alignItems: 'center' }}>
-              <ActivityIndicator size="large" color="0000ff" />
-            </View>
-          )}
-        </Container>
-      </>
+        {listLoading && (
+          <View style={{ justifySelf: 'flex-end', justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="0000ff" />
+          </View>
+        )}
+      </Container>
     );
 };
 export default MindleInfo;
