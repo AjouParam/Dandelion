@@ -43,6 +43,7 @@ const ChoiceButton = styled.TouchableOpacity`
 const CommentText = styled.Text``;
 const Comment = ({ navigation, props, depth }) => {
   const { name, state, text, createdAt, updatedAt, _id, _user, _post, __v, isDeleted, deleteComment } = props;
+  console.log('props', props);
   const jwtToken = useRecoilValue(userState.uidState);
   const [page, setPage] = useState(1);
   const [subcomments, setSubComments] = useState([]);
@@ -145,7 +146,7 @@ const Comment = ({ navigation, props, depth }) => {
         <CommentContainer>
           <TopContainer>
             <ProfileImg source={DefaultProfileImage} />
-            <User>{name}</User>
+            <User>{_user.name}</User>
             <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
             <TouchableOpacity>
               <ChoiceButton
