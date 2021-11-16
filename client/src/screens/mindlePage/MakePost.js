@@ -490,11 +490,13 @@ const MakePost = ({ navigation, route }) => {
           }}
           multiline={true}
         ></BodyInput>
-        <ImageList>
-          {images.map((item) => (
-            <ImageElement source={{ uri: item.uri }} />
-          ))}
-        </ImageList>
+        {images.length > 0 && (
+          <ImageList>
+            {images.map((item) => (
+              <ImageElement source={{ uri: item.uri }} />
+            ))}
+          </ImageList>
+        )}
       </Body>
       <Footer>
         <SelectPhotoButton
