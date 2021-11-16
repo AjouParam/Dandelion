@@ -222,8 +222,7 @@ const MindlePost = ({ route, navigation }) => {
             comments={data.comments}
             userLike={data.userLike}
             setLikeList={route.params.setLikesList}
-            isInMindle={true}
-            isInPost={true}
+            isInMindle={false}
             setRefresh={route.params.setRefresh}
             navigation={navigation}
           />

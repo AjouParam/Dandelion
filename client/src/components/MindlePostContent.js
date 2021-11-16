@@ -160,6 +160,82 @@ const DeleteConfirmText = styled.Text`
   color: #efb233;
 `;
 
+const EventInfoContainer = styled.View`
+  flex-direction: row;
+  width: 100%;
+  min-height: 100px;
+  padding: 0px 10px;
+  margin-bottom: 10px;
+`;
+const EventImage = styled.Image`
+  width: 105px;
+  height: 105px;
+  padding: 5px 5px;
+`;
+const FlexRowContainer = styled.View`
+  flex-direction: row;
+  padding: 5px 0px;
+`;
+const EventInfo = styled.View`
+  flex: 1;
+  justify-content: flex-start;
+  padding: 5px 5px;
+`;
+
+const EventTitle = styled.Text`
+  color: #424242;
+  width: 175px;
+  flex-shrink: 1;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 5px;
+`;
+const EventInfoText = styled.Text`
+  color: ${(props) => (props.color ? props.color : '#959595')};
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 5px;
+`;
+const EventButton = styled.TouchableOpacity`
+  width: 303px;
+  height: 38px;
+  background-color: ${(props) => (props.status == 0 ? '#f3d737' : '#F6F6F6')};
+  border-radius: 26px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+`;
+const ButtonText = styled.Text`
+  font-size: 16px;
+  color: ${(props) => (props.status == 0 ? '#FFFFFF' : '#CCCCCC')};
+`;
+const EventPost = ({ title, status, firstComeNum, rewards, image }) => {
+  return (
+    <BoardContents>
+      <EventInfoContainer>
+        {image ? <EventImage source={{ uri: image }} /> : null}
+        <EventInfo>
+          <EventInfoText color="#87C548">{status == 0 ? '진행중' : '종료'}</EventInfoText>
+          <EventTitle>{title}</EventTitle>
+          <FlexRowContainer>
+            <EventInfoText>남음</EventInfoText>
+            <EventInfoText color="#EFB233">{firstComeNum}</EventInfoText>
+            <EventInfoText>씨앗</EventInfoText>
+            <EventInfoText color="#EFB233">{rewards}</EventInfoText>
+          </FlexRowContainer>
+        </EventInfo>
+      </EventInfoContainer>
+      <EventButton
+        status={status}
+        onPress={() => {
+          Alert.alert('이벤트', '이벤트 참여가 완료되었습니다.');
+        }}
+      >
+        <ButtonText status={status}>이벤트 참가</ButtonText>
+      </EventButton>
+    </BoardContents>
+  );
+};
 const MindlePostContent = ({
   mindleId,
   postId,
@@ -173,8 +249,11 @@ const MindlePostContent = ({
   likes,
   comments,
   userLike,
+  isEvent = false,
+  status = 0,
+  firstComeNum = 0,
+  rewards = 0,
   isInMindle = false,
-  isInPost = false,
   onDeletePost = () => {},
   setRefresh = () => {},
   setLikesList = () => {},
@@ -231,8 +310,7 @@ const MindlePostContent = ({
             text: '닫기',
             onPress: () => {
               setMenuOpen(false);
-
-              if (isInPost) {
+              if (!isInMindle) {
                 setRefresh(true);
                 navigation.navigate('Main');
               } else {
@@ -264,14 +342,14 @@ const MindlePostContent = ({
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
-        <Image source={PostEditImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
+        <Image source={PostEditImage} style={{ width: 32, height: 32 }} />
         <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
       </DropdownButton>
     );
   };
 
   const goMindlePost = () => {
-    if (isInMindle && !isInPost)
+    if (isInMindle)
       navigation.navigate('MindlePost', {
         mindleId: mindleId,
         postId: postId,
@@ -285,9 +363,13 @@ const MindlePostContent = ({
         likes: likesNum,
         comments: comments,
         userLike: like,
-        isInPost: true,
         onDeletePost: onDeletePost,
         isInMindle: isInMindle,
+        isEvent: isEvent,
+        status: status,
+        firstComeNum: firstComeNum,
+        rewards: rewards,
+        isInMindle: false,
         setRefresh: setRefresh,
         setLikesList: setLikesList,
         navigation: navigation,
@@ -301,7 +383,7 @@ const MindlePostContent = ({
           <BoardUserInfo>
             <BoardUserImageContainer
               onPress={() => {
-                if (isInMindle) setMenuOpen(true);
+                if (userName !== name) setMenuOpen(true);
               }}
             >
               {userPhoto ? (
@@ -317,7 +399,7 @@ const MindlePostContent = ({
             <View style={{ flex: 1, padding: 5 }}>
               <BoardUserName
                 onPress={() => {
-                  if (isInMindle) setMenuOpen(true);
+                  if (userName !== name) setMenuOpen(true);
                 }}
               >
                 {name}
@@ -356,53 +438,58 @@ const MindlePostContent = ({
               </View>
             )}
           </BoardUserInfo>
-          <BoardContents>
-            <BoardContentTextContainer>
-              <Title
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                {title}
-              </Title>
-              <Text
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                {text}
-              </Text>
-            </BoardContentTextContainer>
-            {images
-              ? images.length > 0 && (
-                  <BoardContentImageContainer>
-                    {images.map((item, idx) => (
-                      //<BoardContentImage source={{ uri: item }} />
-                      <Image key={idx} source={{ uri: item }} style={{ width: 90, height: 90 }} />
-                    ))}
-                  </BoardContentImageContainer>
-                )
-              : null}
-            <BoardTipContainer>
-              <LikeButton
-                onPress={() => {
-                  toggleLike();
-                }}
-              >
-                <LikeButtonImage source={like ? Like : Unlike} />
-                <LikeText>{likes}</LikeText>
-              </LikeButton>
+          {!isEvent && (
+            <BoardContents>
+              <BoardContentTextContainer>
+                <Title
+                  onPress={() => {
+                    goMindlePost();
+                  }}
+                >
+                  {title}
+                </Title>
+                <Text
+                  onPress={() => {
+                    goMindlePost();
+                  }}
+                >
+                  {text}
+                </Text>
+              </BoardContentTextContainer>
+              {images
+                ? images.length > 0 && (
+                    <BoardContentImageContainer>
+                      {images.map((item, idx) => (
+                        //<BoardContentImage source={{ uri: item }} />
+                        <Image key={idx} source={{ uri: item }} style={{ width: 90, height: 90 }} />
+                      ))}
+                    </BoardContentImageContainer>
+                  )
+                : null}
+              <BoardTipContainer>
+                <LikeButton
+                  onPress={() => {
+                    toggleLike();
+                  }}
+                >
+                  <LikeButtonImage source={like ? Like : Unlike} />
+                  <LikeText>{likes}</LikeText>
+                </LikeButton>
 
-              <CommentContainer
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                <CommentIcon source={CommentImage} />
-                <CommentText>{comments}</CommentText>
-              </CommentContainer>
-            </BoardTipContainer>
-          </BoardContents>
+                <CommentContainer
+                  onPress={() => {
+                    goMindlePost();
+                  }}
+                >
+                  <CommentIcon source={CommentImage} />
+                  <CommentText>{comments}</CommentText>
+                </CommentContainer>
+              </BoardTipContainer>
+            </BoardContents>
+          )}
+          {isEvent && (
+            <EventPost title={title} status={status} firstComeNum={firstComeNum} rewards={rewards} image={images[0]} />
+          )}
         </BoardContainer>
         {deleteModal && (
           <DeleteModal width="300px" height="160px" modalVisible={deleteModal} setModalVisible={setDeleteModal}>

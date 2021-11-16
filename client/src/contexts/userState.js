@@ -14,6 +14,10 @@ const userState = {
     key: 'uidState',
     default: '',
   }),
+  userlocation: atom({
+    key: 'userlocation',
+    default: '',
+  }),
 };
 
 export default userState;

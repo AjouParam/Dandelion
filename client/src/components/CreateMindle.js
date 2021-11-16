@@ -85,16 +85,17 @@ const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) =
               />
            */
 
-          setMindles((prev) =>
-            prev.push({
+          setMindles((prev) => [
+            ...prev,
+            {
               latitude: res.data.data.location.coordinates[1],
               longitude: res.data.data.location.coordinates[0],
               title: res.data.data.name,
               description: res.data.data.description,
               radius: levelToRadius(res.data.data.level),
               overlap: true,
-            }),
-          );
+            },
+          ]);
           Alert.alert('성공', '민들레 심기 성공');
           modalClose();
         } else if (res.data.status === 'FAILED') {

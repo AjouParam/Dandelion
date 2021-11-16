@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Header, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-
+import { coord2address } from '../../utils/common';
 const Container = styled.View`
   display: flex;
   flex-direction: column;
@@ -47,11 +47,12 @@ const CountEvent = styled.Text`
   font-size: 13px;
   color: #87c548;
 `;
-// const Address = styled.Text``;
+const Address = styled.Text``;
 const TagText = styled.Text`
   font-weight: 400;
   font-size: 13;
 `;
+
 // const MindleCreater = styled.Text`
 //   margin-left: 25px;
 //   font-weight: 400;
@@ -59,16 +60,20 @@ const TagText = styled.Text`
 // `;
 
 const Mindle = ({ navigation, props, click }) => {
+  console.log('address', props);
+  const [address, setAddress] = useState();
+  useEffect(() => {
+    coord2address(props.location, setAddress);
+  }, []);
+
   return (
-    <TouchableWithoutFeedback
-      onPress={() =>
-        click && navigation.navigate('Mindle', { title: props.name, props, type: 'detail', state: 'mindle' })
-      }
-    >
+    <TouchableWithoutFeedback onPress={() => click && navigation.navigate('gotoMap', { location: props.location })}>
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>
-          <MindleDistance>{`${props.distance} km`}</MindleDistance>
+          <MindleDistance>
+            {props.distance < 1000 ? `${props.distance.toFixed(0)} m` : `${props.distance.toFixed(0) / 1000} km`}
+          </MindleDistance>
         </TopView>
         <MidView>
           <InfoText>
@@ -79,7 +84,7 @@ const Mindle = ({ navigation, props, click }) => {
           </InfoText>
         </MidView>
         <BottomView>
-          {/* <Address>{props.address}</Address> */}
+          <Address>{address}</Address>
           <TagText>{props.tag}</TagText>
         </BottomView>
       </Container>

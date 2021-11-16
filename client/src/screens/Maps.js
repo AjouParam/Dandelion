@@ -14,7 +14,8 @@ import mapCtrl from '@controller/mapCtrl';
 import dandelionCtrl from '@controller/dandelionCtrl';
 import MindleInfoCtrl from '@controller/MindleInfoCtrl';
 import { coord2address } from '@utils/common';
-
+import userState from '@contexts/userState';
+import { useRecoilState } from 'recoil';
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const DefaultProfileImage = require('../assets/profile/profile_default.png');
 
@@ -23,12 +24,14 @@ const Container = styled.View`
   elevation: 2;
 `;
 
-const Maps = ({ navigation }) => {
+const Maps = ({ navigation, route }) => {
+  console.log('route', route);
   const bottomSheet = useRef();
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
   const [researchMap, setResearchMap] = useState(false); //위치 변화시 현 위치에서 검색 버튼
   const [clickedMindleInfo, setClickedMindleInfo] = useState(MapData.clickedMindleInfo);
+  const [mode, setMode] = useState('Map');
 
   //모바일 화면에서 최적으로 지도를 랜더하기 위한 mapWidth 설정
   const [mapWidth, setMapWidth] = useState('99%');
@@ -38,6 +41,7 @@ const Maps = ({ navigation }) => {
 
   //현재 사용자 위치
   const [location, setLocation] = useState(MapData.location);
+  const [userlocation, setUserlocation] = useRecoilState(userState.userlocation);
 
   //지도에서 현재 기준으로 삼고 있는 위치
   const [currentMapCoord, setCurrentMapCoord] = useState(MapData.currentMapCoord);
@@ -49,6 +53,7 @@ const Maps = ({ navigation }) => {
 
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
+
   const renderInner = () =>
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
@@ -59,6 +64,25 @@ const Maps = ({ navigation }) => {
         )}
       </View>
     );
+  const verifyMindles = (coordinate) =>
+    mapCtrl.getUserLocation(
+      setLocation,
+      setUserlocation,
+      coordinate,
+      setCurrentMapCoord,
+      setBtnToggle,
+      setCurrentMindle,
+      setMindles,
+    );
+
+  useEffect(async () => {
+    if (route === undefined) return () => setMode('Map');
+    if (route.params === undefined) return () => setMode('Map');
+    setMode('myPage');
+    const tempPosition = route.params.location;
+    setCurrentMapCoord({ ...MapData.currentMapCoord, ...tempPosition });
+    dandelionCtrl.CompData(tempPosition, location, setCurrentMindle, setBtnToggle, setMindles);
+  }, []);
   //지도가 준비 될 경우 실행되는 함수
   const updateMapStyle = () => {
     setMapWidth('100%');
@@ -67,15 +91,15 @@ const Maps = ({ navigation }) => {
     if (clickedMindleInfo) return <MapsRenderHeader clickedMindleInfo={clickedMindleInfo} />;
   };
   useEffect(() => {
-    mapCtrl.getUserLocation(
-      setLocation,
-      currentMapCoord,
-      setCurrentMapCoord,
-      setBtnToggle,
-      setCurrentMindle,
-      setMindles,
-    );
+    verifyMindles(currentMapCoord);
   }, []);
+
+  const EnterMindle = () => {
+    // /dandelion/visit/:dandelionId
+  };
+  const LeaveMindle = () => {
+    // /dandelion/exit/:dandelionId
+  };
 
   return (
     <Container>
@@ -97,7 +121,10 @@ const Maps = ({ navigation }) => {
         enabledContentTapInteraction={false}
         enabledInnerScrolling={true}
         onCloseEnd={() => {
-          setClickedMindleInfo(null);
+          console.log('onClosedEnd');
+          MindleInfoCtrl.leaveMindle(clickedMindleInfo, setClickedMindleInfo);
+          //setClickedMindleInfo(null);
+          /** TODO : Leave mindle */
         }}
       />
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
@@ -117,18 +144,20 @@ const Maps = ({ navigation }) => {
           }}
           onRegionChangeComplete={(currnet) => {
             // onRegionChange(currnet);
-            mapCtrl.onRegionChange(
-              currnet,
-              mindleBaseCoord,
-              checkInitialRegion,
-              setCheckInitalRegion,
-              setResearchMap,
-              setCurrentMapCoord,
-              setMindleBaseCoord,
-            );
+            if (route.params === undefined) {
+              mapCtrl.onRegionChange(
+                currnet,
+                mindleBaseCoord,
+                checkInitialRegion,
+                setCheckInitalRegion,
+                setResearchMap,
+                setCurrentMapCoord,
+                setMindleBaseCoord,
+              );
+            }
           }}
         >
-          {mindles.map((props, index) => {
+          {mindles?.map((props, index) => {
             if (props.visible === false) {
               console.log('무야호');
             } else {
@@ -136,8 +165,15 @@ const Maps = ({ navigation }) => {
                 <Mindle
                   key={String(index)}
                   props={props}
-                  onPress={() => {
-                    MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);
+                  onPress={async () => {
+                    console.log(userlocation);
+                    const currentPosition = {
+                      latitude: userlocation.latitude,
+                      longitude: userlocation.longitude,
+                    };
+                    await MindleInfoCtrl.getClickedMindleInfo(props, currentPosition, setClickedMindleInfo);
+                    // TODO : Enter Mindle
+
                     bottomSheet.current.snapTo(1);
                   }}
                 />
@@ -155,9 +191,13 @@ const Maps = ({ navigation }) => {
           {btnToggle ? (
             <Button
               title={'민들레 입장'}
-              onPress={() => {
+              onPress={async () => {
                 //TODO : 민들레 입장
-                MindleInfoCtrl.getClickedMindleInfo(currentMindle, setClickedMindleInfo);
+                const currentPosition = {
+                  latitude: userlocation.latitude,
+                  longitude: userlocation.longitude,
+                };
+                await MindleInfoCtrl.getClickedMindleInfo(currentMindle, currentPosition, setClickedMindleInfo);
                 bottomSheet.current.snapTo(1);
               }}
               width="200px"
@@ -226,20 +266,6 @@ const Maps = ({ navigation }) => {
             />
           </View>
         )}
-        <View
-          style={{
-            position: 'absolute',
-            top: '10%',
-            alignSelf: 'center',
-          }}
-        >
-          <Text>카카오 API</Text>
-          <Button
-            onPress={() => {
-              coord2address(location);
-            }}
-          />
-        </View>
       </Animated.View>
     </Container>
   );
