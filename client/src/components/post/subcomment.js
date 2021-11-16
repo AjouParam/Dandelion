@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity } from 'react-native';
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
-
+const DefaultProfileImage = require('../../assets/profile/profile_default.png');
 const Container = styled.View`
   display: flex;
   flex-direction: row;
@@ -48,7 +48,7 @@ const SubComment = ({ navigation, props, depth }) => {
   } = props;
   return (
     <Container style={{ marginLeft: (depth - 1) * 50 }}>
-      <ProfileImg source={level1} />
+      <ProfileImg source={DefaultProfileImage} />
       <CommentContainer>
         <TopContainer>
           <User>{name}</User>

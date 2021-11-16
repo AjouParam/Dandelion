@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Alert, Dimensions } from 'react-native';
 import styled from 'styled-components';
-import Mindle from '../screens/myPage/mindle';
+import LocalMindle from '../screens/myPage/localmindle';
+import GlobalMindle from '../screens/myPage/globalmindle';
 
 const Title = styled.Text`
   margin: 16px;
@@ -13,7 +14,7 @@ export const HotSpotModule = {
     return (
       <>
         <Title>내 주변 핫스팟</Title>
-        <Mindle navigation={this.navigation} props={this.props} />
+        <LocalMindle navigation={this.navigation} props={this.props} />
       </>
     );
   },
@@ -21,7 +22,7 @@ export const HotSpotModule = {
     return (
       <>
         <Title>전국 핫스팟</Title>
-        <Mindle navigation={this.navigation} props={this.props} />
+        <GlobalMindle navigation={this.navigation} props={this.props} />
       </>
     );
   },

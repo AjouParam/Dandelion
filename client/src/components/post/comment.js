@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity, Button } from 'react-native';
-import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
 import SubComment from '@components/post/subcomment';
 import axios from 'axios';
@@ -9,6 +8,7 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import userState from '@contexts/userState';
 import utilConstant from '../../utils/utilConstant';
 import CreateSubComment from '@components/post/CreateSubComments';
+const DefaultProfileImage = require('../../assets/profile/profile_default.png');
 const Container = styled.View`
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@ const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  border: 1px solid black;
+  border: 1px solid grey;
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
@@ -144,7 +144,7 @@ const Comment = ({ navigation, props, depth }) => {
       <Container style={{ marginLeft: (depth - 1) * 50 }}>
         <CommentContainer>
           <TopContainer>
-            <ProfileImg source={level1} />
+            <ProfileImg source={DefaultProfileImage} />
             <User>{name}</User>
             <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
             <TouchableOpacity>
