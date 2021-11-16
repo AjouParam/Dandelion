@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, FlatList } from 'react-native';
-
 import styled from 'styled-components/native';
-
 import Mindle from '../../components/post/Mindle';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
