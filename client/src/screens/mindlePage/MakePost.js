@@ -162,7 +162,7 @@ const MakePost = ({ navigation, route }) => {
           return undefined;
         }
       })
-      .then((data) => {
+      .then(async (data) => {
         if (data) {
           tkwls;
           let formData = new FormData();
@@ -170,7 +170,7 @@ const MakePost = ({ navigation, route }) => {
           formData.append('postId', data._id);
           console.log(data._id);
 
-          axios
+          await axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
             .then((res) => {
               if (res.data.status === 'SUCCESS') {
@@ -330,7 +330,7 @@ const MakePost = ({ navigation, route }) => {
           return undefined;
         }
       })
-      .then((data) => {
+      .then(async (data) => {
         if (data) {
           tkwls;
           let formData = new FormData();
@@ -338,7 +338,7 @@ const MakePost = ({ navigation, route }) => {
           formData.append('postId', data._id);
           console.log(data._id);
 
-          axios
+          await axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
             .then((res) => {
               if (res.data.status === 'SUCCESS') {
@@ -381,7 +381,7 @@ const MakePost = ({ navigation, route }) => {
       })
       .catch((err) => {
         console.log(err.message);
-        console.log('게시글 오류');
+        console.log('이벤트 오류');
       });
   };
 
