@@ -73,16 +73,16 @@ const Navigation = () => {
 
   useEffect(async () => {
     if (uid === null) return;
-    const result = await axios.post('http://10.0.2.2:4000/mail/load/', { user: 'A' });
+    console.log('유저는', name);
+    const result = await axios.post('http://10.0.2.2:4000/mail/load/', { user: name });
     if (result.data.status === 'SUCCESS') setMessageRoomData(result.data.data);
-    console.log('이거맞냐', result.data);
-    console.log('소켓', socket);
   }, [uid]);
 
   useEffect(() => {
-    console.log('좋다', messageRoomData);
     messageRoomData.map((element) => {
-      socket.emit('joinRoom', element._id, 'A', (res) => console.log('나와라', res));
+      socket?.emit('joinRoom', element._id, name, (res) => {
+        console.log('나와라', res);
+      });
     });
   }, [messageRoomData]);
   return (

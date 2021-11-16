@@ -364,6 +364,7 @@ const MindlePostContent = ({
         comments: comments,
         userLike: like,
         onDeletePost: onDeletePost,
+        isInMindle: isInMindle,
         isEvent: isEvent,
         status: status,
         firstComeNum: firstComeNum,
