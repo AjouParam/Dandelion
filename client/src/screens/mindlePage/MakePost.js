@@ -289,6 +289,83 @@ const MakePost = ({ navigation, route }) => {
         console.log(err.message);
       });
   };
+  const modifyEvent = async () => {
+    const data = {
+      title: title,
+      text: bodyText,
+      location: {
+        longitude: longitude,
+        latitude: latitude,
+      },
+      rewards: rewards,
+      firstComeNum: firstComeNum,
+      startDate: date.toISOString().slice(0, 10),
+    };
+
+    await axios
+      .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          console.log('게시글 작성');
+          return res.data.data;
+        } else {
+          Alert.alert('게시글 수정', '오류가 발생했습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
+            },
+          ]);
+        }
+      })
+      .then((data) => {
+        console.log(data._id);
+        if (data) {
+          let formData = new FormData();
+          formData.append('images', images);
+          formData.append('postId', data._id);
+
+          axios
+            .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
+            .then((res) => {
+              if (res.data.status === 'SUCCESS') {
+                console.log(res);
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
+                data.images = res.data.data;
+                console.log(data);
+                Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+                  {
+                    text: '확인',
+                    onPress: () => {
+                      setRefresh(true);
+                      navigation.goBack();
+                    },
+                  },
+                ]);
+                // setRefresh(true);
+                // route.params.onGoBack(data);
+                // navigation.goBack();
+              } else {
+                console.log('이미지 업로드 실패');
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log('이미지 에러');
+            });
+        } else {
+          console.log('게시글 작성 실패');
+          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        console.log('게시글 오류');
+      });
+  };
 
   const setEvent = async () => {
     const data = {
@@ -502,7 +579,11 @@ const MakePost = ({ navigation, route }) => {
             ref={submitRef}
             onPress={() => {
               if (type === 'Event') {
-                setEvent();
+                if (modifyMode) {
+                  modifyEvent();
+                } else {
+                  setEvent();
+                }
               } else {
                 if (modifyMode) {
                   modifyPost();
