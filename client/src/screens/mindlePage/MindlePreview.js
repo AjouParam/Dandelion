@@ -45,8 +45,8 @@ const ImageContainer = styled.View`
 `;
 
 const RecentImage = styled.Image`
-  height: ${DEVICE_WIDTH / 4 - 5}px;
-  width: ${DEVICE_WIDTH / 4 - 5}px;
+  height: ${DEVICE_WIDTH / 3.8}px;
+  width: ${DEVICE_WIDTH / 3.8}px;
   border-radius: 10px;
   margin: 5px;
 `;
@@ -103,13 +103,6 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
   return (
     <>
       <Container>
-        {data && props.recentImages.length > 0 && (
-          <ImageContainer>
-            {props.recentImages.map((item) => (
-              <RecentImage source={{ uri: item }} />
-            ))}
-          </ImageContainer>
-        )}
         <Tab>
           <TouchableOpacity
             onPress={() => {
@@ -152,17 +145,24 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
             </Text>
           </TouchableOpacity>
         </Tab>
-        {!loading && !data && (
-          <>
-            <View style={{}}>
-              <Text>게시글이 없습니다.</Text>
-            </View>
-          </>
-        )}
         {!loading && data && (
           <>
             <View style={{ flex: 1, height: '100%', justifyContent: 'flex-start' }}>
               <ScrollView>
+                {data && props.recentImages.length > 0 && (
+                  <ImageContainer>
+                    {props.recentImages.map((item) => (
+                      <RecentImage source={{ uri: item }} />
+                    ))}
+                  </ImageContainer>
+                )}
+                {/* {!loading && !data && (
+                  <>
+                    <View style={{}}>
+                      <Text>게시글이 없습니다.</Text>
+                    </View>
+                  </>
+                )}
                 <BoardContent
                   mindleId={mindleKey}
                   postId={data._id}
@@ -174,7 +174,7 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
                   images={data.images}
                   likes={data.likes}
                   comments={data.comments}
-                />
+                /> */}
                 <View style={{ marginTop: 20, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                   <BlockedImage source={blockedImage} />
                   <InfoText size="14px" bold="800">

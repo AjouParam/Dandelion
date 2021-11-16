@@ -28,13 +28,13 @@ const Divider = styled.View`
 const ImageContainer = styled.View`
   flex-direction: row;
   flex-flow: row wrap;
-  margin: 10px 0px;
+  margin: 10px 10px;
   width: ${DEVICE_WIDTH}px;
 `;
 
 const RecentImage = styled.Image`
-  height: ${DEVICE_WIDTH / 4 - 5}px;
-  width: ${DEVICE_WIDTH / 4 - 5}px;
+  height: ${DEVICE_WIDTH / 3.8}px;
+  width: ${DEVICE_WIDTH / 3.8}px;
   border-radius: 10px;
   margin: 5px;
 `;
