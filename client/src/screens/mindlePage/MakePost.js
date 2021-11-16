@@ -73,7 +73,7 @@ const BodyInput = styled.TextInput`
   flex-shrink: 1;
 `;
 const Footer = styled.View`
-  padding: 15px 10px;
+  padding: 0px 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

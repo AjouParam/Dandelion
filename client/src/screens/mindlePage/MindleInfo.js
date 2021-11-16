@@ -14,7 +14,7 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 const Container = styled.View`
   flex: 1;
   display: flex;
-  padding: 15px 15px;
+  padding: 15px 15px 0px 15px;
   height: ${DEVICE_HEIGHT}px;
   background-color: #ffffff;
   justify-content: flex-start;
