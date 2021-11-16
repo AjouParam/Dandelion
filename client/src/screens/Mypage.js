@@ -53,7 +53,7 @@ const UserContentsContainer = styled.View`
   align-items: center;
 `;
 const UserContent = styled.TouchableOpacity`
-  width: ${DEVICE_WIDTH / 3};
+  width: ${DEVICE_WIDTH / 3}px;
   height: 96px;
   border-right-width: 1px;
   border-right-color: #eeeeee;
@@ -68,7 +68,7 @@ const ListSection = styled.View`
   background-color: #ffffff;
 `;
 const Profile = styled.Image`
-  border-radius: 100;
+  border-radius: 100px;
   width: 60px;
   height: 60px;
   margin: 10px;
