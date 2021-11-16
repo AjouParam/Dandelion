@@ -162,11 +162,11 @@ const MakePost = ({ navigation, route }) => {
         }
       })
       .then((data) => {
-        console.log(data._id);
         if (data) {
           let formData = new FormData();
           formData.append('images', images);
           formData.append('postId', data._id);
+          console.log(data._id);
 
           axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
@@ -306,10 +306,10 @@ const MakePost = ({ navigation, route }) => {
       .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          console.log('게시글 작성');
+          console.log('이벤트 수정');
           return res.data.data;
         } else {
-          Alert.alert('게시글 수정', '오류가 발생했습니다.', [
+          Alert.alert('이벤트 수정', '오류가 발생했습니다.', [
             {
               text: '확인',
               onPress: () => {
@@ -336,7 +336,7 @@ const MakePost = ({ navigation, route }) => {
                 data._user = { _id: userId, name: name };
                 data.images = res.data.data;
                 console.log(data);
-                Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+                Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
                   {
                     text: '확인',
                     onPress: () => {
