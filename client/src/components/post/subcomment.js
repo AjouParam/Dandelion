@@ -32,6 +32,7 @@ const ChoiceButton = styled.TouchableOpacity`
 const CommentText = styled.Text``;
 
 const SubComment = ({ navigation, props, depth }) => {
+  console.log('props2', props);
   const {
     name,
     state,
@@ -51,7 +52,7 @@ const SubComment = ({ navigation, props, depth }) => {
       <ProfileImg source={DefaultProfileImage} />
       <CommentContainer>
         <TopContainer>
-          <User>{name}</User>
+          <User>{_user.name}</User>
           {/* <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date> */}
           <Date>{createdAt}</Date>
           {!state && (
