@@ -142,7 +142,7 @@ const MakePost = ({ navigation, route }) => {
       text: bodyText,
       images: images,
     };
-
+    console.log('postId', postContent.postId);
     await axios
       .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
       .then((res) => {
@@ -159,10 +159,12 @@ const MakePost = ({ navigation, route }) => {
               },
             },
           ]);
+          return undefined;
         }
       })
       .then((data) => {
         if (data) {
+          tkwls;
           let formData = new FormData();
           formData.append('images', images);
           formData.append('postId', data._id);
@@ -198,8 +200,15 @@ const MakePost = ({ navigation, route }) => {
               console.log('이미지 에러');
             });
         } else {
-          console.log('게시글 작성 실패');
-          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+          Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
+            },
+          ]);
         }
       })
       .catch((err) => {
