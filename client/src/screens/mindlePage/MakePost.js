@@ -310,12 +310,12 @@ const MakePost = ({ navigation, route }) => {
       firstComeNum: firstComeNum,
       startDate: date.toISOString().slice(0, 10),
     };
-
+    console.log('postId', postContent.postId);
     await axios
-      .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
+      .patch(`/${mindleId}/event/update/${postContent.postId}`, data)
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          console.log('이벤트 수정');
+          console.log('이벤트 작성');
           return res.data.data;
         } else {
           Alert.alert('이벤트 수정', '오류가 발생했습니다.', [
@@ -327,14 +327,16 @@ const MakePost = ({ navigation, route }) => {
               },
             },
           ]);
+          return undefined;
         }
       })
       .then((data) => {
-        console.log(data._id);
         if (data) {
+          tkwls;
           let formData = new FormData();
           formData.append('images', images);
           formData.append('postId', data._id);
+          console.log(data._id);
 
           axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
@@ -366,8 +368,15 @@ const MakePost = ({ navigation, route }) => {
               console.log('이미지 에러');
             });
         } else {
-          console.log('게시글 작성 실패');
-          Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+          Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
+            },
+          ]);
         }
       })
       .catch((err) => {
