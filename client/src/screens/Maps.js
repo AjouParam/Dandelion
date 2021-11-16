@@ -52,6 +52,7 @@ const Maps = ({ navigation }) => {
 
   //TODO : useMemo
   const [mindles, setMindles] = useState([]);
+
   const renderInner = () =>
     clickedMindleInfo && (
       <View style={{ height: '100%' }}>
@@ -81,6 +82,13 @@ const Maps = ({ navigation }) => {
     );
   }, []);
 
+  const EnterMindle = () => {
+    // /dandelion/visit/:dandelionId
+  };
+  const LeaveMindle = () => {
+    // /dandelion/exit/:dandelionId
+  };
+
   return (
     <Container>
       <CreateMindle
@@ -101,7 +109,10 @@ const Maps = ({ navigation }) => {
         enabledContentTapInteraction={false}
         enabledInnerScrolling={true}
         onCloseEnd={() => {
-          setClickedMindleInfo(null);
+          console.log('onClosedEnd');
+          MindleInfoCtrl.leaveMindle(clickedMindleInfo, setClickedMindleInfo);
+          //setClickedMindleInfo(null);
+          /** TODO : Leave mindle */
         }}
       />
       <Animated.View style={{ flex: 1, opacity: Animated.add(0.3, Animated.multiply(fall, 1.0)) }}>
@@ -140,8 +151,15 @@ const Maps = ({ navigation }) => {
                 <Mindle
                   key={String(index)}
                   props={props}
-                  onPress={() => {
-                    MindleInfoCtrl.getClickedMindleInfo(props, setClickedMindleInfo);
+                  onPress={async () => {
+                    console.log(userlocation);
+                    const currentPosition = {
+                      latitude: userlocation.latitude,
+                      longitude: userlocation.longitude,
+                    };
+                    await MindleInfoCtrl.getClickedMindleInfo(props, currentPosition, setClickedMindleInfo);
+                    // TODO : Enter Mindle
+
                     bottomSheet.current.snapTo(1);
                   }}
                 />
@@ -159,9 +177,13 @@ const Maps = ({ navigation }) => {
           {btnToggle ? (
             <Button
               title={'민들레 입장'}
-              onPress={() => {
+              onPress={async () => {
                 //TODO : 민들레 입장
-                MindleInfoCtrl.getClickedMindleInfo(currentMindle, setClickedMindleInfo);
+                const currentPosition = {
+                  latitude: userlocation.latitude,
+                  longitude: userlocation.longitude,
+                };
+                await MindleInfoCtrl.getClickedMindleInfo(currentMindle, currentPosition, setClickedMindleInfo);
                 bottomSheet.current.snapTo(1);
               }}
               width="200px"

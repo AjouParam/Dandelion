@@ -10,7 +10,7 @@ import commentState from '@contexts/commentState';
 
 const AddPostImage = require('../../assets/post/post_add.png');
 const DEVICE_HEIGHT = Dimensions.get('window').height;
-
+const DEVICE_WIDTH = Dimensions.get('window').width;
 const Container = styled.View`
   flex: 1;
   display: flex;
@@ -30,10 +30,11 @@ const ImageContainer = styled.View`
   flex-direction: row;
   flex-flow: row wrap;
   margin: 10px 0px;
+  min-height: 90px;
+  width: ${DEVICE_WIDTH}px;
 `;
 
-const Image = styled.View`
-  border: 1px solid;
+const RecentImage = styled.View`
   height: 80px;
   width: 80px;
   margin: 5px;
@@ -54,7 +55,7 @@ const Tab = styled.View`
 
 const MindleInfo = ({ navigation, props }) => {
   const [type, setType] = useState('Post');
-  const { mindleKey, name, position, overlap, route } = props;
+  const { mindleKey, name, position, overlap, route, recentImages } = props;
 
   const [page, setPage] = useState(1);
   const [eventPage, setEventPage] = useState(1);
@@ -450,10 +451,7 @@ const MindleInfo = ({ navigation, props }) => {
               });
             }}
           >
-            {/* <AddPostImage /> */}
-            {/* <AddPostIcon /> */}
             <AddPostIcon source={AddPostImage} />
-            {/* <Text style={{ alignSelf: 'center', fontSize: 30 }}>+</Text> */}
           </TouchableOpacity>
         )}
         {overlap && !noData && (
@@ -463,23 +461,16 @@ const MindleInfo = ({ navigation, props }) => {
             keyExtractor={(item, idx) => String(item._id)}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.4}
-            ListHeaderComponent={() => (
-              <>
-                {tabIndex === 0 && (
-                  <ImageContainer>
-                    {/* TODO : 데이터리스트에서 랜덤 이미지 7개 가져오기 */}
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                    <Image></Image>
-                  </ImageContainer>
-                )}
-              </>
-            )}
+            ListHeaderComponent={() =>
+              tabIndex === 0 &&
+              recentImages.length > 0 && (
+                <ImageContainer>
+                  {recentImages.map((item) => (
+                    <RecentImage source={{ uri: item }} />
+                  ))}
+                </ImageContainer>
+              )
+            }
           />
         )}
         {overlap && noData && (
