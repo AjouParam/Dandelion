@@ -26,17 +26,15 @@ const Divider = styled.View`
   border: 0.3px solid #000000;
 `;
 const ImageContainer = styled.View`
-  display: flex;
   flex-direction: row;
   flex-flow: row wrap;
   margin: 10px 0px;
-  min-height: 90px;
   width: ${DEVICE_WIDTH}px;
 `;
 
-const RecentImage = styled.View`
-  height: 80px;
-  width: 80px;
+const RecentImage = styled.Image`
+  height: ${DEVICE_WIDTH / 4}px;
+  width: ${DEVICE_WIDTH / 4}px;
   margin: 5px;
 `;
 
@@ -79,7 +77,7 @@ const MindleInfo = ({ navigation, props }) => {
     setLoading(true);
     setListLoading(true);
     fetchData(mindleKey, page);
-
+    console.log('recentImages', recentImages);
     return () => {
       setData(null);
     };
@@ -178,41 +176,8 @@ const MindleInfo = ({ navigation, props }) => {
     setRefresh(false);
   };
 
-  /**
-   * {
-          "status": "SUCCESS",
-          "message": "민들레에 해당하는 게시글입니다.",
-          "data": [
-              {
-                  "_id": "615ac06b37a3bd4cc0c2f91c",
-                  "location": {
-                      "longitude": 127.04275784194242,
-                      "latitude": 37.28335975273373
-                  },
-                  "createdAt": "2021-10-04T08:50:51.405Z",
-                  "updatedAt": "2021-10-04T09:29:20.810Z",
-                  "_dandelion": "614c4ae99aa99a08e0d57c30",
-                  "_user": {
-                      "_id": "61365d8cd4e22a2dd4df2a6f",
-                      "name": "testUser0907",
-                      "thumbnail":(유저 프사 s3 링크)
-                  },
-                  "title": "test2 게시글 수정",
-                  "text": "blahblah",
-                  "images": [
-                      "one",
-                      "two"
-                  ],
-                  "likes": 0,
-                  "comments": 0
-                  "userLike":true,
-              }
-          ]
-      } 
-   */
-
   const renderItem = useCallback(({ item }) => {
-    if (data)
+    if (data && !item.isEvent)
       return (
         <>
           <BoardContent
@@ -465,9 +430,10 @@ const MindleInfo = ({ navigation, props }) => {
               tabIndex === 0 &&
               recentImages.length > 0 && (
                 <ImageContainer>
-                  {recentImages.map((item) => (
-                    <RecentImage source={{ uri: item }} />
-                  ))}
+                  {recentImages.map((item) => {
+                    console.log(item);
+                    return <RecentImage source={{ uri: item }} />;
+                  })}
                 </ImageContainer>
               )
             }
