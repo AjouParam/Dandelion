@@ -22,7 +22,6 @@ const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  border: 1px solid black;
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
@@ -32,7 +31,6 @@ const ChoiceButton = styled.TouchableOpacity`
 const CommentText = styled.Text``;
 
 const SubComment = ({ navigation, props, depth }) => {
-  console.log('props2', props);
   const {
     name,
     state,
