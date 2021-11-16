@@ -33,8 +33,9 @@ const ImageContainer = styled.View`
 `;
 
 const RecentImage = styled.Image`
-  height: ${DEVICE_WIDTH / 4}px;
-  width: ${DEVICE_WIDTH / 4}px;
+  height: ${DEVICE_WIDTH / 4 - 5}px;
+  width: ${DEVICE_WIDTH / 4 - 5}px;
+  border-radius: 10px;
   margin: 5px;
 `;
 
