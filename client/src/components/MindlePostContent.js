@@ -77,14 +77,17 @@ const BoardContentImageContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;
-const PreviewImageContainer = styled.View`
-  justify-content: center;
-  align-items: center;
+const PreviewImageContainer = styled.ScrollView`
+  display: flex;
+  flex-direction: row;
+  overflow: scroll;
+  padding: 5px;
 `;
 const PreviewImage = styled.Image`
-  width: ${DEVICE_WIDTH - 80}px;
-  height: ${DEVICE_WIDTH - 80}px;
+  width: ${DEVICE_WIDTH - 75}px;
+  height: ${DEVICE_WIDTH - 75}px;
   border-radius: 5px;
+  margin: 5px;
 `;
 const BoardTipContainer = styled.View`
   height: 35px;
@@ -462,19 +465,14 @@ const MindlePostContent = ({
                   <Text>{text}</Text>
                 </BoardContentTextContainer>
                 {images
-                  ? images.length > 0 &&
-                    (isInMindle ? (
-                      <PreviewImageContainer>
-                        <PreviewImage source={{ uri: images[0] }} />
-                      </PreviewImageContainer>
-                    ) : (
-                      <BoardContentImageContainer>
+                  ? images.length > 0 && (
+                      <PreviewImageContainer horizontal={true}>
                         {images.map((item, idx) => (
                           //<BoardContentImage source={{ uri: item }} />
-                          <Image key={idx} source={{ uri: item }} style={{ width: 90, height: 90 }} />
+                          <PreviewImage key={idx} source={{ uri: item }} />
                         ))}
-                      </BoardContentImageContainer>
-                    ))
+                      </PreviewImageContainer>
+                    )
                   : null}
                 <BoardTipContainer>
                   <LikeButton
