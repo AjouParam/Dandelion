@@ -288,7 +288,6 @@ const MindlePostContent = ({
         isInPost: true,
         onDeletePost: onDeletePost,
         isInMindle: isInMindle,
-
         setRefresh: setRefresh,
         setLikesList: setLikesList,
         navigation: navigation,
