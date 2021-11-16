@@ -168,6 +168,7 @@ const MakePost = ({ navigation, route }) => {
           let formData = new FormData();
           formData.append('images', images);
           formData.append('postId', data._id);
+          console.log(data._id);
 
           axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
@@ -295,6 +296,92 @@ const MakePost = ({ navigation, route }) => {
       .catch((err) => {
         console.log('게시글 작성 에러');
         console.log(err.message);
+      });
+  };
+  const modifyEvent = async () => {
+    const data = {
+      title: title,
+      text: bodyText,
+      location: {
+        longitude: longitude,
+        latitude: latitude,
+      },
+      rewards: rewards,
+      firstComeNum: firstComeNum,
+      startDate: date.toISOString().slice(0, 10),
+    };
+    console.log('postId', postContent.postId);
+    await axios
+      .patch(`/${mindleId}/event/update/${postContent.postId}`, data)
+      .then((res) => {
+        if (res.data.status === 'SUCCESS') {
+          console.log('이벤트 작성');
+          return res.data.data;
+        } else {
+          Alert.alert('이벤트 수정', '오류가 발생했습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
+            },
+          ]);
+          return undefined;
+        }
+      })
+      .then((data) => {
+        if (data) {
+          tkwls;
+          let formData = new FormData();
+          formData.append('images', images);
+          formData.append('postId', data._id);
+          console.log(data._id);
+
+          axios
+            .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
+            .then((res) => {
+              if (res.data.status === 'SUCCESS') {
+                console.log(res);
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
+                data.images = res.data.data;
+                console.log(data);
+                Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
+                  {
+                    text: '확인',
+                    onPress: () => {
+                      setRefresh(true);
+                      navigation.goBack();
+                    },
+                  },
+                ]);
+                // setRefresh(true);
+                // route.params.onGoBack(data);
+                // navigation.goBack();
+              } else {
+                console.log('이미지 업로드 실패');
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              console.log('이미지 에러');
+            });
+        } else {
+          Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                setRefresh(true);
+                navigation.goBack();
+              },
+            },
+          ]);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        console.log('게시글 오류');
       });
   };
 
@@ -512,7 +599,11 @@ const MakePost = ({ navigation, route }) => {
             ref={submitRef}
             onPress={() => {
               if (type === 'Event') {
-                setEvent();
+                if (modifyMode) {
+                  modifyEvent();
+                } else {
+                  setEvent();
+                }
               } else {
                 if (modifyMode) {
                   modifyPost();

@@ -313,6 +313,7 @@ const MindlePostContent = ({
     navigation.navigate('MakePost', {
       mindleId: mindleId,
       modifyMode: true,
+      type: isEvent ? 'Event' : 'Post',
       postContent: { postId: postId, title: title, bodyText: text, images: images },
       setRefresh: setRefresh,
     });
@@ -352,14 +353,14 @@ const MindlePostContent = ({
       }}
     >
       <Image source={PostDeleteImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
-      <Text style={{ fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
+      <Text style={{ fontWeight: '400', color: '#EFB233' }}>{isEvent ? '이벤트 삭제' : '게시글 삭제'}</Text>
     </DropdownButton>
   );
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
         <Image source={PostEditImage} style={{ width: 32, height: 32 }} />
-        <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
+        <Text style={{ fontWeight: '400' }}>{isEvent ? '이벤트 수정' : '게시글 수정'}</Text>
       </DropdownButton>
     );
   };
