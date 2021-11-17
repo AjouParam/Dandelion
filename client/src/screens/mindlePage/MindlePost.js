@@ -206,54 +206,56 @@ const MindlePost = ({ route, navigation }) => {
 
   return (
     <Container>
-      {loaded && (
-        <>
-          <Post
-            mindleId={mindleId}
-            postId={postId}
-            userPhoto={data.userPhoto}
-            name={data.name}
-            date={data.date}
-            updatedAt={data.updatedAt}
-            title={data.title}
-            text={data.text}
-            images={data.images}
-            likes={data.likes}
-            comments={data.comments}
-            userLike={data.userLike}
-            setLikeList={route.params.setLikesList}
-            isInMindle={false}
-            setRefresh={route.params.setRefresh}
-            navigation={navigation}
-          />
+      <ScrollView>
+        {loaded && (
+          <>
+            <Post
+              mindleId={mindleId}
+              postId={postId}
+              userPhoto={data.userPhoto}
+              name={data.name}
+              date={data.date}
+              updatedAt={data.updatedAt}
+              title={data.title}
+              text={data.text}
+              images={data.images}
+              likes={data.likes}
+              comments={data.comments}
+              userLike={data.userLike}
+              setLikeList={route.params.setLikesList}
+              isInMindle={false}
+              setRefresh={route.params.setRefresh}
+              navigation={navigation}
+            />
 
-          <FlatList
-            style={{
-              maxHeight: Dimensions.get('window').height - 180,
-              paddingTop: 10,
-              marginBottom: utilConstant.postMarginHeight + 40,
-              backgroundColor: '#ffffff',
-            }}
-            data={comments}
-            renderItem={renderItem}
-            keyExtractor={(item) => String(item._id)}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.8}
-          />
+            <FlatList
+              style={{
+                maxHeight: Dimensions.get('window').height - 180,
+                paddingTop: 10,
+                marginBottom: utilConstant.postMarginHeight + 40,
+                backgroundColor: '#ffffff',
+              }}
+              data={comments}
+              renderItem={renderItem}
+              keyExtractor={(item) => String(item._id)}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.8}
+            />
 
-          {!commentLoaded && (
-            <View style={{ flex: 1, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" color="0000ff" />
-            </View>
-          )}
-          <CommentInput functionCall={{ addComment }} />
-        </>
-      )}
-      {!loaded && (
-        <PostLoadingContainer>
-          <ActivityIndicator size="large" color="0000ff" />
-        </PostLoadingContainer>
-      )}
+            {!commentLoaded && (
+              <View style={{ flex: 1, backgroundColor: '#FFF', alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color="0000ff" />
+              </View>
+            )}
+          </>
+        )}
+        {!loaded && (
+          <PostLoadingContainer>
+            <ActivityIndicator size="large" color="0000ff" />
+          </PostLoadingContainer>
+        )}
+      </ScrollView>
+      <CommentInput functionCall={{ addComment }} />
     </Container>
   );
 };

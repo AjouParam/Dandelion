@@ -229,7 +229,7 @@ const EventPost = ({ title, status, firstComeNum, rewards, image }) => {
   return (
     <BoardContents>
       <EventInfoContainer>
-        {image ? <EventImage source={{ uri: image }} /> : null}
+        {image ? <EventImage source={{ uri: image[0] }} /> : null}
         <EventInfo>
           <EventInfoText color="#87C548">{status == 0 ? '진행중' : '종료'}</EventInfoText>
           <EventTitle>{title}</EventTitle>
@@ -269,6 +269,7 @@ const MindlePostContent = ({
   status = 0,
   firstComeNum = 0,
   rewards = 0,
+  startDate = new Date().toISOString(),
   isInMindle = false,
   onDeletePost = () => {},
   setRefresh = () => {},
@@ -310,32 +311,32 @@ const MindlePostContent = ({
   };
 
   const modifyPost = () => {
+    setMenuOpen(false);
     navigation.navigate('MakePost', {
       mindleId: mindleId,
       modifyMode: true,
       type: isEvent ? 'Event' : 'Post',
       postContent: { postId: postId, title: title, bodyText: text, images: images },
       setRefresh: setRefresh,
+      rewards: rewards,
+      firstComeNum: firstComeNum,
+      startDate: startDate,
     });
   };
 
-  const deletePost = () => {
-    axios.delete(`/${mindleId}/post/delete/${postId}`).then((res) => {
+  const deletePost = async (deleteMode) => {
+    setMenuOpen(false);
+    await axios.delete(`/${mindleId}/${deleteMode}/delete/${postId}`).then((res) => {
       if (res.data.status === 'SUCCESS') {
-        Alert.alert('완료', '게시글이 삭제되었습니다', [
-          {
-            text: '닫기',
-            onPress: () => {
-              setMenuOpen(false);
-              if (!isInMindle) {
-                setRefresh(true);
-                navigation.navigate('Main');
-              } else {
-                onDeletePost(postId);
-              }
-            },
-          },
-        ]);
+        if (!isInMindle) {
+          setRefresh(true);
+          setDeleteModal(false);
+          navigation.navigate('Main');
+        } else {
+          setRefresh(true);
+          setDeleteModal(false);
+          onDeletePost(postId);
+        }
       } else if (res.data.status === 'FAILED') {
         Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
           {
@@ -352,7 +353,7 @@ const MindlePostContent = ({
         setDeleteModal(true);
       }}
     >
-      <Image source={PostDeleteImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
+      <Image source={PostDeleteImage} style={{ width: 32, height: 32 }} />
       <Text style={{ fontWeight: '400', color: '#EFB233' }}>{isEvent ? '이벤트 삭제' : '게시글 삭제'}</Text>
     </DropdownButton>
   );
@@ -498,13 +499,7 @@ const MindlePostContent = ({
               </BoardContents>
             )}
             {isEvent && (
-              <EventPost
-                title={title}
-                status={status}
-                firstComeNum={firstComeNum}
-                rewards={rewards}
-                image={images[0]}
-              />
+              <EventPost title={title} status={status} firstComeNum={firstComeNum} rewards={rewards} image={images} />
             )}
           </BoardContainer>
         </TouchableWithoutFeedback>
@@ -520,7 +515,11 @@ const MindlePostContent = ({
                 <ModalButton onPress={() => setDeleteModal(false)}>
                   <DeleteCancelText>취소</DeleteCancelText>
                 </ModalButton>
-                <ModalButton onPress={() => deletePost()}>
+                <ModalButton
+                  onPress={() => {
+                    deletePost(isEvent ? 'event' : 'post');
+                  }}
+                >
                   <DeleteConfirmText>삭제</DeleteConfirmText>
                 </ModalButton>
               </DeleteBtnContainer>

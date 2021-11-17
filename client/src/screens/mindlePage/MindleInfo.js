@@ -290,23 +290,23 @@ const MindleInfo = ({ navigation, props }) => {
             firstComeNum={item.firstComeNum}
             userLike={item.userLike}
             setLikesList={(like, likeNum, postId) => {
-              setData((prev) => {
+              setEventData((prev) => {
                 const newData = prev.map((item) => {
                   if (postId === item._id) {
-                    console.log('find!');
-                    console.log(like, likeNum);
+                    //console.log('find!');
+                    console.log('like', like, likeNum);
                     const obj = {
                       ...item,
                       likes: like ? likeNum + 1 : likeNum - 1,
                       userLike: like,
                     };
-                    console.log(obj);
+                    //console.log(obj);
                     return obj;
                   } else {
                     return item;
                   }
                 });
-                console.log(newData[0]);
+                //console.log(newData[0]);
                 return newData;
               });
             }}
@@ -320,7 +320,7 @@ const MindleInfo = ({ navigation, props }) => {
             }}
             navigation={navigation}
             isInMindle={true}
-            setRefreshEvent={setRefreshEvent}
+            setRefresh={setRefresh}
           />
         </>
       );
