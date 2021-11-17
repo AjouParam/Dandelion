@@ -145,8 +145,10 @@ const Comment = ({ navigation, props, depth }) => {
         <CommentContainer>
           <TopContainer>
             <ProfileImg source={DefaultProfileImage} />
-            <User>{_user.name}</User>
-            <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
+            <SubContainer>
+              <User>{_user.name}</User>
+              <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
+            </SubContainer>
             <TouchableOpacity>
               <ChoiceButton
                 onPress={() => {
