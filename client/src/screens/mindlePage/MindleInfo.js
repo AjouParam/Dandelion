@@ -431,9 +431,8 @@ const MindleInfo = ({ navigation, props }) => {
               tabIndex === 0 &&
               recentImages.length > 0 && (
                 <ImageContainer>
-                  {recentImages.map((item) => {
-                    console.log(item);
-                    return <RecentImage source={{ uri: item }} />;
+                  {recentImages.map((item, idx) => {
+                    return <RecentImage key={idx} source={{ uri: item }} />;
                   })}
                 </ImageContainer>
               )

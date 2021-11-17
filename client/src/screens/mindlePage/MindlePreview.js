@@ -151,8 +151,8 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
               <ScrollView>
                 {data && props.recentImages.length > 0 && (
                   <ImageContainer>
-                    {props.recentImages.map((item) => (
-                      <RecentImage source={{ uri: item }} />
+                    {props.recentImages.map((item, idx) => (
+                      <RecentImage key={idx} source={{ uri: item }} />
                     ))}
                   </ImageContainer>
                 )}
