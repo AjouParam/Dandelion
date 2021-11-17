@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { View, Text, Image, TextInput, Dimensions } from 'react-native';
 import { level1 } from '../../assets/index';
 import utilConstant from '../../utils/utilConstant';
-
+const DefaultProfileImage = require('../assets/profile/profile_default.png');
 const Container = styled.View`
   position: absolute;
   display: flex;
@@ -55,7 +55,7 @@ const CommentInput = ({ navigation, functionCall }) => {
 
   return (
     <Container style={{ marginBottom: addHeight }}>
-      <ProfileImg source={level1} />
+      <ProfileImg source={DefaultProfileImage} />
       <Input
         value={inputText}
         onSubmitEditing={async () => {
