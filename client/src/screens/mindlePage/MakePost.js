@@ -64,6 +64,7 @@ const FlexRowAlignCenterView = styled.View`
 `;
 const Body = styled.View`
   flex: 1;
+  min-height: ${Dimensions.get('screen').height / 3}px;
   padding: 15px 5px;
   border-bottom-width: 1px;
   justify-content: space-between;
@@ -71,6 +72,7 @@ const Body = styled.View`
 `;
 const BodyInput = styled.TextInput`
   flex-shrink: 1;
+  width: 100%;
 `;
 const Footer = styled.View`
   padding: 0px 10px;
@@ -81,16 +83,31 @@ const Footer = styled.View`
   height: 10%;
   width: 100%;
 `;
-const SelectPhotoButton = styled.TouchableOpacity``;
-const PostButton = styled.TouchableOpacity``;
+const SelectPhotoButton = styled.TouchableOpacity`
+  background-color: #f3d737;
+  width: 60px;
+  height: 80%;
+  margin: 10px 0px;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+const PostButton = styled.TouchableOpacity`
+  background-color: #f3d737;
+  width: 60px;
+  height: 80%;
+  margin: 10px 0px;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+`;
 const ImageList = styled.View`
   display: flex;
   height: 90px;
-  width: ${Dimensions.get('window').width - 20}px;
+  max-width: ${Dimensions.get('window').width - 20}px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
-  background-color: #fff;
   background-color: #fefefe;
   elevation: 1;
 `;
@@ -122,6 +139,7 @@ const MakePost = ({ navigation, route }) => {
   const [rewards, setRewards] = useState(0);
   const jwtToken = useRecoilValue(userState.uidState);
   const name = useRecoilValue(userState.nameState);
+  const userlocation = useRecoilValue(userState.userlocation);
 
   useEffect(() => {
     axios.defaults.baseURL = 'http://3.35.45.177:3000/';
@@ -132,7 +150,21 @@ const MakePost = ({ navigation, route }) => {
     if (modifyMode) {
       setTitle(postContent.title);
       setBodyText(postContent.bodyText);
-      setImages(postContent.images);
+      const newImages = postContent.images.map((item) => {
+        const newImage = {
+          uri: item,
+          type: 'multipart/form-data',
+          name: item.toString(),
+        };
+        return newImage;
+      });
+      setImages(newImages);
+      setSendImages(newImages);
+      if (type === 'Event') {
+        setFirstComeNum(route.param?.firstComeNum);
+        setRewards(route.param?.rewards);
+        // setDate(route.param?.startDate);
+      }
     }
   }, []);
 
@@ -166,7 +198,7 @@ const MakePost = ({ navigation, route }) => {
         if (data) {
           tkwls;
           let formData = new FormData();
-          formData.append('images', images);
+          sendImages.forEach((item) => formData.append('images', item));
           formData.append('postId', data._id);
           console.log(data._id);
 
@@ -183,14 +215,14 @@ const MakePost = ({ navigation, route }) => {
                   {
                     text: '확인',
                     onPress: () => {
+                      const userId = data._user;
+                      data._user = { _id: userId, name: userName };
+                      route.params.onGoBack(data);
                       setRefresh(true);
                       navigation.goBack();
                     },
                   },
                 ]);
-                // setRefresh(true);
-                // route.params.onGoBack(data);
-                // navigation.goBack();
               } else {
                 console.log('이미지 업로드 실패');
               }
@@ -204,6 +236,9 @@ const MakePost = ({ navigation, route }) => {
             {
               text: '확인',
               onPress: () => {
+                const userId = data._user;
+                data._user = { _id: userId, name: userName };
+                route.params.onGoBack(data);
                 setRefresh(true);
                 navigation.goBack();
               },
@@ -251,11 +286,10 @@ const MakePost = ({ navigation, route }) => {
         console.log(data._id);
         data.comments = 0;
         data.likes = 0;
-        if (data && sendImages.length > 0) {
-          console.log(sendImages);
+        if (data && images.length > 0) {
+          console.log(images);
           let formData = new FormData();
           sendImages.forEach((item) => formData.append('images', item));
-
           formData.append('postId', data._id);
 
           await axios
@@ -266,7 +300,7 @@ const MakePost = ({ navigation, route }) => {
               if (res.data.status === 'SUCCESS') {
                 console.log(res.data.data.map((item) => item));
                 const userId = data._user;
-                data._user = { _id: userId, name: name };
+                data._user = { _id: userId, name: userName };
                 data.images = [
                   ...res.data.data.map((item) => {
                     return item.fileUrl;
@@ -286,8 +320,10 @@ const MakePost = ({ navigation, route }) => {
             });
         } else {
           console.log('이미지 없음');
-          setRefresh(true);
+          const userId = data._user;
+          data._user = { _id: userId, name: userName };
           route.params.onGoBack(data);
+          setRefresh(true);
           navigation.goBack();
           // console.log('게시글 작성 실패');
           // Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
@@ -303,8 +339,8 @@ const MakePost = ({ navigation, route }) => {
       title: title,
       text: bodyText,
       location: {
-        longitude: longitude,
-        latitude: latitude,
+        longitude: userlocation.longitude,
+        latitude: userlocation.latitude,
       },
       rewards: rewards,
       firstComeNum: firstComeNum,
@@ -322,43 +358,44 @@ const MakePost = ({ navigation, route }) => {
             {
               text: '확인',
               onPress: () => {
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
                 setRefresh(true);
+                route.params.onGoBack(data);
                 navigation.goBack();
               },
             },
           ]);
-          return undefined;
         }
       })
-      .then((data) => {
-        if (data) {
-          tkwls;
+      .then(async (data) => {
+        if (data && sendImages.length > 0) {
           let formData = new FormData();
-          formData.append('images', images);
+          sendImages.forEach((item) => formData.append('images', item));
           formData.append('postId', data._id);
           console.log(data._id);
 
-          axios
+          await axios
             .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
             .then((res) => {
+              console.log(res);
               if (res.data.status === 'SUCCESS') {
-                console.log(res);
                 const userId = data._user;
                 data._user = { _id: userId, name: name };
                 data.images = res.data.data;
-                console.log(data);
+                // console.log(data);
                 Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
                   {
                     text: '확인',
                     onPress: () => {
+                      const userId = data._user;
+                      data._user = { _id: userId, name: name };
                       setRefresh(true);
+                      route.params.onGoBack(data);
                       navigation.goBack();
                     },
                   },
                 ]);
-                // setRefresh(true);
-                // route.params.onGoBack(data);
-                // navigation.goBack();
               } else {
                 console.log('이미지 업로드 실패');
               }
@@ -372,7 +409,10 @@ const MakePost = ({ navigation, route }) => {
             {
               text: '확인',
               onPress: () => {
+                const userId = data._user;
+                data._user = { _id: userId, name: name };
                 setRefresh(true);
+                route.params.onGoBack(data);
                 navigation.goBack();
               },
             },
@@ -457,6 +497,8 @@ const MakePost = ({ navigation, route }) => {
             });
         } else {
           console.log('이미지 없음');
+          const userId = data._user;
+          data._user = { _id: userId, name: name };
           setRefresh(true);
           route.params.onGoBack(data);
           navigation.goBack();
@@ -475,7 +517,10 @@ const MakePost = ({ navigation, route }) => {
       } else if (response.assets && !images.find((item) => item === response.uri)) {
         console.log('이미지 로드');
         //console.log(response.assets[0]);
-        setImages((prev) => [...prev, ...response.assets]);
+        console.log(type, modifyMode);
+        type === 'Event' && modifyMode
+          ? setImages([response.assets])
+          : setImages((prev) => [...prev, ...response.assets]);
         const newImages = response.assets.map((item) => {
           const newImage = {
             uri: item.uri,
@@ -485,7 +530,7 @@ const MakePost = ({ navigation, route }) => {
           return newImage;
         });
 
-        setSendImages((prev) => [...prev, ...newImages]);
+        type === 'Event' && modifyMode ? setSendImages(newImages) : setSendImages((prev) => [...prev, ...newImages]);
       }
     });
   };
@@ -577,11 +622,24 @@ const MakePost = ({ navigation, route }) => {
           }}
           multiline={true}
         ></BodyInput>
-        {images.length > 0 && (
+        {sendImages.length > 0 && (
           <ImageList>
-            {images.map((item) => (
-              <ImageElement source={{ uri: item.uri }} />
-            ))}
+            {sendImages.map((item, idx) => {
+              console.log(item);
+              return <ImageElement key={idx} source={{ uri: item.uri }} />;
+            })}
+          </ImageList>
+        )}
+        {sendImages.length === 0 && (
+          <ImageList>
+            <SelectPhotoButton
+              onPress={() => {
+                pickImage();
+              }}
+              style={{ backgroundColor: '#fbfbfb', height: '100%', width: 90 }}
+            >
+              <Text style={{ color: '#dbdbdb' }}>사진</Text>
+            </SelectPhotoButton>
           </ImageList>
         )}
       </Body>
@@ -591,7 +649,7 @@ const MakePost = ({ navigation, route }) => {
             pickImage();
           }}
         >
-          <Text>사진 불러오기</Text>
+          <Text>사진</Text>
         </SelectPhotoButton>
         {/* TODO : Replace to navigation header button */}
         <PostButton>

@@ -25,7 +25,7 @@ const Container = styled.View`
 `;
 
 const Maps = ({ navigation, route }) => {
-  console.log('route', route);
+  //console.log('route', route);
   const bottomSheet = useRef();
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);

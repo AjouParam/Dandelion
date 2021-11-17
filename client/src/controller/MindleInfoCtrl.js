@@ -22,6 +22,7 @@ const getClickedMindleInfo = async (mindle, currentPosition, setClickedMindleInf
     .post(`dandelion/visit/${mindle.key}`, data)
     .then((res) => {
       console.log('enter!!');
+      console.log(res.data);
       if (res.data.status === 'SUCCESS') {
         console.log('res.data.data : ', res.data.data);
         /*[
@@ -42,22 +43,24 @@ const getClickedMindleInfo = async (mindle, currentPosition, setClickedMindleInf
         return res.data.data[0];
       } else {
         console.log(res.data.message);
+        return res.data.data;
       }
     })
     .then((data) => {
-      setClickedMindleInfo({
-        mindleKey: data._id,
-        name: data.name,
-        madeby: data._creator.name, //데이터 필요
-        description: data.description || '민들레 설명 데이터 없음',
-        visitCount: data.cumulativeVisitors, //데이터 필요
-        current: data.realTimeVisitors, //데이터 필요
-        overlap: mindle.overlap,
-        position: data.location,
-        level: data.level,
-        recentImages: data.recentImages,
-      });
-      return;
+      console.log(data);
+      if (data !== null)
+        setClickedMindleInfo({
+          mindleKey: data._id,
+          name: data.name,
+          madeby: data._creator.name, //데이터 필요
+          description: data.description || '민들레 설명 데이터 없음',
+          visitCount: data.cumulativeVisitors, //데이터 필요sdf
+          current: data.realTimeVisitors, //데이터 필요
+          overlap: mindle.overlap,
+          position: data.location,
+          level: data.level,
+          recentImages: data.recentImages,
+        });
     })
     .catch((err) => console.log(err.message));
 
