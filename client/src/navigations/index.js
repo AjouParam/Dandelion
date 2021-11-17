@@ -68,7 +68,11 @@ const Navigation = () => {
         console.log(e);
       }
     };
-    _loadInitialState();
+    try {
+      _loadInitialState();
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   useEffect(async () => {
