@@ -74,7 +74,7 @@ const leaveMindle = async (currentMindleInfo, setClickedMindleInfo) => {
     .get(`/dandelion/exit/${currentMindleInfo.mindleKey}`)
     .then((res) => {
       if (res.data.status === 'SUCCESS') {
-        console.log(res.data.message);
+        console.log('슈퍼파워', res.data.message);
         setClickedMindleInfo(null);
       } else {
         console.log(res.data.message);
