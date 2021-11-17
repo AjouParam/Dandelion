@@ -31,9 +31,15 @@ const channel = ({ navigation, props }) => {
     setMessageList(await getDate(props._id));
     console.log(messageList);
   }, []);
+
   useEffect(() => {
     socket?.on('receiveMessage', (res) => {
-      setMessageList((prev) => [...prev, res]);
+      console.log('파이이', res);
+      if (messageList.length > 0) {
+        setMessageList((prev) => [...prev, res]);
+      } else {
+        setMessageList([res]);
+      }
     });
   }, []);
   return (
@@ -41,7 +47,7 @@ const channel = ({ navigation, props }) => {
       {messageList
         ?.sort((a, b) => (a.createAt > b.createAt ? 1 : -1))
         .map((element, index) => (
-          <Chat key={index} props={element} type={element.sender === props.name ? true : false} />
+          <Chat key={index} props={element} type={element.sender === name ? true : false} />
         ))}
       <Input navigation={navigation} functionCall={{ addComment }} />
     </>

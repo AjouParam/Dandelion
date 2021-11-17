@@ -41,7 +41,7 @@ const getClickedMindleInfo = async (mindle, currentPosition, setClickedMindleInf
       ]*/
         return res.data.data[0];
       } else {
-        console.log(res.data.message);
+        console.log('이걸',res.data.message);
       }
     })
     .then((data) => {
@@ -71,7 +71,7 @@ const leaveMindle = async (currentMindleInfo, setClickedMindleInfo) => {
     .get(`/dandelion/exit/${currentMindleInfo.mindleKey}`)
     .then((res) => {
       if (res.data.status === 'SUCCESS') {
-        console.log(res.data.message);
+        console.log('슈퍼파워',res.data.message);
         setClickedMindleInfo(null);
       } else {
         console.log(res.data.message);
