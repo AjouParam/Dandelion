@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, Platform, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  Dimensions,
+  Platform,
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from 'react-native';
 import DeleteModal from '@components/Modal';
 import ProfileModal from '@components/Modal';
 import userState from '@contexts/userState';
@@ -51,9 +60,9 @@ const BoardContents = styled.View`
   padding: 5px;
 `;
 const BoardContentTextContainer = styled.View`
-  padding: 0px 15px;
+  padding: 10px;
+  margin-bottom: 10px;
   min-height: 60px;
-  max-height: 100px;
   justify-content: flex-start;
 `;
 const Title = styled.Text`
@@ -62,16 +71,23 @@ const Title = styled.Text`
   margin-bottom: 5px;
 `;
 const BoardContentImageContainer = styled.View`
-  margin: 15px;
-  height: 55px;
+  margin: 10px 15px 10px 10px;
+  height: 60px;
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
-const BoardContentImage = styled.Image`
-  width: 70px;
-  height: 55px;
-  margin-right: 10px;
+const PreviewImageContainer = styled.ScrollView`
+  display: flex;
+  flex-direction: row;
+  overflow: scroll;
+  padding: 5px;
+`;
+const PreviewImage = styled.Image`
+  width: ${DEVICE_WIDTH - 75}px;
+  height: ${DEVICE_WIDTH - 75}px;
+  border-radius: 5px;
+  margin: 5px;
 `;
 const BoardTipContainer = styled.View`
   height: 35px;
@@ -160,6 +176,82 @@ const DeleteConfirmText = styled.Text`
   color: #efb233;
 `;
 
+const EventInfoContainer = styled.View`
+  flex-direction: row;
+  width: 100%;
+  min-height: 100px;
+  padding: 0px 10px;
+  margin-bottom: 10px;
+`;
+const EventImage = styled.Image`
+  width: 105px;
+  height: 105px;
+  padding: 5px 5px;
+`;
+const FlexRowContainer = styled.View`
+  flex-direction: row;
+  padding: 5px 0px;
+`;
+const EventInfo = styled.View`
+  flex: 1;
+  justify-content: flex-start;
+  padding: 5px 5px;
+`;
+
+const EventTitle = styled.Text`
+  color: #424242;
+  width: 175px;
+  flex-shrink: 1;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 5px;
+`;
+const EventInfoText = styled.Text`
+  color: ${(props) => (props.color ? props.color : '#959595')};
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 5px;
+`;
+const EventButton = styled.TouchableOpacity`
+  width: 303px;
+  height: 38px;
+  background-color: ${(props) => (props.status == 0 ? '#f3d737' : '#F6F6F6')};
+  border-radius: 26px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+`;
+const ButtonText = styled.Text`
+  font-size: 16px;
+  color: ${(props) => (props.status == 0 ? '#FFFFFF' : '#CCCCCC')};
+`;
+const EventPost = ({ title, status, firstComeNum, rewards, image }) => {
+  return (
+    <BoardContents>
+      <EventInfoContainer>
+        {image ? <EventImage source={{ uri: image }} /> : null}
+        <EventInfo>
+          <EventInfoText color="#87C548">{status == 0 ? '진행중' : '종료'}</EventInfoText>
+          <EventTitle>{title}</EventTitle>
+          <FlexRowContainer>
+            <EventInfoText>남음</EventInfoText>
+            <EventInfoText color="#EFB233">{firstComeNum}</EventInfoText>
+            <EventInfoText>씨앗</EventInfoText>
+            <EventInfoText color="#EFB233">{rewards}</EventInfoText>
+          </FlexRowContainer>
+        </EventInfo>
+      </EventInfoContainer>
+      <EventButton
+        status={status}
+        onPress={() => {
+          Alert.alert('이벤트', '이벤트 참여가 완료되었습니다.');
+        }}
+      >
+        <ButtonText status={status}>이벤트 참가</ButtonText>
+      </EventButton>
+    </BoardContents>
+  );
+};
 const MindlePostContent = ({
   mindleId,
   postId,
@@ -173,6 +265,10 @@ const MindlePostContent = ({
   likes,
   comments,
   userLike,
+  isEvent = false,
+  status = 0,
+  firstComeNum = 0,
+  rewards = 0,
   isInMindle = false,
   onDeletePost = () => {},
   setRefresh = () => {},
@@ -217,6 +313,7 @@ const MindlePostContent = ({
     navigation.navigate('MakePost', {
       mindleId: mindleId,
       modifyMode: true,
+      type: isEvent ? 'Event' : 'Post',
       postContent: { postId: postId, title: title, bodyText: text, images: images },
       setRefresh: setRefresh,
     });
@@ -256,14 +353,14 @@ const MindlePostContent = ({
       }}
     >
       <Image source={PostDeleteImage} style={{ color: '#EFB233', width: 32, height: 32 }} />
-      <Text style={{ fontWeight: '400', color: '#EFB233' }}>게시글 삭제</Text>
+      <Text style={{ fontWeight: '400', color: '#EFB233' }}>{isEvent ? '이벤트 삭제' : '게시글 삭제'}</Text>
     </DropdownButton>
   );
   const RowComponentModifyPost = () => {
     return (
       <DropdownButton onPress={() => modifyPost()}>
         <Image source={PostEditImage} style={{ width: 32, height: 32 }} />
-        <Text style={{ fontWeight: '400' }}>게시글 수정</Text>
+        <Text style={{ fontWeight: '400' }}>{isEvent ? '이벤트 수정' : '게시글 수정'}</Text>
       </DropdownButton>
     );
   };
@@ -284,6 +381,11 @@ const MindlePostContent = ({
         comments: comments,
         userLike: like,
         onDeletePost: onDeletePost,
+        isInMindle: isInMindle,
+        isEvent: isEvent,
+        status: status,
+        firstComeNum: firstComeNum,
+        rewards: rewards,
         isInMindle: false,
         setRefresh: setRefresh,
         setLikesList: setLikesList,
@@ -294,113 +396,118 @@ const MindlePostContent = ({
   if (mindleId && postId)
     return (
       <>
-        <BoardContainer>
-          <BoardUserInfo>
-            <BoardUserImageContainer
-              onPress={() => {
-                if (userName !== name) setMenuOpen(true);
-              }}
-            >
-              {userPhoto ? (
-                <BoardUserImage
-                  source={{
-                    uri: userPhoto,
-                  }}
-                />
-              ) : (
-                <BoardUserImage source={DefaultProfile} />
-              )}
-            </BoardUserImageContainer>
-            <View style={{ flex: 1, padding: 5 }}>
-              <BoardUserName
+        <TouchableWithoutFeedback
+          onPress={() => {
+            goMindlePost();
+          }}
+        >
+          <BoardContainer>
+            <BoardUserInfo>
+              <BoardUserImageContainer
                 onPress={() => {
                   if (userName !== name) setMenuOpen(true);
                 }}
               >
-                {name}
-              </BoardUserName>
-              {checkUpdate() ? <Text>{date}</Text> : <Text>{updatedAt} (수정됨)</Text>}
-            </View>
-            {userName === name && (
-              <View
-                style={{
-                  alignSelf: 'center',
-                  justifySelf: 'flex-end',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: 30,
-                  height: 30,
-                }}
-              >
-                <ModalDropdown
-                  options={['수정', '삭제']}
-                  dropdownStyle={{ height: 78 }}
-                  dropdownTextStyle={{ fontWeight: '600' }}
-                  renderRow={(item, idx, isSelected) => {
-                    if (item === '수정') return <RowComponentModifyPost />;
-                    else if (item === '삭제') return <RowComponentDeletePost />;
-                    console.log(isSelected);
+                {userPhoto ? (
+                  <BoardUserImage
+                    source={{
+                      uri: userPhoto,
+                    }}
+                  />
+                ) : (
+                  <BoardUserImage source={DefaultProfile} />
+                )}
+              </BoardUserImageContainer>
+              <View style={{ flex: 1, padding: 5 }}>
+                <BoardUserName
+                  onPress={() => {
+                    if (userName !== name) setMenuOpen(true);
                   }}
-                  onSelect={(index, value) => {
-                    ModalDropdown.hide();
-                  }}
-                  saveScrollPosition={false}
                 >
-                  <View>
-                    <Image source={MenuImage} style={{ width: 40, height: 70, marginBottom: -25, marginTop: -20 }} />
-                  </View>
-                </ModalDropdown>
+                  {name}
+                </BoardUserName>
+                {checkUpdate() ? <Text>{date}</Text> : <Text>{updatedAt} (수정됨)</Text>}
               </View>
-            )}
-          </BoardUserInfo>
-          <BoardContents>
-            <BoardContentTextContainer>
-              <Title
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                {title}
-              </Title>
-              <Text
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                {text}
-              </Text>
-            </BoardContentTextContainer>
-            {images
-              ? images.length > 0 && (
-                  <BoardContentImageContainer>
-                    {images.map((item, idx) => (
-                      //<BoardContentImage source={{ uri: item }} />
-                      <Image key={idx} source={{ uri: item }} style={{ width: 90, height: 90 }} />
-                    ))}
-                  </BoardContentImageContainer>
-                )
-              : null}
-            <BoardTipContainer>
-              <LikeButton
-                onPress={() => {
-                  toggleLike();
-                }}
-              >
-                <LikeButtonImage source={like ? Like : Unlike} />
-                <LikeText>{likes}</LikeText>
-              </LikeButton>
+              {userName === name && (
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    justifySelf: 'flex-end',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: 30,
+                    height: 30,
+                  }}
+                >
+                  <ModalDropdown
+                    options={['수정', '삭제']}
+                    dropdownStyle={{ height: 78 }}
+                    dropdownTextStyle={{ fontWeight: '600' }}
+                    renderRow={(item, idx, isSelected) => {
+                      if (item === '수정') return <RowComponentModifyPost />;
+                      else if (item === '삭제') return <RowComponentDeletePost />;
+                      console.log(isSelected);
+                    }}
+                    onSelect={(index, value) => {
+                      ModalDropdown.hide();
+                    }}
+                    saveScrollPosition={false}
+                  >
+                    <View>
+                      <Image source={MenuImage} style={{ width: 40, height: 70, marginBottom: -25, marginTop: -20 }} />
+                    </View>
+                  </ModalDropdown>
+                </View>
+              )}
+            </BoardUserInfo>
+            {!isEvent && (
+              <BoardContents>
+                <BoardContentTextContainer>
+                  <Title>{title}</Title>
+                  <Text>{text}</Text>
+                </BoardContentTextContainer>
+                {images
+                  ? images.length > 0 && (
+                      <PreviewImageContainer horizontal={true}>
+                        {images.map((item, idx) => (
+                          //<BoardContentImage source={{ uri: item }} />
+                          <PreviewImage key={idx} source={{ uri: item }} />
+                        ))}
+                      </PreviewImageContainer>
+                    )
+                  : null}
+                <BoardTipContainer>
+                  <LikeButton
+                    onPress={() => {
+                      toggleLike();
+                    }}
+                  >
+                    <LikeButtonImage source={like ? Like : Unlike} />
+                    <LikeText>{likes}</LikeText>
+                  </LikeButton>
 
-              <CommentContainer
-                onPress={() => {
-                  goMindlePost();
-                }}
-              >
-                <CommentIcon source={CommentImage} />
-                <CommentText>{comments}</CommentText>
-              </CommentContainer>
-            </BoardTipContainer>
-          </BoardContents>
-        </BoardContainer>
+                  <CommentContainer
+                    onPress={() => {
+                      goMindlePost();
+                    }}
+                  >
+                    <CommentIcon source={CommentImage} />
+                    <CommentText>{comments}</CommentText>
+                  </CommentContainer>
+                </BoardTipContainer>
+              </BoardContents>
+            )}
+            {isEvent && (
+              <EventPost
+                title={title}
+                status={status}
+                firstComeNum={firstComeNum}
+                rewards={rewards}
+                image={images[0]}
+              />
+            )}
+          </BoardContainer>
+        </TouchableWithoutFeedback>
         {deleteModal && (
           <DeleteModal width="300px" height="160px" modalVisible={deleteModal} setModalVisible={setDeleteModal}>
             <DeleteContainer>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
 import styled from 'styled-components/native';
 import { View, Text, Image, TextInput, Dimensions } from 'react-native';
-
 import { level1 } from '../../assets/index';
 import utilConstant from '../../utils/utilConstant';
 
@@ -36,7 +35,7 @@ const CommentInput = ({ navigation, functionCall }) => {
 
   useEffect(() => {
     Keyboard.addListener('keyboardDidShow', () => {
-      setAddHeight(utilConstant.KeyboardHeight);
+      setAddHeight(utilConstant.KeyboardHeight - 250);
     });
     Keyboard.addListener('keyboardDidHide', () => {
       setAddHeight(utilConstant.defaultKeyboardHeight);

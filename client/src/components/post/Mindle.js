@@ -59,13 +59,14 @@ const TagText = styled.Text`
 // `;
 
 const Mindle = ({ navigation, props, click }) => {
-  console.log('Mindles', props.location);
+  console.log('address', props);
+  const [address, setAddress] = useState();
+  useEffect(() => {
+    coord2address(props.location, setAddress);
+  }, []);
+
   return (
-    <TouchableWithoutFeedback
-      onPress={() =>
-        click && navigation.navigate('Mindle', { title: props.name, props, type: 'detail', state: 'mindle' })
-      }
-    >
+    <TouchableWithoutFeedback onPress={() => click && navigation.navigate('gotoMap', { location: props.location })}>
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>

@@ -34,11 +34,13 @@ const MindleTitleContainer = styled.View`
 const MindleTitle = styled.Text`
   font-weight: 800;
   font-size: 20px;
+  color: #424242;
 `;
 const MindleCreater = styled.Text`
   margin-left: 25px;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 12px;
+  color: #424242;
 `;
 
 const VisitorContainer = styled.View`
@@ -51,6 +53,7 @@ const InfoText = styled.Text`
   font-weight: 500;
   font-size: 13px;
   margin-right: 25px;
+  color: #424242;
 `;
 const CumulativeVisitors = styled.Text`
   font-weight: 600;
@@ -68,6 +71,7 @@ const DescriptionContainer = styled.View`
 const MindleDescription = styled.Text`
   font-weight: 400;
   font-size: 13px;
+  color: #424242;
 `;
 
 const MapsRenderHeader = ({ clickedMindleInfo }) => {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity } from 'react-native';
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
-
+const DefaultProfileImage = require('../../assets/profile/profile_default.png');
 const Container = styled.View`
   display: flex;
   flex-direction: row;
@@ -22,7 +22,6 @@ const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  border: 1px solid black;
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
@@ -48,10 +47,10 @@ const SubComment = ({ navigation, props, depth }) => {
   } = props;
   return (
     <Container style={{ marginLeft: (depth - 1) * 50 }}>
-      <ProfileImg source={level1} />
+      <ProfileImg source={DefaultProfileImage} />
       <CommentContainer>
         <TopContainer>
-          <User>{name}</User>
+          <User>{_user.name}</User>
           {/* <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date> */}
           <Date>{createdAt}</Date>
           {!state && (

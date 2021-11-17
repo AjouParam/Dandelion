@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components/native';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import BoardContent from '@components/MindlePostContent';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
+const blockedImage = require('../../assets/mindle/blocked_mindle.png');
+const DEVICE_WIDTH = Dimensions.get('window').width;
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -16,20 +18,16 @@ const Container = styled.SafeAreaView`
   justify-content: flex-start;
 `;
 
-const ImageContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  flex-flow: row wrap;
-  margin: 10px 0px;
+const BlockedImage = styled.Image`
+  width: 100px;
+  height: 100px;
 `;
 
-const Image = styled.View`
-  border: 1px solid;
-  height: 80px;
-  width: 80px;
-  margin: 5px;
+const InfoText = styled.Text`
+  font-size: ${(props) => (props.size ? props.size : '12px')};
+  color: #959595;
+  font-weight: ${(props) => (props.bold ? props.bold : '600')};
 `;
-
 const Tab = styled.View`
   display: flex;
   flex-direction: row;
@@ -37,6 +35,20 @@ const Tab = styled.View`
   height: 40px;
   padding: 0px 5px;
   justify-content: space-evenly;
+`;
+
+const ImageContainer = styled.View`
+  flex-direction: row;
+  flex-flow: row wrap;
+  margin: 10px 0px;
+  width: ${DEVICE_WIDTH}px;
+`;
+
+const RecentImage = styled.Image`
+  height: ${DEVICE_WIDTH / 3.8}px;
+  width: ${DEVICE_WIDTH / 3.8}px;
+  border-radius: 10px;
+  margin: 5px;
 `;
 
 const MindlePreview = ({ navigation, props, mindleKey }) => {
@@ -91,19 +103,6 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
   return (
     <>
       <Container>
-        {/* <Header /> */}
-        {data && (
-          <ImageContainer>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-            <Image></Image>
-          </ImageContainer>
-        )}
         <Tab>
           <TouchableOpacity
             onPress={() => {
@@ -146,17 +145,24 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
             </Text>
           </TouchableOpacity>
         </Tab>
-        {!loading && !data && (
-          <>
-            <View style={{}}>
-              <Text>게시글이 없습니다.</Text>
-            </View>
-          </>
-        )}
         {!loading && data && (
           <>
-            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View style={{ flex: 1, height: '100%', justifyContent: 'flex-start' }}>
               <ScrollView>
+                {data && props.recentImages.length > 0 && (
+                  <ImageContainer>
+                    {props.recentImages.map((item) => (
+                      <RecentImage source={{ uri: item }} />
+                    ))}
+                  </ImageContainer>
+                )}
+                {/* {!loading && !data && (
+                  <>
+                    <View style={{}}>
+                      <Text>게시글이 없습니다.</Text>
+                    </View>
+                  </>
+                )}
                 <BoardContent
                   mindleId={mindleKey}
                   postId={data._id}
@@ -168,9 +174,13 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
                   images={data.images}
                   likes={data.likes}
                   comments={data.comments}
-                />
-                <View style={{ height: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  <Text>Locked</Text>
+                /> */}
+                <View style={{ marginTop: 20, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <BlockedImage source={blockedImage} />
+                  <InfoText size="14px" bold="800">
+                    내 주변 민들레 보러가기
+                  </InfoText>
+                  <InfoText>현재 내 위치의 민들레가 아닙니다!</InfoText>
                 </View>
               </ScrollView>
             </View>
