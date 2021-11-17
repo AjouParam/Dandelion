@@ -6,6 +6,7 @@ import { View, Text, Alert } from 'react-native';
 import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import userState from '@contexts/userState';
+import { level1 } from '../assets/index';
 
 const Container = styled.View`
   flex: 1;
@@ -55,15 +56,16 @@ const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) =
   };
   const createMindle = async () => {
     if (position) console.log(`create in (longitude, latitude) : (${position.longitude}, ${position.latitude})`);
-    await axios
-      .post('/dandelion/create', {
-        name: mindleName,
-        location: { longitude: position.longitude, latitude: position.latitude },
-        description: description,
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          /**
+    try {
+      await axios
+        .post('/dandelion/create', {
+          name: mindleName,
+          location: { longitude: position.longitude, latitude: position.latitude },
+          description: description,
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            /**
            *  <Mindle
                 key={String(index)} //TODO : 올바른 key 값으로 수정 필요
                 latitude={props.latitude}
@@ -85,27 +87,36 @@ const CreateMindle = ({ modalVisible, setModalVisible, position, setMindles }) =
               />
            */
 
-          setMindles((prev) => [
-            ...prev,
-            {
-              latitude: res.data.data.location.coordinates[1],
-              longitude: res.data.data.location.coordinates[0],
-              title: res.data.data.name,
-              description: res.data.data.description,
-              radius: levelToRadius(res.data.data.level),
-              overlap: true,
-            },
-          ]);
-          Alert.alert('성공', '민들레 심기 성공');
-          modalClose();
-        } else if (res.data.status === 'FAILED') {
-          Alert.alert('실패', res.data.message);
-        }
-      })
-      .catch((error) => {
-        Alert.alert('실패', error.message.slice(5, error.message.length));
-        console.log('실패 좌표값', position);
-      });
+            setMindles((prev) => [
+              ...prev,
+              {
+                _id: res.data.data._id,
+                latitude: res.data.data.location.coordinates[1],
+                longitude: res.data.data.location.coordinates[0],
+                location: {
+                  latitude: res.data.data.location.coordinates[1],
+                  longitude: res.data.data.location.coordinates[0],
+                },
+                title: res.data.data.name,
+                description: res.data.data.description,
+                radius: levelToRadius(res.data.data.level),
+                src: level1,
+                overlap: true,
+              },
+            ]);
+            Alert.alert('성공', '민들레 심기 성공');
+            modalClose();
+          } else if (res.data.status === 'FAILED') {
+            Alert.alert('실패', res.data.message);
+          }
+        })
+        .catch((error) => {
+          Alert.alert('실패', error.message.slice(5, error.message.length));
+          console.log('실패 좌표값', position);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

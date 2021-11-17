@@ -147,34 +147,37 @@ const MindleInfo = ({ navigation, props }) => {
   }, [tabIndex]);
 
   const fetchData = async (mindleId, page) => {
-    const dataList = await axios
-      .get(`/${mindleId}/post/`, {
-        params: {
-          page: page,
-          maxPost: CONTENT_NUM,
-        },
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log(res.data.data);
-          console.log(res.data.message);
-          return res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-        } else if (res.data.status === 'FAILED') {
-          console.log(res.data.message);
-          return 'FAILED';
-        }
-      })
-      .catch((err) => console.log(err));
+    try {
+      const dataList = await axios
+        .get(`/${mindleId}/post/`, {
+          params: {
+            page: page,
+            maxPost: CONTENT_NUM,
+          },
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            //console.log(res.data.data);
+            //console.log(res.data.message);
+            return res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+          } else if (res.data.status === 'FAILED') {
+            //console.log(res.data.message);
+            return 'FAILED';
+          }
+        })
+        .catch((err) => console.log(err));
+      if (dataList !== 'FAILED') {
+        if (dataList.length === 0 && page === 1) setNoData(true);
+        // setDataList(dataList);
 
-    if (dataList !== 'FAILED') {
-      if (dataList.length === 0 && page === 1) setNoData(true);
-      // setDataList(dataList);
-
-      setData((prev) =>
-        [...prev, ...dataList].filter((item, idx, self) => self.findIndex((e) => e._id === item._id) === idx),
-      );
+        setData((prev) =>
+          [...prev, ...dataList].filter((item, idx, self) => self.findIndex((e) => e._id === item._id) === idx),
+        );
+      }
+      setRefresh(false);
+    } catch (err) {
+      console.log(err);
     }
-    setRefresh(false);
   };
 
   const renderItem = useCallback(({ item }) => {
@@ -239,33 +242,37 @@ const MindleInfo = ({ navigation, props }) => {
   };
 
   const fetchEvent = async (mindleId, page) => {
-    const dataList = await axios
-      .get(`${mindleId}/event`, {
-        params: {
-          page: eventPage,
-          maxPost: CONTENT_NUM,
-        },
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log(res.data);
-          return res.data.data;
-        } else {
-          console.log(res.data.message);
-          return 'FAILED';
-        }
-      })
-      .catch((err) => console.log(err.message));
-    console.log(dataList);
-    if (dataList !== 'FAILED') {
-      if (dataList.length === 0 && page === 1) setNoData(true);
-      // setDataList(dataList);
+    try {
+      const dataList = await axios
+        .get(`${mindleId}/event`, {
+          params: {
+            page: eventPage,
+            maxPost: CONTENT_NUM,
+          },
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log(res.data);
+            return res.data.data;
+          } else {
+            console.log(res.data.message);
+            return 'FAILED';
+          }
+        })
+        .catch((err) => console.log(err.message));
+      console.log(dataList);
+      if (dataList !== 'FAILED') {
+        if (dataList.length === 0 && page === 1) setNoData(true);
+        // setDataList(dataList);
 
-      setEventData((prev) =>
-        [...prev, ...dataList].filter((item, idx, self) => self.findIndex((e) => e._id === item._id) === idx),
-      );
+        setEventData((prev) =>
+          [...prev, ...dataList].filter((item, idx, self) => self.findIndex((e) => e._id === item._id) === idx),
+        );
+      }
+      setRefresh(false);
+    } catch (err) {
+      console.log(err);
     }
-    setRefresh(false);
   };
 
   const renderEventItem = useCallback(({ item }) => {

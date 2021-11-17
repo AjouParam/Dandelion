@@ -13,14 +13,18 @@ axios.defaults.headers.common['x-access-token'] = jwtToken;
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const getData = async (setMypost) => {
-  const data = await axios
-    .get('/dandelion/post/get/mine', {
-      params: {
-        page: 1,
-        maxPost: 4,
-      },
-    })
-    .then((res) => setMypost(res.data.data));
+  try {
+    const data = await axios
+      .get('/dandelion/post/get/mine', {
+        params: {
+          page: 1,
+          maxPost: 4,
+        },
+      })
+      .then((res) => setMypost(res.data.data));
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export default { getData };

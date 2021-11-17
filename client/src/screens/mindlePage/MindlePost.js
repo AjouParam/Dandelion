@@ -87,26 +87,30 @@ const MindlePost = ({ route, navigation }) => {
 
   const getComment = async (page) => {
     const maxPost = 10;
-    await axios
-      .get(`/${postId}/comment`, {
-        params: {
-          page: page,
-          maxPost: maxPost,
-        },
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log('댓글 불러오기');
-          setComments((prev) => [...prev, ...res.data.data]);
-          setPage((prev) => prev + 1);
-        } else {
-          console.log('댓글 불러오기 실패');
-        }
-      })
-      .then((res) => {
-        setCommentLoaded(true);
-      })
-      .catch((err) => console.log(err.message));
+    try {
+      await axios
+        .get(`/${postId}/comment`, {
+          params: {
+            page: page,
+            maxPost: maxPost,
+          },
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log('댓글 불러오기');
+            setComments((prev) => [...prev, ...res.data.data]);
+            setPage((prev) => prev + 1);
+          } else {
+            console.log('댓글 불러오기 실패');
+          }
+        })
+        .then((res) => {
+          setCommentLoaded(true);
+        })
+        .catch((err) => console.log(err.message));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleLoadMore = () => {
@@ -114,14 +118,15 @@ const MindlePost = ({ route, navigation }) => {
   };
 
   const addComment = async (text, setInputText) => {
-    return await axios
-      .post(`/${postId}/comment/create`, {
-        text: text,
-      })
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log('조준', res.data.message);
-          /**{
+    try {
+      return await axios
+        .post(`/${postId}/comment/create`, {
+          text: text,
+        })
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log('조준', res.data.message);
+            /**{
               "status": "SUCCESS",
               "message": "댓글을 작성하였습니다.",
               "data": {
@@ -136,49 +141,56 @@ const MindlePost = ({ route, navigation }) => {
                   "__v": 0
               }
           } */
-          const resData = res.data.data._user;
-          const newComment = {
-            ...res.data.data,
-            _user: {
-              _id: resData,
-              name: userName,
-            },
-          };
-          console.log('new comment', newComment);
+            const resData = res.data.data._user;
+            const newComment = {
+              ...res.data.data,
+              _user: {
+                _id: resData,
+                name: userName,
+              },
+            };
+            console.log('new comment', newComment);
 
-          setComments((prev) => [newComment, ...prev]);
-          setInputText('');
-          setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
-          return true;
-        } else {
-          console.log('일단', res.data.message);
+            setComments((prev) => [newComment, ...prev]);
+            setInputText('');
+            setData((prev) => ({ ...prev, comments: prev.comments + 1 }));
+            return true;
+          } else {
+            console.log('일단', res.data.message);
+            return false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
           return false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const deleteComment = async (postId, commentId) => {
     //:postId/comment/delete/:commentId
-    await axios
-      .delete(`${postId}/comment/delete/${commentId}`)
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log(res.data.message);
-          const filtered = comments.filter((item) => item._id !== commentId);
-          setComments(filtered);
-          setData((prev) => ({ ...prev, comments: filtered.length }));
-          setCommentState(true);
-        } else {
-          console.log(res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    try {
+      await axios
+        .delete(`${postId}/comment/delete/${commentId}`)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log(res.data.message);
+            const filtered = comments.filter((item) => item._id !== commentId);
+            setComments(filtered);
+            setData((prev) => ({ ...prev, comments: filtered.length }));
+            setCommentState(true);
+          } else {
+            console.log(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const renderItem = ({ item }) => (

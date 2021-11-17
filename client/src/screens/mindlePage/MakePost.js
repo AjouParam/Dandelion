@@ -175,81 +175,85 @@ const MakePost = ({ navigation, route }) => {
       images: images,
     };
     console.log('postId', postContent.postId);
-    await axios
-      .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log('게시글 작성');
-          return res.data.data;
-        } else {
-          Alert.alert('게시글 수정', '오류가 발생했습니다.', [
-            {
-              text: '확인',
-              onPress: () => {
-                setRefresh(true);
-                navigation.goBack();
+    try {
+      await axios
+        .patch(`/${mindleId}/post/update/${postContent.postId}`, data)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log('게시글 작성');
+            return res.data.data;
+          } else {
+            Alert.alert('게시글 수정', '오류가 발생했습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  setRefresh(true);
+                  navigation.goBack();
+                },
               },
-            },
-          ]);
-          return undefined;
-        }
-      })
-      .then(async (data) => {
-        if (data) {
-          tkwls;
-          let formData = new FormData();
-          sendImages.forEach((item) => formData.append('images', item));
-          formData.append('postId', data._id);
-          console.log(data._id);
+            ]);
+            return undefined;
+          }
+        })
+        .then(async (data) => {
+          if (data) {
+            tkwls;
+            let formData = new FormData();
+            sendImages.forEach((item) => formData.append('images', item));
+            formData.append('postId', data._id);
+            console.log(data._id);
 
-          await axios
-            .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
-            .then((res) => {
-              if (res.data.status === 'SUCCESS') {
-                console.log(res);
-                const userId = data._user;
-                data._user = { _id: userId, name: name };
-                data.images = res.data.data;
-                console.log(data);
-                Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
-                  {
-                    text: '확인',
-                    onPress: () => {
-                      const userId = data._user;
-                      data._user = { _id: userId, name: userName };
-                      route.params.onGoBack(data);
-                      setRefresh(true);
-                      navigation.goBack();
+            await axios
+              .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
+              .then((res) => {
+                if (res.data.status === 'SUCCESS') {
+                  console.log(res);
+                  const userId = data._user;
+                  data._user = { _id: userId, name: name };
+                  data.images = res.data.data;
+                  console.log(data);
+                  Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+                    {
+                      text: '확인',
+                      onPress: () => {
+                        const userId = data._user;
+                        data._user = { _id: userId, name: userName };
+                        route.params.onGoBack(data);
+                        setRefresh(true);
+                        navigation.goBack();
+                      },
                     },
-                  },
-                ]);
-              } else {
-                console.log('이미지 업로드 실패');
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log('이미지 에러');
-            });
-        } else {
-          Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
-            {
-              text: '확인',
-              onPress: () => {
-                const userId = data._user;
-                data._user = { _id: userId, name: userName };
-                route.params.onGoBack(data);
-                setRefresh(true);
-                navigation.goBack();
+                  ]);
+                } else {
+                  console.log('이미지 업로드 실패');
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                console.log('이미지 에러');
+              });
+          } else {
+            Alert.alert('게시글 수정', '게시글 수정이 완료되었습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  const userId = data._user;
+                  data._user = { _id: userId, name: userName };
+                  route.params.onGoBack(data);
+                  setRefresh(true);
+                  navigation.goBack();
+                },
               },
-            },
-          ]);
-        }
-      })
-      .catch((err) => {
-        console.log(err.message);
-        console.log('게시글 오류');
-      });
+            ]);
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+          console.log('게시글 오류');
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const setPost = async () => {
@@ -264,75 +268,79 @@ const MakePost = ({ navigation, route }) => {
     };
     console.log(data);
     console.log('setPost');
-    await axios
-      .post(`/${mindleId}/post/create`, data)
-      .then((res) => {
-        /**{
+    try {
+      await axios
+        .post(`/${mindleId}/post/create`, data)
+        .then((res) => {
+          /**{
         "status": "SUCCESS",
         "message": "게시글을 작성하였습니다.",
         data:{ ... },
         } 
       */
-        console.log('send');
-        if (res.data.status === 'SUCCESS') {
-          console.log('게시글 작성');
-          return res.data.data;
-        } else {
-          console.log('Failed to post');
-          return null;
-        }
-      })
-      .then(async (data) => {
-        console.log(data._id);
-        data.comments = 0;
-        data.likes = 0;
-        if (data && images.length > 0) {
-          console.log(images);
-          let formData = new FormData();
-          sendImages.forEach((item) => formData.append('images', item));
-          formData.append('postId', data._id);
+          console.log('send');
+          if (res.data.status === 'SUCCESS') {
+            console.log('게시글 작성');
+            return res.data.data;
+          } else {
+            console.log('Failed to post');
+            return null;
+          }
+        })
+        .then(async (data) => {
+          console.log(data._id);
+          data.comments = 0;
+          data.likes = 0;
+          if (data && images.length > 0) {
+            console.log(images);
+            let formData = new FormData();
+            sendImages.forEach((item) => formData.append('images', item));
+            formData.append('postId', data._id);
 
-          await axios
-            .post(`/dandelion/images/post`, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            })
-            .then((res) => {
-              if (res.data.status === 'SUCCESS') {
-                console.log(res.data.data.map((item) => item));
-                const userId = data._user;
-                data._user = { _id: userId, name: userName };
-                data.images = [
-                  ...res.data.data.map((item) => {
-                    return item.fileUrl;
-                  }),
-                ];
-                console.log(data);
-                setRefresh(true);
-                route.params.onGoBack(data);
-                navigation.goBack();
-              } else {
-                console.log('이미지 업로드 실패');
-              }
-            })
-            .catch((err) => {
-              console.log('이미지 작성 에러');
-              console.log(err);
-            });
-        } else {
-          console.log('이미지 없음');
-          const userId = data._user;
-          data._user = { _id: userId, name: userName };
-          route.params.onGoBack(data);
-          setRefresh(true);
-          navigation.goBack();
-          // console.log('게시글 작성 실패');
-          // Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
-        }
-      })
-      .catch((err) => {
-        console.log('게시글 작성 에러');
-        console.log(err.message);
-      });
+            await axios
+              .post(`/dandelion/images/post`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              })
+              .then((res) => {
+                if (res.data.status === 'SUCCESS') {
+                  console.log(res.data.data.map((item) => item));
+                  const userId = data._user;
+                  data._user = { _id: userId, name: userName };
+                  data.images = [
+                    ...res.data.data.map((item) => {
+                      return item.fileUrl;
+                    }),
+                  ];
+                  console.log(data);
+                  setRefresh(true);
+                  route.params.onGoBack(data);
+                  navigation.goBack();
+                } else {
+                  console.log('이미지 업로드 실패');
+                }
+              })
+              .catch((err) => {
+                console.log('이미지 작성 에러');
+                console.log(err);
+              });
+          } else {
+            console.log('이미지 없음');
+            const userId = data._user;
+            data._user = { _id: userId, name: userName };
+            route.params.onGoBack(data);
+            setRefresh(true);
+            navigation.goBack();
+            // console.log('게시글 작성 실패');
+            // Alert.alert('에러', '게시글 작성에 실패하였습니다.\n잠시 후 다시 시도해주세요.');
+          }
+        })
+        .catch((err) => {
+          console.log('게시글 작성 에러');
+          console.log(err.message);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
   const modifyEvent = async () => {
     const data = {
@@ -347,82 +355,86 @@ const MakePost = ({ navigation, route }) => {
       startDate: date.toISOString().slice(0, 10),
     };
     console.log('postId', postContent.postId);
-    await axios
-      .patch(`/${mindleId}/event/update/${postContent.postId}`, data)
-      .then((res) => {
-        if (res.data.status === 'SUCCESS') {
-          console.log('이벤트 작성');
-          return res.data.data;
-        } else {
-          Alert.alert('이벤트 수정', '오류가 발생했습니다.', [
-            {
-              text: '확인',
-              onPress: () => {
-                const userId = data._user;
-                data._user = { _id: userId, name: name };
-                setRefresh(true);
-                route.params.onGoBack(data);
-                navigation.goBack();
+    try {
+      await axios
+        .patch(`/${mindleId}/event/update/${postContent.postId}`, data)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log('이벤트 작성');
+            return res.data.data;
+          } else {
+            Alert.alert('이벤트 수정', '오류가 발생했습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  const userId = data._user;
+                  data._user = { _id: userId, name: name };
+                  setRefresh(true);
+                  route.params.onGoBack(data);
+                  navigation.goBack();
+                },
               },
-            },
-          ]);
-        }
-      })
-      .then(async (data) => {
-        if (data && sendImages.length > 0) {
-          let formData = new FormData();
-          sendImages.forEach((item) => formData.append('images', item));
-          formData.append('postId', data._id);
-          console.log(data._id);
+            ]);
+          }
+        })
+        .then(async (data) => {
+          if (data && sendImages.length > 0) {
+            let formData = new FormData();
+            sendImages.forEach((item) => formData.append('images', item));
+            formData.append('postId', data._id);
+            console.log(data._id);
 
-          await axios
-            .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
-            .then((res) => {
-              console.log(res);
-              if (res.data.status === 'SUCCESS') {
-                const userId = data._user;
-                data._user = { _id: userId, name: name };
-                data.images = res.data.data;
-                // console.log(data);
-                Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
-                  {
-                    text: '확인',
-                    onPress: () => {
-                      const userId = data._user;
-                      data._user = { _id: userId, name: name };
-                      setRefresh(true);
-                      route.params.onGoBack(data);
-                      navigation.goBack();
+            await axios
+              .post(`/dandelion/images/post`, { headers: { 'Content-Type': 'multipart/form-data' }, formData })
+              .then((res) => {
+                console.log(res);
+                if (res.data.status === 'SUCCESS') {
+                  const userId = data._user;
+                  data._user = { _id: userId, name: name };
+                  data.images = res.data.data;
+                  // console.log(data);
+                  Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
+                    {
+                      text: '확인',
+                      onPress: () => {
+                        const userId = data._user;
+                        data._user = { _id: userId, name: name };
+                        setRefresh(true);
+                        route.params.onGoBack(data);
+                        navigation.goBack();
+                      },
                     },
-                  },
-                ]);
-              } else {
-                console.log('이미지 업로드 실패');
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              console.log('이미지 에러');
-            });
-        } else {
-          Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
-            {
-              text: '확인',
-              onPress: () => {
-                const userId = data._user;
-                data._user = { _id: userId, name: name };
-                setRefresh(true);
-                route.params.onGoBack(data);
-                navigation.goBack();
+                  ]);
+                } else {
+                  console.log('이미지 업로드 실패');
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                console.log('이미지 에러');
+              });
+          } else {
+            Alert.alert('이벤트 수정', '이벤트 수정이 완료되었습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  const userId = data._user;
+                  data._user = { _id: userId, name: name };
+                  setRefresh(true);
+                  route.params.onGoBack(data);
+                  navigation.goBack();
+                },
               },
-            },
-          ]);
-        }
-      })
-      .catch((err) => {
-        console.log(err.message);
-        console.log('이벤트 오류');
-      });
+            ]);
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+          console.log('이벤트 오류');
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const setEvent = async () => {
@@ -438,76 +450,80 @@ const MakePost = ({ navigation, route }) => {
       startDate: date.toISOString().slice(0, 10),
     };
     console.log(data);
-    await axios
-      .post(`/${mindleId}/event/create`, data)
-      .then((res) => {
-        /**{
+    try {
+      await axios
+        .post(`/${mindleId}/event/create`, data)
+        .then((res) => {
+          /**{
           "status": "SUCCESS",
           "message": "게시글을 작성하였습니다.",
           data:{ ... },
           } 
         */
-        console.log('send');
-        if (res.data.status === 'SUCCESS') {
-          console.log('이벤트');
-          return res.data.data;
-        } else {
-          console.log(res.data);
-          Alert.alert('이벤트 생성 실패', '이벤트 생성에 실패하였습니다. 잠시 후 다시 시도해주세요.');
-          return null;
-        }
-      })
-      .then(async (data) => {
-        if (data && sendImages.length > 0) {
-          console.log(data._id);
-          data.comments = 0;
-          data.likes = 0;
-          console.log(sendImages);
-          let formData = new FormData();
-          sendImages.forEach((item) => formData.append('images', item));
+          console.log('send');
+          if (res.data.status === 'SUCCESS') {
+            console.log('이벤트');
+            return res.data.data;
+          } else {
+            console.log(res.data);
+            Alert.alert('이벤트 생성 실패', '이벤트 생성에 실패하였습니다. 잠시 후 다시 시도해주세요.');
+            return null;
+          }
+        })
+        .then(async (data) => {
+          if (data && sendImages.length > 0) {
+            console.log(data._id);
+            data.comments = 0;
+            data.likes = 0;
+            console.log(sendImages);
+            let formData = new FormData();
+            sendImages.forEach((item) => formData.append('images', item));
 
-          formData.append('postId', data._id);
+            formData.append('postId', data._id);
 
-          await axios
-            .post(`/dandelion/images/post`, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            })
-            .then((res) => {
-              if (res.data.status === 'SUCCESS') {
-                console.log(res.data.data.map((item) => item));
-                const userId = data._user;
-                data._user = { _id: userId, name: name };
-                data.images = [
-                  ...res.data.data.map((item) => {
-                    return item.fileUrl;
-                  }),
-                ];
-                console.log(data);
-                setRefresh(true);
-                route.params.onGoBack(data);
+            await axios
+              .post(`/dandelion/images/post`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              })
+              .then((res) => {
+                if (res.data.status === 'SUCCESS') {
+                  console.log(res.data.data.map((item) => item));
+                  const userId = data._user;
+                  data._user = { _id: userId, name: name };
+                  data.images = [
+                    ...res.data.data.map((item) => {
+                      return item.fileUrl;
+                    }),
+                  ];
+                  console.log(data);
+                  setRefresh(true);
+                  route.params.onGoBack(data);
 
-                navigation.goBack();
-              } else {
-                console.log('이미지 업로드 실패');
-              }
-            })
-            .catch((err) => {
-              console.log('이미지 작성 에러');
-              console.log(err);
-            });
-        } else {
-          console.log('이미지 없음');
-          const userId = data._user;
-          data._user = { _id: userId, name: name };
-          setRefresh(true);
-          route.params.onGoBack(data);
-          navigation.goBack();
-        }
-      })
-      .catch((err) => {
-        console.log('이벤트 생성 에러');
-        console.log(err.message);
-      });
+                  navigation.goBack();
+                } else {
+                  console.log('이미지 업로드 실패');
+                }
+              })
+              .catch((err) => {
+                console.log('이미지 작성 에러');
+                console.log(err);
+              });
+          } else {
+            console.log('이미지 없음');
+            const userId = data._user;
+            data._user = { _id: userId, name: name };
+            setRefresh(true);
+            route.params.onGoBack(data);
+            navigation.goBack();
+          }
+        })
+        .catch((err) => {
+          console.log('이벤트 생성 에러');
+          console.log(err.message);
+        });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const pickImage = () => {

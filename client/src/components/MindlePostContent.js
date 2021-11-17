@@ -290,14 +290,21 @@ const MindlePostContent = ({
 
   const toggleLike = async () => {
     // /:dandelionId/:postId/like
-    await axios.post(`${mindleId}/${postId}/like`).then((res) => {
-      if (res.data.status === 'SUCCESS') {
-        console.log(res.data.message, res.data.data.currentLikeStatus);
-        setLike(res.data.data.currentLikeStatus);
-        setLikesNum((prev) => (res.data.data.currentLikeStatus ? prev + 1 : prev - 1));
-        setLikesList(res.data.data.currentLikeStatus, likesNum, postId);
-      }
-    });
+    try {
+      await axios
+        .post(`${mindleId}/${postId}/like`)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            console.log(res.data.message, res.data.data.currentLikeStatus);
+            setLike(res.data.data.currentLikeStatus);
+            setLikesNum((prev) => (res.data.data.currentLikeStatus ? prev + 1 : prev - 1));
+            setLikesList(res.data.data.currentLikeStatus, likesNum, postId);
+          }
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const checkUpdate = () => {
@@ -326,25 +333,32 @@ const MindlePostContent = ({
 
   const deletePost = async (deleteMode) => {
     setMenuOpen(false);
-    await axios.delete(`/${mindleId}/${deleteMode}/delete/${postId}`).then((res) => {
-      if (res.data.status === 'SUCCESS') {
-        if (!isInMindle) {
-          setRefresh(true);
-          setDeleteModal(false);
-          navigation.navigate('Main');
-        } else {
-          setRefresh(true);
-          setDeleteModal(false);
-          onDeletePost(postId);
-        }
-      } else if (res.data.status === 'FAILED') {
-        Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
-          {
-            text: '닫기',
-          },
-        ]);
-      }
-    });
+    try {
+      await axios
+        .delete(`/${mindleId}/${deleteMode}/delete/${postId}`)
+        .then((res) => {
+          if (res.data.status === 'SUCCESS') {
+            if (!isInMindle) {
+              setRefresh(true);
+              setDeleteModal(false);
+              navigation.navigate('Main');
+            } else {
+              setRefresh(true);
+              setDeleteModal(false);
+              onDeletePost(postId);
+            }
+          } else if (res.data.status === 'FAILED') {
+            Alert.alert('실패', '게시글 삭제를 실패하였습니다.\n다시 시도해주세요', [
+              {
+                text: '닫기',
+              },
+            ]);
+          }
+        })
+        .catch((err) => console.log(err.message));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const RowComponentDeletePost = () => (

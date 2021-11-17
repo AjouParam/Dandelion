@@ -66,23 +66,27 @@ const MindlePreview = ({ navigation, props, mindleKey }) => {
     setLoading(true);
 
     const fetchData = async (mindleId) => {
-      const dataList = await axios
-        .get(`/${mindleId}/post/`, { params: { page: 1, maxPost: 1 } })
-        .then((res) => {
-          if (res.data.status === 'SUCCESS') {
-            console.log('게시글 불러오기 성공');
+      try {
+        const dataList = await axios
+          .get(`/${mindleId}/post/`, { params: { page: 1, maxPost: 1 } })
+          .then((res) => {
+            if (res.data.status === 'SUCCESS') {
+              console.log('게시글 불러오기 성공');
 
-            return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          } else if (res.data.status === 'FAILED') {
-            console.log('게시글 불러오기 실패');
-            return 'FAILED';
-          }
-        })
-        .catch((err) => console.log(err));
+              return res.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (res.data.status === 'FAILED') {
+              console.log('게시글 불러오기 실패');
+              return 'FAILED';
+            }
+          })
+          .catch((err) => console.log(err));
 
-      if (dataList !== 'FAILED') {
-        setData(dataList[0]);
-        if (dataList.length === 0) setLoading(false);
+        if (dataList !== 'FAILED') {
+          setData(dataList[0]);
+          if (dataList.length === 0) setLoading(false);
+        }
+      } catch (err) {
+        console.log(err);
       }
     };
 
