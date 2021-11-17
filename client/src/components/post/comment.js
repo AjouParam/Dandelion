@@ -33,7 +33,6 @@ const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  border: 1px solid grey;
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
