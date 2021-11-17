@@ -3,6 +3,7 @@ import { View, Text, Header, Image, ScrollView, TouchableWithoutFeedback } from 
 import { level1, level2, level3, level4 } from '../../assets/index';
 import styled from 'styled-components/native';
 import axios from 'axios';
+const DefaultProfileImage = require('../../assets/profile/profile_default.png');
 const Container = styled.View`
   display: flex;
   flex-direction: column;
@@ -58,13 +59,11 @@ const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  border: 1px solid black;
 `;
 const PostImage = styled.Image`
   width: 80px;
   height: 80px;
   border-radius: 10px;
-  border: 1px solid black;
 `;
 const LikeImage = styled.Image`
   width: 20px;
@@ -132,7 +131,7 @@ const Post = ({ navigation, props, click }) => {
     >
       <Container>
         <TopView>
-          <ProfileImg source={level1} />
+          <ProfileImg source={DefaultProfileImage} />
           <PostFrontView>
             <UserName>{props._user.name}</UserName>
             <PostDate>{props.createdAt}</PostDate>
