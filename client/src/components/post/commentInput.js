@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { View, Text, Image, TextInput, Dimensions } from 'react-native';
 import { level1 } from '../../assets/index';
 import utilConstant from '../../utils/utilConstant';
-const DefaultProfileImage = require('../assets/profile/profile_default.png');
+const DefaultProfileImage = require('../../assets/profile/profile_default.png');
 const Container = styled.View`
   position: absolute;
   display: flex;
