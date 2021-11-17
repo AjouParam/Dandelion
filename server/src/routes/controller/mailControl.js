@@ -38,10 +38,11 @@ const mail = {
   loadDetail: async (req, res) => {
     try {
       const { _id } = req.body;
+      console.log(_id);
       const result = await Mail.findOne({ _id });
       res.json(resultResponse('성공적으로 가져왔습니다.', true, { data: result.messageList }));
     } catch (err) {
-      res.json(basicResponse('가져오는 중 에러가 발생하였습니다.'));
+      res.json(basicResponse('가져오는 중 에러가 발생하였습니다.' + err));
     }
   },
   save: async (req, res) => {

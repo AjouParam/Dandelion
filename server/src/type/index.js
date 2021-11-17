@@ -1,4 +1,4 @@
-export default type = {
+module.exports = {
   makeRoom: 'makeRoom',
   joinRoom: 'joinRoom',
   leaveRoom: 'leaveRoom',
