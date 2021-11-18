@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Header, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-
+import { coord2address } from '../../utils/common';
 const Container = styled.View`
   display: flex;
   flex-direction: column;
