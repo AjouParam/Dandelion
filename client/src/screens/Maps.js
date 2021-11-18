@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import MapData from '@contexts/Maps/MapData';
 import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps';
 import { Button, ImageButton, Mindle, MapsRenderHeader } from '@components';
-import { TouchableOpacity, View, Text, StyleSheet, Alert, Dimensions } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Alert, Dimensions, LogBox } from 'react-native';
 import { profile, tester1, button } from '../assets/index';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
@@ -25,7 +25,7 @@ const Container = styled.View`
 `;
 
 const Maps = ({ navigation, route }) => {
-  //console.log('route', route);
+  console.log('route', route);
   const bottomSheet = useRef();
   const fall = new Animated.Value(2);
   const [modalVisible, setModalVisible] = useState(false);
@@ -76,6 +76,7 @@ const Maps = ({ navigation, route }) => {
     );
 
   useEffect(async () => {
+    LogBox.ignoreLogs(['new NativeEventEmitter()', 'Require cycle', 'If you want to use Reanimated 2']);
     if (route === undefined) return () => setMode('Map');
     if (route.params === undefined) return () => setMode('Map');
     setMode('myPage');
@@ -217,6 +218,7 @@ const Maps = ({ navigation, route }) => {
               height="60px"
               fontSize="25px"
               backgroundcolor="#431F0E"
+              disabled={route.params ? true : false}
             />
           )}
         </View>

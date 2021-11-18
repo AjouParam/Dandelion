@@ -31,6 +31,7 @@ const headers = {
 
 const CreateSubComment = ({ modalVisible, setModalVisible, setSubComments, commentID }) => {
   const jwtToken = useRecoilValue(userState.uidState);
+  const userName = useRecoilValue(userState.nameState);
   const TextRef = useRef();
   const [text, setText] = useState('');
 
@@ -51,8 +52,16 @@ const CreateSubComment = ({ modalVisible, setModalVisible, setSubComments, comme
       })
       .then((res) => {
         if (res.data.status === 'SUCCESS') {
-          console.log(res.data.message);
-          setSubComments((prev) => [...prev, res.data.data]);
+          console.log('create subcomment', res.data.message);
+          const resData = res.data.data._user;
+          const newComment = {
+            ...res.data.data,
+            _user: {
+              _id: resData,
+              name: userName,
+            },
+          };
+          setSubComments((prev) => [...prev, newComment]);
           return true;
         } else {
           console.log(res.data.message);

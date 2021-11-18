@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator, Alert, Dimensions } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, ActivityIndicator, Alert, Dimensions, LogBox } from 'react-native';
 import styled from 'styled-components/native';
 import axios from 'axios';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -57,8 +57,8 @@ const MindlePost = ({ route, navigation }) => {
   axios.defaults.baseURL = 'http://3.35.45.177:3000/';
   axios.defaults.headers.common['x-access-token'] = jwtToken;
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-
   useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested', 'Non-serializable', 'Failed', 'Encountered']);
     setData({
       userPhoto: route.params.userPhoto,
       name: route.params.name,

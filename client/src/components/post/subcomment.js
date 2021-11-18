@@ -17,7 +17,12 @@ const TopContainer = styled.View`
   width: ${Dimensions.get('window').width / 2}px;
   justify-content: space-between;
 `;
-const BottomContainer = styled.View``;
+const BottomContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+`;
+const SubContainer = styled.View``;
 const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
@@ -45,14 +50,16 @@ const SubComment = ({ navigation, props, depth }) => {
     deleteSubComment,
     _parentComment,
   } = props;
+  console.log('subcomment', props);
   return (
     <Container style={{ marginLeft: (depth - 1) * 50 }}>
-      <ProfileImg source={DefaultProfileImage} />
       <CommentContainer>
         <TopContainer>
-          <User>{_user.name}</User>
-          {/* <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date> */}
-          <Date>{createdAt}</Date>
+          <ProfileImg source={DefaultProfileImage} />
+          <SubContainer>
+            <User>{name ? name : _user.name}</User>
+            <Date>{createdAt !== updatedAt ? createdAt : `${updatedAt} (수정됨)`}</Date>
+          </SubContainer>
           {!state && (
             <TouchableOpacity>
               <ChoiceButton

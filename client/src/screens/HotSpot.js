@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Alert, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Alert, Dimensions, LogBox } from 'react-native';
 import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
 
@@ -14,7 +14,9 @@ const SwipeContainer = styled.View`
   height: 30px;
   background-color: 'rgba(158, 150, 150, .5)';
 `;
-
+useEffect(() => {
+  LogBox.ignoreLogs(['Expected style']);
+}, []);
 const HotSpot = ({ navigation }) => {
   return (
     <Container>

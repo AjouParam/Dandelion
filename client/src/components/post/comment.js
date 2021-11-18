@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity, Button } from 'react-native';
+import { Alert, Text, TouchableWithoutFeedback, Dimensions, TouchableOpacity, Button, LogBox } from 'react-native';
 import styled from 'styled-components/native';
 import SubComment from '@components/post/subcomment';
 import axios from 'axios';
@@ -32,7 +32,6 @@ const SubContainer = styled.View``;
 const ProfileImg = styled.Image`
   width: 40px;
   height: 40px;
-  border-radius: 100px;
 `;
 const User = styled.Text``;
 const Date = styled.Text``;
@@ -42,7 +41,7 @@ const ChoiceButton = styled.TouchableOpacity`
 const CommentText = styled.Text``;
 const Comment = ({ navigation, props, depth }) => {
   const { name, state, text, createdAt, updatedAt, _id, _user, _post, __v, isDeleted, deleteComment } = props;
-  console.log('props', props);
+  // console.log('props', props);
   const jwtToken = useRecoilValue(userState.uidState);
   const [page, setPage] = useState(1);
   const [subcomments, setSubComments] = useState([]);
@@ -56,7 +55,6 @@ const Comment = ({ navigation, props, depth }) => {
   useEffect(() => {
     getSubComment(page);
   }, []);
-
   useEffect(() => {
     if (subcommentLoaded) {
       setLoaded(true);
@@ -189,5 +187,4 @@ const Comment = ({ navigation, props, depth }) => {
     </>
   );
 };
-
 export default Comment;
