@@ -47,7 +47,7 @@ const CountEvent = styled.Text`
   font-size: 13px;
   color: #87c548;
 `;
-// const Address = styled.Text``;
+const Address = styled.Text``;
 const TagText = styled.Text`
   font-weight: 400;
   font-size: 13;
@@ -71,7 +71,9 @@ const Mindle = ({ navigation, props, click }) => {
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>
-          <MindleDistance>{`${props.distance} km`}</MindleDistance>
+          <MindleDistance>
+            {props.distance < 1000 ? `${props.distance.toFixed(2)} m` : `${props.distance.toFixed(2) / 1000} km`}
+          </MindleDistance>
         </TopView>
         <MidView>
           <InfoText>
@@ -82,7 +84,7 @@ const Mindle = ({ navigation, props, click }) => {
           </InfoText>
         </MidView>
         <BottomView>
-          {/* <Address>{props.address}</Address> */}
+          <Address>{address}</Address>
           <TagText>{props.description}</TagText>
         </BottomView>
       </Container>
