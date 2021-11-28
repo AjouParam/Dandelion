@@ -71,7 +71,9 @@ const Mindle = ({ navigation, props, click }) => {
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>
-          <MindleDistance>{`${props.distance} km`}</MindleDistance>
+          <MindleDistance>
+            {props.distance < 1000 ? `${props.distance.toFixed(2)} m` : `${props.distance.toFixed(2) / 1000} km`}
+          </MindleDistance>
         </TopView>
         <MidView>
           <InfoText>
