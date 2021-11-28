@@ -63,6 +63,7 @@ const Mindle = ({ navigation, props, click }) => {
   const [address, setAddress] = useState('');
   useEffect(() => {
     coord2address(props.location, setAddress);
+    console.log(props);
   }, []);
 
   return (
