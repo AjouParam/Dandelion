@@ -58,6 +58,13 @@ export default class HelloWorldSceneAR extends Component {
           visible={this.state.arvisible}
           type="OBJ"
         />
+        {/* <ViroText
+          position={this.state.points}
+          transformBehaviors={'billboard'}
+          text={this.state.text}
+          style={styles.helloWorldTextStyle}
+          renderingOrder={-1}
+        /> */}
         {/* <ViroButton
           source={require('./res/emailenclose.png')}
           clickSource={require('./res/emailopen.png')}
@@ -105,10 +112,17 @@ export default class HelloWorldSceneAR extends Component {
   }
   _trackingCamera(cameraTransform) {
     if (this.state.arvisible) {
-      var Euler = (cameraTransform.rotation[1] / 180) * Math.PI;
+      var camerarotation = cameraTransform.rotation[1];
+
+      var Euler = (camerarotation / 180) * Math.PI;
       var positionX = Math.sin(Euler) * -1;
       positionX += cameraTransform.position[0];
       var positionZ = Math.cos(Euler) * -1;
+      if (this.props.arSceneNavigator.viroAppProps.flip) {
+        positionZ *= -1;
+      } else {
+        positionZ *= 1;
+      }
       positionZ += cameraTransform.position[2];
 
       this.setState({
@@ -238,7 +252,7 @@ ViroMaterials.createMaterials({
 var styles = StyleSheet.create({
   helloWorldTextStyle: {
     fontFamily: 'NotoSansCJK',
-    fontSize: 30,
+    fontSize: 15,
     color: '#000000',
     textAlignVertical: 'center',
     textAlign: 'center',

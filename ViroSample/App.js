@@ -38,6 +38,7 @@ export default class ViroSample extends Component {
       viroAppProps: {
         artext: '',
         arshow: false,
+        flip: false,
       },
       navigatorType: defaultNavigatorType,
       sharedProps: sharedProps,
@@ -52,6 +53,7 @@ export default class ViroSample extends Component {
     this._showPopup = this._showPopup.bind(this);
     this._hidePopup = this._hidePopup.bind(this);
     this._onCreateARPost = this._onCreateARPost.bind(this);
+    this._flipArrow = this._flipArrow.bind(this);
   }
 
   render() {
@@ -74,6 +76,11 @@ export default class ViroSample extends Component {
             <Image source={require('./js/res/PostButton.png')} />
           </TouchableHighlight>
         </View>
+        <View style={{ position: 'absolute', left: 0, right: 270, bottom: 30, alignItems: 'flex-end' }}>
+          <TouchableHighlight style={localStyles.writebuttons} onPress={this._flipArrow} underlayColor={'#00000000'}>
+            <Image source={require('./js/res/btn_mode_objects.png')} />
+          </TouchableHighlight>
+        </View>
         <DialogInput
           isDialogVisible={this.state.show}
           title={'흔적 남기기'}
@@ -85,6 +92,21 @@ export default class ViroSample extends Component {
         ></DialogInput>
       </View>
     );
+  }
+  _flipArrow() {
+    if (this.state.viroAppProps.flip) {
+      this.setState({
+        viroAppProps: {
+          flip: false,
+        },
+      });
+    } else {
+      this.setState({
+        viroAppProps: {
+          flip: true,
+        },
+      });
+    }
   }
   _showPopup() {
     this.setState({
