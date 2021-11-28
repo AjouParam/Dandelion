@@ -59,8 +59,8 @@ const TagText = styled.Text`
 // `;
 
 const Mindle = ({ navigation, props, click }) => {
-  console.log('address', props);
-  const [address, setAddress] = useState();
+  //console.log('address', props);
+  const [address, setAddress] = useState('');
   useEffect(() => {
     coord2address(props.location, setAddress);
   }, []);
@@ -74,15 +74,15 @@ const Mindle = ({ navigation, props, click }) => {
         </TopView>
         <MidView>
           <InfoText>
-            누적 방문자 <CountVisitor>{props.countVisitor}</CountVisitor>
+            누적 방문자 <CountVisitor>{props.cumulativeVisitors}</CountVisitor>
           </InfoText>
           <InfoText>
-            이벤트 <CountEvent>{props.countEvent}</CountEvent>
+            이벤트 <CountEvent>{props.events}</CountEvent>
           </InfoText>
         </MidView>
         <BottomView>
           {/* <Address>{props.address}</Address> */}
-          <TagText>{props.tag}</TagText>
+          <TagText>{props.description}</TagText>
         </BottomView>
       </Container>
     </TouchableWithoutFeedback>

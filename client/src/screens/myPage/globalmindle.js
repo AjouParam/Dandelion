@@ -11,7 +11,7 @@ const Container = styled.ScrollView`
 `;
 
 const MindleSubPage = ({ navigation, props }) => {
-  console.log('HotSpot props', props);
+  //console.log('HotSpot props', props);
 
   return (
     <Container>
