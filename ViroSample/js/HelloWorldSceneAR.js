@@ -75,7 +75,7 @@ export default class HelloWorldSceneAR extends Component {
           onClick={this._onEmailTap}
         /> */}
         {this._onCreatePost([-5, 0, -15], [-5, -0.1, -14.93], '롯x마트 다녀옴')}
-        {this._onCreatePost([3, 0, -1], [3, -0.1, -0.93], '여기 맛있음!')}
+        {this._onCreatePost([3, 0, -2], [3, -0.1, -1.93], '여기 맛있음!')}
         {this._onCreatePost([-3, 0, -8], [-3, -0.1, -7.93], '철수랑 1일')}
         {this._onCreatePost([2, 0, -5], [2, -0.1, -4.93], '파람 최고에요')}
         {this._onCreatePost([4, 0, -5], [4, -0.1, -4.93], '안녕하세요')}
