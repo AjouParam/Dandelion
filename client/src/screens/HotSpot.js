@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Alert, Dimensions, LogBox } from 'react-native';
 import styled from 'styled-components/native';
 import Swiper from 'react-native-swiper';
+import { FlatList } from 'react-native-gesture-handler';
 
-import { HotSpotModule, HotSpotCtrl } from '../controller/hotSpotCtrl';
-import HotSpotComponent from '../components/post/Mindle';
 import utilConstant from '../utils/utilConstant';
 import Mindle from '../components/post/Mindle';
 import { useRecoilValue } from 'recoil';
@@ -17,6 +16,10 @@ const Container = styled.View`
 const SwipeContainer = styled.View`
   height: 30px;
   background-color: 'rgba(158, 150, 150, .5)';
+`;
+const SwipeList = styled.View`
+  flex: 1;
+  background-color: #ffffff;
 `;
 const HotSpot = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -98,6 +101,41 @@ const HotSpot = ({ navigation }) => {
         setLoading(true);
       });
   };
+
+  const renderLocal = useCallback(({ item }) => {
+    return (
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: item.name,
+          location: item.location,
+          distance: item.distance,
+          cumulativeVisitors: item.cumulativeVisitors,
+          events: item.events,
+          descriptions: item.descriptions,
+        }}
+      />
+    );
+  }, []);
+
+  const renderGlobal = useCallback(({ item }) => {
+    return (
+      <Mindle //type setting
+        click={true}
+        navigation={navigation}
+        props={{
+          name: item.name,
+          location: item.location,
+          distance: item.distance,
+          cumulativeVisitors: item.cumulativeVisitors,
+          events: item.events,
+          descriptions: item.descriptions,
+        }}
+      />
+    );
+  }, []);
+
   return (
     <Container>
       <SwipeContainer></SwipeContainer>
@@ -112,42 +150,24 @@ const HotSpot = ({ navigation }) => {
         >
           {/* {HotSpotModule['local']?.call({ navigation, loading, setLoading })} */}
           {/* {HotSpotModule['global']?.call({ navigation })} */}
-          <>
-            {localHotspot.map((item) => {
-              return (
-                <Mindle //type setting
-                  click={true}
-                  navigation={navigation}
-                  props={{
-                    name: item.name,
-                    location: item.location,
-                    distance: item.distance,
-                    cumulativeVisitors: item.cumulativeVisitors,
-                    events: item.events,
-                    descriptions: item.descriptions,
-                  }}
-                />
-              );
-            })}
-          </>
-          <>
-            {globalHotspot.map((item) => {
-              return (
-                <Mindle //type setting
-                  click={true}
-                  navigation={navigation}
-                  props={{
-                    name: item.name,
-                    location: item.location,
-                    distance: item.distance,
-                    cumulativeVisitors: item.cumulativeVisitors,
-                    events: item.events,
-                    descriptions: item.descriptions,
-                  }}
-                />
-              );
-            })}
-          </>
+          <SwipeList>
+            <FlatList
+              data={localHotspot}
+              renderItem={renderLocal}
+              keyExtractor={(item, idx) => String(item._id)}
+              onEndReached={getLocalData}
+              onEndReachedThreshold={0.4}
+            />
+          </SwipeList>
+          <SwipeList>
+            <FlatList
+              data={globalHotspot}
+              renderItem={renderGlobal}
+              keyExtractor={(item, idx) => String(item._id)}
+              onEndReached={getGlobalData}
+              onEndReachedThreshold={0.4}
+            />
+          </SwipeList>
         </Swiper>
       )}
     </Container>
