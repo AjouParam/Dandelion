@@ -38,11 +38,17 @@ export default class HelloWorldSceneAR extends Component {
     this._onCreateARPost = this._onCreateARPost.bind(this);
     this._trackingCamera = this._trackingCamera.bind(this);
     this._LookAtTarget = this._LookAtTarget.bind(this);
+    this._ArriveTarget = this._ArriveTarget.bind(this);
+    this._CancelArrow = this._CancelArrow.bind(this);
   }
 
   render() {
     return (
-      <ViroARScene onTrackingInitialized={this._onInitialized} onCameraTransformUpdate={this._trackingCamera}>
+      <ViroARScene
+        onTrackingInitialized={this._onInitialized}
+        onCameraTransformUpdate={this._trackingCamera}
+        onClick={this._CancelArrow}
+      >
         <Viro3DObject
           source={require('./res/3DArrow.obj')}
           materials={['arrowDiff']}
@@ -61,17 +67,17 @@ export default class HelloWorldSceneAR extends Component {
           animation={{ name: 'moveLeftandRight', run: true, loop: true }}
           onClick={this._onEmailTap}
         /> */}
-        {this._onCreatePost([-5, 0, -15], [-5, 0, -15], '롯x마트 다녀옴')}
-        {this._onCreatePost([3, 0, -1], [3, 0, -1], '여기 맛있음!')}
-        {this._onCreatePost([-3, 0, -8], [-3, 0, -8], '철수랑 1일')}
-        {this._onCreatePost([2, 0, -5], [2, 0, -5], '파람 최고에요')}
-        {this._onCreatePost([4, 0, -5], [4, 0, -5], '안녕하세요')}
-        {this._onCreatePost([-4, 0, -9], [-4, 0, -9], '반가워요!')}
-        {this._onCreatePost([4, 0, 5], [4, 0, 5], '여긴 어때요?')}
-        {this._onCreatePost([-2, 0, 7], [-2, 0, 7], '다 괜찮네요')}
-        {this._onCreatePost([-5, 0, 15], [-5, 0, 15], '신기하당')}
-        {this._onCreatePost([-9, 0, -20], [-9, 0, -20], '많이 신기해요')}
-        {this._onCreatePost([5, 0, -18], [5, 0, -18], '어떻게 하는거지')}
+        {this._onCreatePost([-5, 0, -15], [-5, -0.1, -14.93], '롯x마트 다녀옴')}
+        {this._onCreatePost([3, 0, -1], [3, -0.1, -0.93], '여기 맛있음!')}
+        {this._onCreatePost([-3, 0, -8], [-3, -0.1, -7.93], '철수랑 1일')}
+        {this._onCreatePost([2, 0, -5], [2, -0.1, -4.93], '파람 최고에요')}
+        {this._onCreatePost([4, 0, -5], [4, -0.1, -4.93], '안녕하세요')}
+        {this._onCreatePost([-4, 0, -9], [-4, -0.1, -8.93], '반가워요!')}
+        {this._onCreatePost([4, 0, 5], [4, -0.1, 4.97], '여긴 어때요?')}
+        {this._onCreatePost([-2, 0, 7], [-2, -0.1, 6.97], '다 괜찮네요')}
+        {this._onCreatePost([-5, 0, 15], [-5, -0.1, 14.97], '신기하당')}
+        {this._onCreatePost([-9, 0, -20], [-9, -0.1, -19.93], '많이 신기해요')}
+        {this._onCreatePost([5, 0, -18], [5, -0.1, -17.93], '어떻게 하는거지')}
         {this._onCreateARPost(
           this.props.arSceneNavigator.viroAppProps.arshow,
           this.props.arSceneNavigator.viroAppProps.artext,
@@ -110,6 +116,7 @@ export default class HelloWorldSceneAR extends Component {
       });
 
       this._LookAtTarget(this.state.points, this.state.target);
+      this._ArriveTarget(this.state.points, this.state.target);
     }
   }
   _onCreateArrow(destPosition) {
@@ -126,20 +133,20 @@ export default class HelloWorldSceneAR extends Component {
           <ViroImage
             position={[0, 0, 0]}
             transformBehaviors={'billboard'}
-            source={require('./res/dialogicon.png')}
-            width={2.4}
-            height={0.8}
+            source={require('./res/PostBox.png')}
+            width={3.4}
+            height={2}
             onClick={this._onClickARPost}
             renderingOrder={0}
           />
           <ViroText
-            position={[0, 0, 0]}
+            position={[0, -0.1, 0.01]}
             transformBehaviors={'billboard'}
             text={message}
             width={2.4}
             height={0.8}
             style={styles.artext}
-            renderingOrder={-1}
+            renderingOrder={0}
           />
         </ViroNode>,
       );
@@ -155,9 +162,9 @@ export default class HelloWorldSceneAR extends Component {
         <ViroImage
           position={position}
           transformBehaviors={'billboard'}
-          source={require('./res/dialogicon.png')}
-          width={3}
-          height={1}
+          source={require('./res/PostBox.png')}
+          width={3.4}
+          height={2}
           onClick={this._onClickARPost}
           renderingOrder={0}
         />
@@ -165,10 +172,10 @@ export default class HelloWorldSceneAR extends Component {
           position={positionT}
           transformBehaviors={'billboard'}
           text={text}
-          width={3}
-          height={1}
+          width={3.4}
+          height={0.8}
           style={styles.arpost}
-          renderingOrder={-1}
+          renderingOrder={0}
         />
       </ViroNode>,
     );
@@ -181,6 +188,22 @@ export default class HelloWorldSceneAR extends Component {
     tangent = (tangent * 180) / Math.PI;
     this.setState({
       arrowRot: [-90, tangent, 0],
+    });
+  }
+
+  _ArriveTarget(targetP, destP) {
+    var lengthX = destP[0] - targetP[0];
+    var lengthZ = destP[2] - targetP[2];
+    var length = Math.sqrt(lengthX * lengthX + lengthZ * lengthZ);
+    if (length < 0.1) {
+      this.setState({
+        arvisible: false,
+      });
+    }
+  }
+  _CancelArrow() {
+    this.setState({
+      arvisible: false,
     });
   }
   // _onCreateArrow(cameraTransform){
@@ -223,14 +246,14 @@ var styles = StyleSheet.create({
   arpost: {
     fontFamily: 'NotoSansCJK',
     fontSize: 30,
-    color: '#00ff00',
+    color: '#000000',
     textAlignVertical: 'center',
     textAlign: 'center',
   },
   artext: {
     fontFamily: 'NotoSansCJK',
-    fontSize: 15,
-    color: '#ff0000',
+    fontSize: 30,
+    color: '#000000',
     textAlignVertical: 'center',
     textAlign: 'center',
   },

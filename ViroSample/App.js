@@ -69,16 +69,15 @@ export default class ViroSample extends Component {
           initialScene={{ scene: InitialNormalScene }}
           viroAppProps={this.state.viroAppProps}
         />
-        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 77, alignItems: 'center' }}>
+        <View style={{ position: 'absolute', left: 0, right: 30, bottom: 50, alignItems: 'flex-end' }}>
           <TouchableHighlight style={localStyles.writebuttons} onPress={this._showPopup} underlayColor={'#00000000'}>
-            <Image source={require('./js/res/btn_mode_objects.png')} />
+            <Image source={require('./js/res/PostButton.png')} />
           </TouchableHighlight>
         </View>
         <DialogInput
           isDialogVisible={this.state.show}
-          title={'Write AR Message!'}
-          message={'Input your own Message'}
-          hintInput={'write on here'}
+          title={'흔적 남기기'}
+          hintInput={'소중한 기억을 남겨보세요'}
           submitInput={(inputText) => {
             this._onCreateARPost(inputText);
           }}
