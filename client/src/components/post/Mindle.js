@@ -72,16 +72,20 @@ const Mindle = ({ navigation, props, click }) => {
         <TopView>
           <MindleName>{props.name}</MindleName>
           <MindleDistance>
-            {props.distance < 1000 ? `${props.distance.toFixed(2)} m` : `${props.distance.toFixed(2) / 1000} km`}
+            {props.distance < 1000 ? `${props.distance.toFixed(2)} m` : `${(props.distance / 1000).toFixed(2)} km`}
           </MindleDistance>
         </TopView>
         <MidView>
-          <InfoText>
-            누적 방문자 <CountVisitor>{props.cumulativeVisitors}</CountVisitor>
-          </InfoText>
-          <InfoText>
-            이벤트 <CountEvent>{props.events}</CountEvent>
-          </InfoText>
+          {props.cumulativeVisitors && (
+            <InfoText>
+              누적 방문자 <CountVisitor>{props.cumulativeVisitors}</CountVisitor>
+            </InfoText>
+          )}
+          {props.events && (
+            <InfoText>
+              이벤트 <CountEvent>{props.events}</CountEvent>
+            </InfoText>
+          )}
         </MidView>
         <BottomView>
           <Address>{address}</Address>
