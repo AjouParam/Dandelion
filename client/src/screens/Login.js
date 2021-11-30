@@ -14,6 +14,8 @@ import GoogleLoginButton from '@components/GoogleLoginButton';
 import decode from 'jwt-decode';
 import { logo } from '../assets/index';
 
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 const ImageContainer = styled.View`
   display: flex;
   flex: 2;
