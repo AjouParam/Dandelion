@@ -59,10 +59,11 @@ const TagText = styled.Text`
 // `;
 
 const Mindle = ({ navigation, props, click }) => {
-  console.log('address', props);
-  const [address, setAddress] = useState();
+  //console.log('address', props);
+  const [address, setAddress] = useState('');
   useEffect(() => {
     coord2address(props.location, setAddress);
+    console.log(props);
   }, []);
 
   return (
@@ -70,19 +71,25 @@ const Mindle = ({ navigation, props, click }) => {
       <Container>
         <TopView>
           <MindleName>{props.name}</MindleName>
-          <MindleDistance>{`${props.distance} km`}</MindleDistance>
+          <MindleDistance>
+            {props.distance < 1000 ? `${props.distance.toFixed(2)} m` : `${(props.distance / 1000).toFixed(2)} km`}
+          </MindleDistance>
         </TopView>
         <MidView>
-          <InfoText>
-            누적 방문자 <CountVisitor>{props.countVisitor}</CountVisitor>
-          </InfoText>
-          <InfoText>
-            이벤트 <CountEvent>{props.countEvent}</CountEvent>
-          </InfoText>
+          {props.cumulativeVisitors && (
+            <InfoText>
+              누적 방문자 <CountVisitor>{props.cumulativeVisitors}</CountVisitor>
+            </InfoText>
+          )}
+          {props.events && (
+            <InfoText>
+              이벤트 <CountEvent>{props.events}</CountEvent>
+            </InfoText>
+          )}
         </MidView>
         <BottomView>
           <Address>{address}</Address>
-          <TagText>{props.tag}</TagText>
+          <TagText>{props.description}</TagText>
         </BottomView>
       </Container>
     </TouchableWithoutFeedback>
