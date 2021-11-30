@@ -55,7 +55,7 @@ const CompData = async (Target, currentPOS, setCurrentMindle, setBtnToggle, setM
   const data = await getData(Target); //초기 민들레 생성
 
   if (data.length > 0) {
-    console.log('데이터는 이거지', typeof data, toString.call(data), data);
+    //console.log('데이터는 이거지', typeof data, toString.call(data), data);
     const list = data.reduce((result, props) => {
       //사용자와 민들레가 겹칠 경우 버튼을 민들레 심기에서 입장으로 변경
       const visible = isCollision(props, result) ? false : true;

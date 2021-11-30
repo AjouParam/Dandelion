@@ -3,6 +3,8 @@ import styled from 'styled-components/native';
 import { View, Text, Alert, Dimensions } from 'react-native';
 import userState from '@contexts/userState';
 import { useRecoilState } from 'recoil';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // import { DefaultProfile } from '../assets/index'; //dummy
 import { Button, ImageButton } from '@components';
 import PostContainer from './PostContainer';
@@ -99,12 +101,21 @@ const Mypage = ({ navigation }) => {
   const _handleLogoutButtonPress = async () => {
     try {
       // await logout();
+      removeToken();
       setUid('');
       setEmail('');
       setUsername('');
-      navigation.navigate('Maps');
+      //navigation.navigate('Maps');
     } catch (e) {
       console.log('[Profile] logout: ', e.message);
+    }
+  };
+
+  const removeToken = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+    } catch (e) {
+      console.log('AsyncStorage Error ', e.message);
     }
   };
   return (

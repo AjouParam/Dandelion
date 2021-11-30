@@ -79,8 +79,9 @@ const PasswordReset = ({ navigation }) => {
 
   const sendEmail = async () => {
     try {
+      console.log(email);
       await axios
-        .post('http://3.35.45.177:3000/account/auth', { email: email })
+        .post('http://3.35.45.177:3000/account/emailAuth', { email: email })
         .then((res) => {
           if (res.data.status === 'SUCCESS') {
             setEmailSent(true);
