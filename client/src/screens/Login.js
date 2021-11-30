@@ -74,6 +74,7 @@ const Login = ({ navigation }) => {
   const [disabled, setDisabled] = useState(true);
   const [email, setEmail] = useRecoilState(userState.emailState);
   const [uid, setUid] = useRecoilState(userState.uidState);
+  const [username, setUsername] = useRecoilState(userState.nameState);
   // const {spinner} = useContext(ProgressContext);
   const insets = useSafeAreaInsets();
 
@@ -98,20 +99,22 @@ const Login = ({ navigation }) => {
       //API request
       await axios
         .post('http://3.35.45.177:3000/account/signin', { email: emailInput, password: password })
-        .then(async (res) => {
+        .then((res) => {
           console.log(res.data);
           if (res.data.status === 'SUCCESS') {
-            try {
-              await AsyncStorage.setItem('token', res.data.accessToken);
-              const userData = decode(res.data.accessToken);
-              setEmail(emailInput); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
-              setUid(res.data.accessToken);
-            } catch (error) {
-              throw new Error(res.data.message);
-            }
+            const userData = decode(res.data.accessToken);
+            //console.log('userData', userData.name);
+            setEmail(emailInput); //서버로 부터 받는 이메일 주소가 없어 임시 입력 받은 이메로 설정
+            setUid(res.data.accessToken);
+            setUsername(userData.name);
+            return res.data.accessToken;
           } else if (res.data.status === 'FAILED') {
             throw new Error(res.data.message);
           }
+        })
+        .then((res) => {
+          console.log(username);
+          storeToken(res);
         })
         .catch((error) => {
           // console.log(error);
@@ -125,6 +128,14 @@ const Login = ({ navigation }) => {
       Alert.alert('로그인 에러', message);
     } finally {
       //spinner.stop();
+    }
+  };
+
+  const storeToken = async (token) => {
+    try {
+      await AsyncStorage.setItem('token', token);
+    } catch (e) {
+      console.log('AsyncStorage Error ', e.message);
     }
   };
   return (

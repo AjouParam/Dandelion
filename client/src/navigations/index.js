@@ -80,7 +80,7 @@ const Navigation = () => {
     console.log('유저는', name);
     const result = await axios.post('http://10.0.2.2:4000/mail/load/', { user: name });
     if (result.data.status === 'SUCCESS') setMessageRoomData(result.data.data);
-  }, [uid]);
+  }, [uid, name]);
 
   useEffect(() => {
     messageRoomData.map((element) => {
@@ -91,7 +91,7 @@ const Navigation = () => {
   }, [messageRoomData]);
   return (
     <NavigationContainer>
-      {uid && email ? <MainStack /> : <AuthStack />}
+      {uid && email && name ? <MainStack /> : <AuthStack />}
       {/* <MainStack/> */}
       {inProgress && <Spinner />}
     </NavigationContainer>

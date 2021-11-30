@@ -97,7 +97,7 @@ const getUserLocation = async (
           }
           console.log('현재 사용자 위치', position.coords.latitude, position.coords.longitude);
           setBtnToggle(false);
-          console.log('함수 실행');
+          //console.log('함수 실행');
           dandelionCtrl.CompData(position.coords, position.coords, setCurrentMindle, setBtnToggle, setMindles);
         },
         (error) => {
