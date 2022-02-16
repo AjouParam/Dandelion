@@ -63,25 +63,23 @@ API 명세서
 
 ## 핵심 기능
 
-ex)
-- 게시글 및 댓글 관리
-- 유저  및 태그 팔로잉
-- 태그 시스템
-- 신고차단 기능
-- 게시글 북마크
-- 사용자 맞춤 개인 피드
-- 개인 알림 기능 (댓글, 대댓글, 팔로우, 뱃지획득)
-- 게시글 북마크
-- 개인 피드 조회
-- 개인정보 관리
+- 민들레 심기 (지도 마커 생성하기)
+- 민들레 방문 기록 조회
+- 민들레의 방문자 수에 따른 성장
+- 게시글/이벤트 작성
+- 덧글/답글 작성
+- 내 주변 핫스팟 / 전국 핫스팟
+- 내가 쓴 글, 내가 심은 민들레 조회
+- 쪽지 기능
+- AR 내에서 게시글/이벤트 작성, 조회
 
 ## ERD
 
-<br>
+![image](https://user-images.githubusercontent.com/52846807/154261912-c6ca1e66-1a63-4711-a4dc-05bcb11b0a38.png)
 
 ## Architecture
 
-<br>
+![image](https://user-images.githubusercontent.com/52846807/154270138-3c1d3ffb-4ffe-4ed1-81e9-59cee9efdce5.png)
 
 ## Running front-end
 
