@@ -53,7 +53,7 @@ API 명세서
 | :--------: | :---------------------------------: |
 | Front-end  |   React Native   |
 |  Back-end  |     node.js, express.js      |
-| Database | mongoDB, mongoose(ORM) |
+| Database | mongoDB, mongoose(OM) |
 | Formatting | eslint, prettier |
 | Infra      | AWS EC2, Code Pipeline, Code Deploy |
 
